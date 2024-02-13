@@ -73,47 +73,50 @@ typedef enum
 	 *@brief : Everything Ok, Function had Performed Correctly.
 	 */
 	RCC_enumOk ,
+	/**
+	 *@brief : Failed to Make this process ON
+	 */
 	RCC_enumONFailed ,
+	/**
+	 *@brief : Failed to Make this process ON
+	 */
 	RCC_enumOFFFailed ,
+	/**
+	 *@brief : Cloclk is Not Ready
+	 */
 	RCC_enumClockNotReady,
+	/**
+	 *@brief : User enter wrong input
+	 */
 	RCC_enumWrongInput
 
 }RCC_enumError_t;
 
+/*Prescaler options for APB High Speed BUS*/
 typedef enum
 {
-	/**
-	 *@brief : Everything Ok, Function had Performed Correctly.
-	 */
 	APB_H_1 =  0, APB_H_2 =  4, APB_H_4, APB_H_8, APB_H_16,
 }RCC_APB_HS_PRE_t;
 
+/*Prescaler options for APB Low Speed BUS*/
 typedef enum
 {
-	/**
-	 *@brief : Everything Ok, Function had Performed Correctly.
-	 */
 	APB_L_1 =  0, APB_L_2 =  4, APB_L_4 , APB_L_8 ,APB_L_16 ,
 
 }RCC_APB_LW_PRE_t;
 
+/*Prescaler options for AHB BUS*/
 typedef enum
 {
-	/**
-	 *@brief : Everything Ok, Function had Performed Correctly.
-	 */
 	AHB_1 =  0, AHB_2 =  8,AHB_4 ,AHB_8	,AHB_L_16 ,	AHB_64 , AHB_128 , AHB_256 , AHB_512
 
 
 }RCC_AHB_PRE_t;
 
+/*Buses Options to set prescaler options for desired one of them*/
 typedef enum
 {
-	/**
-	 *@brief : Everything Ok, Function had Performed Correctly.
-	 */
 	APB_HIGH_PRE,APB_LOW_PRE,AHB_PRE
-
 
 }RCC_PRESCALER_t;
 /*******************************************************************************
