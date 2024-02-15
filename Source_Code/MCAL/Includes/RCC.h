@@ -11,21 +11,25 @@
 /*******************************************************************************
  *                                Includes	                                  *
  *******************************************************************************/
-#include  	"Includes/Includes/std_types.h"
-#include 	"Includes/Includes/Mask32.h"
+#include  	"std_types.h"
+#include 	"Mask32.h"
 /*******************************************************************************
  *                                Definitions                                  *
  *******************************************************************************/
 #define CLOCK_HSI		BIT0_MASK
 #define CLOCK_HSE		BIT16_MASK
-#define CLOCK_PLL 		BIT24_MASK
+#define CLOCK_PLL		BIT24_MASK
 
-#define SysClk_HSI_MASK	BIT0_MASK
-#define SysClk_HSE_MASK	BIT1_MASK
-#define SysClk_PLL_MASK	BIT2_MASK
+#define READY_HSI	BIT1_MASK
+#define READY_HSE	BIT17_MASK
+#define READY_PLL 	BIT25_MASK
+
+#define SysClk_HSI_MASK	0x00000000
+#define SysClk_HSE_MASK	BIT0_MASK
+#define SysClk_PLL_MASK	BIT1_MASK
 
 #define PLL_SRC_HSI		0XFFBFFFFF
-#define PLL_SRC_HSE 	0X00400000
+#define PLL_SRC_HSE 	BIT22_MASK
 
 /************AHB1_BUS_Peripheral_Masks ************/
 #define GPIOA	BIT0_MASK
@@ -73,52 +77,44 @@ typedef enum
 	 *@brief : Everything Ok, Function had Performed Correctly.
 	 */
 	RCC_enumOk ,
-	/**
-	 *@brief : Failed to Make this process ON
-	 */
 	RCC_enumONFailed ,
-	/**
-	 *@brief : Failed to Make this process ON
-	 */
 	RCC_enumOFFFailed ,
-	/**
-	 *@brief : Cloclk is Not Ready
-	 */
 	RCC_enumClockNotReady,
-	/**
-	 *@brief : User enter wrong input
-	 */
 	RCC_enumWrongInput
 
 }RCC_enumError_t;
 
-/*Prescaler options for APB High Speed BUS*/
 typedef enum
 {
-	APB_H_1 =  0, APB_H_2 =  4, APB_H_4, APB_H_8, APB_H_16,
+	/**
+	 *@brief : Everything Ok, Function had Performed Correctly.
+	 */
+	APB_H_1 =  0, APB_H_2 =  0x00008000, APB_H_4 = 0x0000A000,
+	APB_H_8 = 0x0000C000, APB_H_16=0x0000E000,
 }RCC_APB_HS_PRE_t;
 
-/*Prescaler options for APB Low Speed BUS*/
 typedef enum
 {
-	APB_L_1 =  0, APB_L_2 =  4, APB_L_4 , APB_L_8 ,APB_L_16 ,
+	/**
+	 *@brief : Everything Ok, Function had Performed Correctly.
+	 */
+	APB_L_1 =  0, APB_L_2 =  0x00001000, APB_L_4=0x00001400,
+	APB_L_8=0x00001800 ,APB_L_16=0x00001C00 ,
 
 }RCC_APB_LW_PRE_t;
 
-/*Prescaler options for AHB BUS*/
 typedef enum
 {
-	AHB_1 =  0, AHB_2 =  8,AHB_4 ,AHB_8	,AHB_L_16 ,	AHB_64 , AHB_128 , AHB_256 , AHB_512
-
+	/**
+	 *@brief : Everything Ok, Function had Performed Correctly.
+	 */
+	AHB_1 =  0, AHB_2 =0x00000080  ,AHB_4 =0x00000090 ,AHB_8=0x000000A0 ,
+	AHB_16=0x000000B0  ,	AHB_64=0x000000C0  , AHB_128 =0x000000D0  , AHB_256=0x000000E0 ,
+	AHB_512=0x000000f0 
 
 }RCC_AHB_PRE_t;
 
-/*Buses Options to set prescaler options for desired one of them*/
-typedef enum
-{
-	APB_HIGH_PRE,APB_LOW_PRE,AHB_PRE
 
-}RCC_PRESCALER_t;
 /*******************************************************************************
  *                  	    Functions Prototypes                               *
  *******************************************************************************/
@@ -138,6 +134,14 @@ RCC_enumError_t RCC_SET_Clock_ON (uint32_t Copy_Clock);
  			   It disables the clock according to the provided clock source.
  */
 RCC_enumError_t RCC_SET_Clock_OFF (uint32_t Copy_Clock);
+/*
+ * @brief    : Read if the Clock is Ready or not
+ * @param[in]:  Copy_Clock The clock source to be checked. It can be CLOCK_HSI, CLOCK_HSE, or CLOCK_PLL.
+ * @return   : RCC_enumError_t Error status indicating the success or failure of selecting the system clock.
+ */
+
+RCC_enumError_t RCC_READ_ClockReadyState(uint32_t Copy_ReadyClock) ;
+
 /*
  * @brief    : Select System Clock.
  * @param[in]: Copy_SysClk The system clock source to be selected. It can be SysClk_HSI_MASK, SysClk_HSE_MASK, or SysClk_PLL_MASK.
@@ -162,13 +166,24 @@ RCC_enumError_t RCC_Config_PLLSrc(uint32_t	Copy_PLLSrc);
 RCC_enumError_t RCC_Config_PLLParamters(uint32_t PLLM ,uint32_t PLLN , uint32_t PLLP ,uint32_t PLLQ);
 
 /*
- * @brief    : Configure System Prescaler.
- * @param[in]: Copy_PreScalerID The prescaler type to be configured: APB_HIGH_PRE, APB_LOW_PRE, or AHB_PRE.
- * @param[in]: CopyPreScalerValue The value to configure the prescaler.
- * @return   : RCC_enumError_t Error status indicating the success or failure of configuring system prescaler.
- * @details  : This function configures the prescaler for the specified bus (AHB1, AHB2, APB1, APB2).
+ * @brief    : Configure APB high-speed prescaler BUS Prescaler APB2.
+ * @param[in]: CopyPreScalerValue  Prescaler from RCC_APB_HS_PRE_t type.
+ * @return   : RCC_enumError_t Error status indicating the success or failure of setting prescaler value.
  */
-RCC_enumError_t RCC_Config_SystemPrescaler (RCC_PRESCALER_t Copy_PreScalerID,uint32_t  CopyPreScalerValue);
+RCC_enumError_t RCC_Config_APBH_BusPrescaler (RCC_APB_HS_PRE_t  CopyPreScalerValue);
+/*
+ * @brief    : Configure APB Low speed prescaler BUS Prescaler APB1.
+ * @param[in]: CopyPreScalerValue  Prescaler from RCC_APB_LW_PRE_t type.
+ * @return   : RCC_enumError_t Error status indicating the success or failure of setting prescaler value.
+ */
+RCC_enumError_t RCC_Config_APBL_BusPrescaler (RCC_APB_LW_PRE_t  CopyPreScalerValue);
+/*
+ * @brief    : Configure AHB prescalerr BUS Prescaler AHB.
+ * @param[in]: CopyPreScalerValue  Prescaler from RCC_AHB_PRE_t type.
+ * @return   : RCC_enumError_t Error status indicating the success or failure of setting prescaler value.
+ */
+RCC_enumError_t RCC_Config_AHB_BusPrescaler (RCC_AHB_PRE_t  CopyPreScalerValue);
+
 /*
  * @brief    : Enable AHB1 Peripheral.
  * @param[in]: Copy_AHB1PeripheralName The AHB1 peripheral to be enabled.
