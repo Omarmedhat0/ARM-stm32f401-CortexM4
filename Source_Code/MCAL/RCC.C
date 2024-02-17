@@ -106,20 +106,20 @@ volatile RCC_PERI_t * const RCC = (volatile RCC_PERI_t *) RCC_Base_ADDRESS;
 /*
  * @brief    : Set Clock ON.
  * @param[in]: Copy_Clock The clock source to be set on. It can be CLOCK_HSI, CLOCK_HSE, or CLOCK_PLL.
- * @return   : RCC_enumError_t Error status indicating the success or failure of setting the clock on.
+ * @return   : Error_enumStatus_t Error status indicating the success or failure of setting the clock on.
  * @details  : This function turns on the specified clock source. 
  			   It enables the clock according to the provided clock source.
  */
-RCC_enumError_t RCC_SET_Clock_ON(uint32_t Copy_Clock)
+Error_enumStatus_t RCC_SET_Clock_ON(uint32_t Copy_Clock)
 {
     /* Local Variable to store error status */
-    RCC_enumError_t Loc_enumReturnRCCErrorStatus = RCC_enumOk ;
+    Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk ;
     uint32_t Loc_u32Temp = RCC->RCC_CR ;
 
     /* Check if the provided clock source is valid */
     if (Copy_Clock != CLOCK_HSI && Copy_Clock != CLOCK_HSE && Copy_Clock != CLOCK_PLL)
     {
-        Loc_enumReturnRCCErrorStatus = RCC_enumWrongInput ;
+        Loc_enumReturnStatus = Status_enumWrongInput ;
     }
     else
     {
@@ -130,26 +130,26 @@ RCC_enumError_t RCC_SET_Clock_ON(uint32_t Copy_Clock)
     }
 
     /* Return the status of the clock operation */
-    return Loc_enumReturnRCCErrorStatus ;
+    return Loc_enumReturnStatus ;
 }
 
 /*
  * @brief    : Set Clock OFF.
  * @param[in]: Copy_Clock The clock source to be turned off. It can be CLOCK_HSI, CLOCK_HSE, or CLOCK_PLL.
- * @return   : RCC_enumError_t Error status indicating the success or failure of turning the clock off.
+ * @return   : Error_enumStatus_t Error status indicating the success or failure of turning the clock off.
  * @details  : This function turns off the specified clock source. 
  			   It disables the clock according to the provided clock source.
  */
-RCC_enumError_t RCC_SET_Clock_OFF(uint32_t Copy_Clock)
+Error_enumStatus_t RCC_SET_Clock_OFF(uint32_t Copy_Clock)
 {
     /* Local Variable to store error status */
-    RCC_enumError_t Loc_enumReturnRCCErrorStatus = RCC_enumOk ;
+    Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk ;
     uint32_t Loc_u32Temp = RCC->RCC_CR ;
 
     /* Check if the provided clock source is valid */
     if (Copy_Clock != CLOCK_HSI && Copy_Clock != CLOCK_HSE && Copy_Clock != CLOCK_PLL)
     {
-        Loc_enumReturnRCCErrorStatus = RCC_enumWrongInput ;
+        Loc_enumReturnStatus = Status_enumWrongInput ;
     }
     else
     {
@@ -159,24 +159,24 @@ RCC_enumError_t RCC_SET_Clock_OFF(uint32_t Copy_Clock)
     }
 
     /* Return the status of the clock operation */
-    return Loc_enumReturnRCCErrorStatus ;
+    return Loc_enumReturnStatus ;
 }
 
 
 /*
  * @brief    : Read if the Clock is Ready or not
  * @param[in]:  Copy_Clock The clock source to be checked. It can be CLOCK_HSI, CLOCK_HSE, or CLOCK_PLL.
- * @return   : RCC_enumError_t Error status indicating the success or failure of selecting the system clock.
+ * @return   : Error_enumStatus_t Error status indicating the success or failure of selecting the system clock.
  */
-RCC_enumError_t RCC_READ_ClockReadyState(uint32_t Copy_ReadyClock)
+Error_enumStatus_t RCC_READ_ClockReadyState(uint32_t Copy_ReadyClock)
 {
     /* Initialize a variable to store the error status. */
-    RCC_enumError_t Loc_enumReturnRCCErrorStatus = RCC_enumOk ;
+    Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk ;
 
     /* Check if the provided ready clock source is valid */
     if (Copy_ReadyClock != READY_HSI && Copy_ReadyClock != READY_HSE && Copy_ReadyClock != READY_PLL)
     {
-        Loc_enumReturnRCCErrorStatus = RCC_enumWrongInput ;
+        Loc_enumReturnStatus = Status_enumWrongInput ;
     }
     else
     {
@@ -192,7 +192,7 @@ RCC_enumError_t RCC_READ_ClockReadyState(uint32_t Copy_ReadyClock)
         /* Check if the clock is still not ready after the timeout */
         if (!(RCC->RCC_CR & Copy_ReadyClock))
         {
-            Loc_enumReturnRCCErrorStatus = RCC_enumClockNotReady ;
+            Loc_enumReturnStatus = Status_enumNotOk ;
         }
         else
         {
@@ -201,19 +201,19 @@ RCC_enumError_t RCC_READ_ClockReadyState(uint32_t Copy_ReadyClock)
     }
 
     /* Return the status of the clock readiness */
-    return Loc_enumReturnRCCErrorStatus ; /* Return the error status indicating the readiness of the clock. */
+    return Loc_enumReturnStatus ; /* Return the error status indicating the readiness of the clock. */
 }
 
 /*
  * @brief    : Select System Clock.
  * @param[in]: Copy_SysClk The system clock source to be selected. It can be SysClk_HSI_MASK, SysClk_HSE_MASK, or SysClk_PLL_MASK.
- * @return   : RCC_enumError_t Error status indicating the success or failure of selecting the system clock.
+ * @return   : Error_enumStatus_t Error status indicating the success or failure of selecting the system clock.
  * @details  : This function selects the system clock source among the available options: HSI, HSE, or PLL.
  */
-RCC_enumError_t RCC_Select_Sysclk(uint32_t Copy_SysClk)
+Error_enumStatus_t RCC_Select_Sysclk(uint32_t Copy_SysClk)
 {
     /* Initialize a variable to store the error status. */
-    RCC_enumError_t Loc_enumReturnRCCErrorStatus = RCC_enumOk ;
+    Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk ;
 
     /* Register to hold system clock configuration */
     uint32_t Loc_u32Temp = RCC->RCC_CFGR;
@@ -221,7 +221,7 @@ RCC_enumError_t RCC_Select_Sysclk(uint32_t Copy_SysClk)
     /* Check if the provided system clock source is valid */
     if (Copy_SysClk != SysClk_HSI_MASK && Copy_SysClk != SysClk_HSE_MASK && Copy_SysClk != SysClk_PLL_MASK)
     {
-        Loc_enumReturnRCCErrorStatus = RCC_enumWrongInput;
+        Loc_enumReturnStatus = Status_enumWrongInput;
     }
     else
     {
@@ -232,19 +232,19 @@ RCC_enumError_t RCC_Select_Sysclk(uint32_t Copy_SysClk)
     }
 
     /* Return the status of the system clock source selection */
-    return Loc_enumReturnRCCErrorStatus; /* Return the error status indicating the success or failure of system clock source selection. */
+    return Loc_enumReturnStatus; /* Return the error status indicating the success or failure of system clock source selection. */
 }
 
 /*
  * @brief    : Configure PLL Source.
  * @param[in]: Copy_PLLSrc The PLL source to be configured. It can be PLL_SRC_HSI or PLL_SRC_HSE.
- * @return   : RCC_enumError_t Error status indicating the success or failure of configuring PLL source.
+ * @return   : Error_enumStatus_t Error status indicating the success or failure of configuring PLL source.
  * @details  : This function configures the PLL source to be either HSI or HSE.
  */
-RCC_enumError_t RCC_Config_PLLSrc(uint32_t Copy_PLLSrc)
+Error_enumStatus_t RCC_Config_PLLSrc(uint32_t Copy_PLLSrc)
 {
     /* Initialize a variable to store the error status. */
-    RCC_enumError_t Loc_enumReturnRCCErrorStatus = RCC_enumOk ;
+    Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk ;
 
     /* Register to hold PLL configuration */
     uint32_t Loc_u32Temp = RCC->RCC_PLLCFGR;
@@ -252,7 +252,7 @@ RCC_enumError_t RCC_Config_PLLSrc(uint32_t Copy_PLLSrc)
     /* Check if the provided PLL source is valid */
     if (Copy_PLLSrc != PLL_SRC_HSI && Copy_PLLSrc != PLL_SRC_HSE)
     {
-        Loc_enumReturnRCCErrorStatus = RCC_enumWrongInput;
+        Loc_enumReturnStatus = Status_enumWrongInput;
     }
     else
     {
@@ -262,38 +262,38 @@ RCC_enumError_t RCC_Config_PLLSrc(uint32_t Copy_PLLSrc)
     }
 
     /* Return the status of the PLL clock source configuration. */
-    return Loc_enumReturnRCCErrorStatus; /* Return the error status indicating the success or failure of PLL clock source configuration. */
+    return Loc_enumReturnStatus; /* Return the error status indicating the success or failure of PLL clock source configuration. */
 }
 
 /*
  * @brief    : Configure PLL Parameters.
  * @param[in]: PLLM, PLLN, PLLP, PLLQ The parameters to configure PLL.
- * @return   : RCC_enumError_t Error status indicating the success or failure of configuring PLL parameters.
+ * @return   : Error_enumStatus_t Error status indicating the success or failure of configuring PLL parameters.
  * @details  : This function configures the parameters (M, N, P, Q) for the PLL.
  * @note     : Ranges of Paramters 2<=PLLM<=63 ,192<=PLLN<=432 , 2<=PLLQ<=15 , PLLP = 2,4,6,8
  */
-RCC_enumError_t RCC_Config_PLLParamters(uint32_t PLLM, uint32_t PLLN, uint32_t PLLP, uint32_t PLLQ)
+Error_enumStatus_t RCC_Config_PLLParamters(uint32_t PLLM, uint32_t PLLN, uint32_t PLLP, uint32_t PLLQ)
 {
     /* Initialize a variable to store the error status. */
-    RCC_enumError_t Loc_enumReturnRCCErrorStatus = RCC_enumOk ;
+    Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk ;
     /* Initialize a variable to store the temporary value for PLL configuration. */
     uint32_t Loc_u32Temp = RCC->RCC_PLLCFGR;
     /* Validate the PLL parameters */
     if (PLLQ < PLLQ_BOUNDARY1 || PLLQ > PLLQ_BOUNDARY2)
     {
-        Loc_enumReturnRCCErrorStatus = RCC_enumWrongInput;
+        Loc_enumReturnStatus = Status_enumWrongInput;
     }
     else if (PLLP < PLLP_BOUNDARY1 || PLLP > PLLP_BOUNDARY2 || PLLP == PLLP_WRONGWAUE1 || PLLP == PLLP_WRONGWAUE2 || PLLP == PLLP_WRONGWAUE3)
     {
-        Loc_enumReturnRCCErrorStatus = RCC_enumWrongInput;
+        Loc_enumReturnStatus = Status_enumWrongInput;
     }
     else if (PLLN < PLLN_BOUNDARY1 || PLLN > PLLN_BOUNDARY2)
     {
-        Loc_enumReturnRCCErrorStatus = RCC_enumWrongInput;
+        Loc_enumReturnStatus = Status_enumWrongInput;
     }
     else if (PLLM < PLLM_BOUNDARY1 || PLLM > PLLM_BOUNDARY2)
     {
-        Loc_enumReturnRCCErrorStatus = RCC_enumWrongInput;
+        Loc_enumReturnStatus = Status_enumWrongInput;
     }
     else
     {
@@ -309,18 +309,18 @@ RCC_enumError_t RCC_Config_PLLParamters(uint32_t PLLM, uint32_t PLLN, uint32_t P
         RCC->RCC_PLLCFGR = Loc_u32Temp;
     }
     /* Return the status of the PLL parameter configuration. */
-    return Loc_enumReturnRCCErrorStatus;
+    return Loc_enumReturnStatus;
 }
 
 /*
  * @brief    : Configure APB high-speed prescaler BUS Prescaler APB2.
  * @param[in]: CopyPreScalerValue  Prescaler from RCC_APB_HS_PRE_t type.
- * @return   : RCC_enumError_t Error status indicating the success or failure of setting prescaler value.
+ * @return   : Error_enumStatus_t Error status indicating the success or failure of setting prescaler value.
  */
-RCC_enumError_t RCC_Config_APBH_BusPrescaler(RCC_APB_HS_PRE_t CopyPreScalerValue)
+Error_enumStatus_t RCC_Config_APBH_BusPrescaler(uint32_t CopyPreScalerValue)
 {
     /* Initialize a variable to store the error status. */
-    RCC_enumError_t Loc_enumReturnRCCErrorStatus = RCC_enumOk ;
+    Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk ;
     
     /* Register to hold the current RCC configuration */
     uint32_t Loc_u32Temp = RCC->RCC_CFGR;
@@ -328,7 +328,7 @@ RCC_enumError_t RCC_Config_APBH_BusPrescaler(RCC_APB_HS_PRE_t CopyPreScalerValue
     /* Validate the provided prescaler value */
     if (CopyPreScalerValue > APB_H_16)
     {
-        Loc_enumReturnRCCErrorStatus = RCC_enumWrongInput ;
+        Loc_enumReturnStatus = Status_enumWrongInput ;
     }
     else
     {
@@ -339,18 +339,18 @@ RCC_enumError_t RCC_Config_APBH_BusPrescaler(RCC_APB_HS_PRE_t CopyPreScalerValue
     }
     
     /* Return the status of the APB high-speed bus prescaler configuration. */
-    return Loc_enumReturnRCCErrorStatus ; 
+    return Loc_enumReturnStatus ; 
 }
 
 /*
  * @brief    : Configure APB Low speed prescaler BUS Prescaler APB1.
  * @param[in]: CopyPreScalerValue  Prescaler from RCC_APB_LW_PRE_t type.
- * @return   : RCC_enumError_t Error status indicating the success or failure of setting prescaler value.
+ * @return   : Error_enumStatus_t Error status indicating the success or failure of setting prescaler value.
  */
-RCC_enumError_t RCC_Config_APBL_BusPrescaler(RCC_APB_LW_PRE_t CopyPreScalerValue)
+Error_enumStatus_t RCC_Config_APBL_BusPrescaler(uint32_t CopyPreScalerValue)
 {
     /* Initialize a variable to store the error status. */
-    RCC_enumError_t Loc_enumReturnRCCErrorStatus = RCC_enumOk ;
+    Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk ;
     
     /* Register to hold the current RCC configuration */
     uint32_t Loc_u32Temp = RCC->RCC_CFGR;
@@ -358,7 +358,7 @@ RCC_enumError_t RCC_Config_APBL_BusPrescaler(RCC_APB_LW_PRE_t CopyPreScalerValue
     /* Validate the provided prescaler value */
     if (CopyPreScalerValue > APB_L_16)
     {
-        Loc_enumReturnRCCErrorStatus = RCC_enumWrongInput ;
+        Loc_enumReturnStatus = Status_enumWrongInput ;
     }
     else
     {
@@ -369,17 +369,17 @@ RCC_enumError_t RCC_Config_APBL_BusPrescaler(RCC_APB_LW_PRE_t CopyPreScalerValue
     }
     
     /* Return the status of the APB low-speed bus prescaler configuration. */
-    return Loc_enumReturnRCCErrorStatus ; 
+    return Loc_enumReturnStatus ; 
 }
 /*
  * @brief    : Configure AHB prescalerr BUS Prescaler AHB.
  * @param[in]: CopyPreScalerValue  Prescaler from RCC_AHB_PRE_t type.
- * @return   : RCC_enumError_t Error status indicating the success or failure of setting prescaler value.
+ * @return   : Error_enumStatus_t Error status indicating the success or failure of setting prescaler value.
  */
-RCC_enumError_t RCC_Config_AHB_BusPrescaler(RCC_AHB_PRE_t CopyPreScalerValue)
+Error_enumStatus_t RCC_Config_AHB_BusPrescaler(uint32_t CopyPreScalerValue)
 {
     /* Initialize a variable to store the error status. */
-    RCC_enumError_t Loc_enumReturnRCCErrorStatus = RCC_enumOk ;
+    Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk ;
     
     /* Register to hold the current RCC configuration */
     uint32_t Loc_u32Temp = RCC->RCC_CFGR;
@@ -387,7 +387,7 @@ RCC_enumError_t RCC_Config_AHB_BusPrescaler(RCC_AHB_PRE_t CopyPreScalerValue)
     /* Validate the provided prescaler value */
     if (CopyPreScalerValue > AHB_512)
     {
-        Loc_enumReturnRCCErrorStatus = RCC_enumWrongInput ;
+        Loc_enumReturnStatus = Status_enumWrongInput ;
     }
     else
     {
@@ -398,19 +398,19 @@ RCC_enumError_t RCC_Config_AHB_BusPrescaler(RCC_AHB_PRE_t CopyPreScalerValue)
     }
     
     /* Return the status of the AHB bus prescaler configuration. */
-    return Loc_enumReturnRCCErrorStatus ; 
+    return Loc_enumReturnStatus ; 
 }
 
 /*
  * @brief    : Enable AHB1 Peripheral.
  * @param[in]: Copy_AHB1PeripheralName The AHB1 peripheral to be enabled.
- * @return   : RCC_enumError_t Error status indicating the success or failure of enabling the AHB1 peripheral.
+ * @return   : Error_enumStatus_t Error status indicating the success or failure of enabling the AHB1 peripheral.
  * @details  : This function enables the specified peripheral connected to the AHB1 bus.
  */
-RCC_enumError_t RCC_Enable_AHB1_Peripheral(uint32_t Copy_AHB1PeripheralName)
+Error_enumStatus_t RCC_Enable_AHB1_Peripheral(uint32_t Copy_AHB1PeripheralName)
 {
 	/* Initialize a variable to store the error status. */
-	RCC_enumError_t Loc_enumReturnRCCErrorStatus = RCC_enumOk ;
+	Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk ;
 
 	/* Read the current value of RCC_AHB1ENR register. */
 	uint32_t Copy_AHB1Peripheral = RCC->RCC_AHB1ENR ;
@@ -425,19 +425,19 @@ RCC_enumError_t RCC_Enable_AHB1_Peripheral(uint32_t Copy_AHB1PeripheralName)
 	RCC->RCC_AHB1ENR = Copy_AHB1Peripheral;
 
 	/* Return the status indicating the success of enabling the AHB1 peripheral. */
-	return Loc_enumReturnRCCErrorStatus ;
+	return Loc_enumReturnStatus ;
 }
 
 /*
  * @brief    : Enable AHB2 Peripheral.
  * @param[in]: Copy_AHB2PeripheralName The AHB2 peripheral to be enabled.
- * @return   : RCC_enumError_t Error status indicating the success or failure of enabling the AHB2 peripheral.
+ * @return   : Error_enumStatus_t Error status indicating the success or failure of enabling the AHB2 peripheral.
  * @details  : This function enables the specified peripheral connected to the AHB2 bus.
  */
-RCC_enumError_t RCC_Enable_AHB2_Peripheral(uint32_t Copy_AHB2PeripheralName)
+Error_enumStatus_t RCC_Enable_AHB2_Peripheral(uint32_t Copy_AHB2PeripheralName)
 {
 	/* Initialize a variable to store the error status. */
-	RCC_enumError_t Loc_enumReturnRCCErrorStatus = RCC_enumOk ;
+	Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk ;
 
 	/* Read the current value of RCC_AHB2ENR register. */
 	uint32_t Copy_AHB2Peripheral = RCC->RCC_AHB2ENR ;
@@ -452,20 +452,20 @@ RCC_enumError_t RCC_Enable_AHB2_Peripheral(uint32_t Copy_AHB2PeripheralName)
 	RCC->RCC_AHB2ENR = Copy_AHB2Peripheral;
 
 	/* Return the status indicating the success of enabling the AHB2 peripheral. */
-	return Loc_enumReturnRCCErrorStatus ;
+	return Loc_enumReturnStatus ;
 }
 
 
 /*
  * @brief    Enable APB1 Peripheral.
  * @param[in]: Copy_APB1PeripheralName The APB1 peripheral to be enabled.
- * @return   : RCC_enumError_t Error status indicating the success or failure of enabling the APB1 peripheral.
+ * @return   : Error_enumStatus_t Error status indicating the success or failure of enabling the APB1 peripheral.
  * @details  : This function enables the specified peripheral connected to the APB1 bus.
  */
-RCC_enumError_t RCC_Enable_APB1_Peripheral(uint32_t Copy_APB1PeripheralName)
+Error_enumStatus_t RCC_Enable_APB1_Peripheral(uint32_t Copy_APB1PeripheralName)
 {
 	/* Initialize a variable to store the error status. */
-	RCC_enumError_t Loc_enumReturnRCCErrorStatus = RCC_enumOk ;
+	Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk ;
 
 	/* Read the current value of RCC_APB1ENR register. */
 	uint32_t Copy_APB1Peripheral = RCC->RCC_APB1ENR;
@@ -480,19 +480,19 @@ RCC_enumError_t RCC_Enable_APB1_Peripheral(uint32_t Copy_APB1PeripheralName)
 	RCC->RCC_APB1ENR = Copy_APB1Peripheral;
 
 	/* Return the status indicating the success of enabling the APB1 peripheral. */
-	return Loc_enumReturnRCCErrorStatus ;
+	return Loc_enumReturnStatus ;
 }
 
 /*
  * @brief    Enable APB2 Peripheral.
  * @param[in]: Copy_APB2PeripheralName The APB2 peripheral to be enabled.
- * @return   : RCC_enumError_t Error status indicating the success or failure of enabling the APB2 peripheral.
+ * @return   : Error_enumStatus_t Error status indicating the success or failure of enabling the APB2 peripheral.
  * @details  : This function enables the specified peripheral connected to the APB2 bus.
  */
-RCC_enumError_t RCC_Enable_APB2_Peripheral(uint32_t Copy_APB2PeripheralName)
+Error_enumStatus_t RCC_Enable_APB2_Peripheral(uint32_t Copy_APB2PeripheralName)
 {
 	/* Initialize a variable to store the error status. */
-	RCC_enumError_t Loc_enumReturnRCCErrorStatus = RCC_enumOk ;
+	Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk ;
 
 	/* Read the current value of RCC_APB2ENR register. */
 	uint32_t Copy_APB2Peripheral = RCC->RCC_APB2ENR ;
@@ -507,19 +507,19 @@ RCC_enumError_t RCC_Enable_APB2_Peripheral(uint32_t Copy_APB2PeripheralName)
 	RCC->RCC_APB2ENR = Copy_APB2Peripheral;
 
 	/* Return the status indicating the success of enabling the APB2 peripheral. */
-	return Loc_enumReturnRCCErrorStatus ;
+	return Loc_enumReturnStatus ;
 }
 
 /*
  * @brief    Disable AHB1 Peripheral.
  * @param[in]: Copy_AHB1PeripheralName The AHB1 peripheral to be disabled.
- * @return   : RCC_enumError_t Error status indicating the success or failure of disabling the AHB1 peripheral.
+ * @return   : Error_enumStatus_t Error status indicating the success or failure of disabling the AHB1 peripheral.
  * @details  : This function disables the specified peripheral connected to the AHB1 bus.
  */
-RCC_enumError_t RCC_Disable_AHB1_Peripheral(uint32_t Copy_AHB1PeripheralName)
+Error_enumStatus_t RCC_Disable_AHB1_Peripheral(uint32_t Copy_AHB1PeripheralName)
 {
 	/* Initialize a variable to store the error status. */
-	RCC_enumError_t Loc_enumReturnRCCErrorStatus = RCC_enumOk ;
+	Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk ;
 
 	/* Read the current value of RCC_AHB1ENR register. */
 	uint32_t Copy_AHB1Peripheral = RCC->RCC_AHB1ENR ;
@@ -531,19 +531,19 @@ RCC_enumError_t RCC_Disable_AHB1_Peripheral(uint32_t Copy_AHB1PeripheralName)
 	RCC->RCC_AHB1ENR = Copy_AHB1Peripheral;
 
 	/* Return the status indicating the success of disabling the AHB1 peripheral. */
-	return Loc_enumReturnRCCErrorStatus ;
+	return Loc_enumReturnStatus ;
 }
 
 /*
  * @brief    Disable AHB2 Peripheral.
  * @param[in]: Copy_AHB2PeripheralName The AHB2 peripheral to be disabled.
- * @return   : RCC_enumError_t Error status indicating the success or failure of disabling the AHB2 peripheral.
+ * @return   : Error_enumStatus_t Error status indicating the success or failure of disabling the AHB2 peripheral.
  * @details  : This function disables the specified peripheral connected to the AHB2 bus.
  */
-RCC_enumError_t RCC_Disable_AHB2_Peripheral(uint32_t Copy_AHB2PeripheralName)
+Error_enumStatus_t RCC_Disable_AHB2_Peripheral(uint32_t Copy_AHB2PeripheralName)
 {
 	/* Initialize a variable to store the error status. */
-	RCC_enumError_t Loc_enumReturnRCCErrorStatus = RCC_enumOk ;
+	Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk ;
 
 	/* Read the current value of RCC_AHB2ENR register. */
 	uint32_t Copy_AHB2Peripheral = RCC->RCC_AHB2ENR ;
@@ -555,19 +555,19 @@ RCC_enumError_t RCC_Disable_AHB2_Peripheral(uint32_t Copy_AHB2PeripheralName)
 	RCC->RCC_AHB2ENR = Copy_AHB2Peripheral;
 
 	/* Return the status indicating the success of disabling the AHB2 peripheral. */
-	return Loc_enumReturnRCCErrorStatus ;
+	return Loc_enumReturnStatus ;
 }
 
 /*
  * @brief    Disable APB1 Peripheral.
  * @param[in]: Copy_APB1PeripheralName The APB1 peripheral to be disabled.
- * @return   : RCC_enumError_t Error status indicating the success or failure of disabling the APB1 peripheral.
+ * @return   : Error_enumStatus_t Error status indicating the success or failure of disabling the APB1 peripheral.
  * @details  : This function disables the specified peripheral connected to the APB1 bus.
  */
-RCC_enumError_t RCC_Disable_APB1_Peripheral(uint32_t Copy_APB1PeripheralName)
+Error_enumStatus_t RCC_Disable_APB1_Peripheral(uint32_t Copy_APB1PeripheralName)
 {
 	/* Initialize a variable to store the error status. */
-	RCC_enumError_t Loc_enumReturnRCCErrorStatus = RCC_enumOk ;
+	Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk ;
 
 	/* Read the current value of RCC_APB1ENR register. */
 	uint32_t Copy_APB1Peripheral = RCC->RCC_APB1ENR ;
@@ -579,19 +579,19 @@ RCC_enumError_t RCC_Disable_APB1_Peripheral(uint32_t Copy_APB1PeripheralName)
 	RCC->RCC_APB1ENR = Copy_APB1Peripheral;
 
 	/* Return the status indicating the success of disabling the APB1 peripheral. */
-	return Loc_enumReturnRCCErrorStatus ;
+	return Loc_enumReturnStatus ;
 }
 
 /*
  * @brief    Disable APB2 Peripheral.
  * @param[in]: Copy_APB2PeripheralName The APB2 peripheral to be disabled.
- * @return   : RCC_enumError_t Error status indicating the success or failure of disabling the APB2 peripheral.
+ * @return   : Error_enumStatus_t Error status indicating the success or failure of disabling the APB2 peripheral.
  * @details  : This function disables the specified peripheral connected to the APB2 bus.
  */
-RCC_enumError_t RCC_Disable_APB2_Peripheral(uint32_t Copy_APB2PeripheralName)
+Error_enumStatus_t RCC_Disable_APB2_Peripheral(uint32_t Copy_APB2PeripheralName)
 {
 	/* Initialize a variable to store the error status. */
-	RCC_enumError_t Loc_enumReturnRCCErrorStatus = RCC_enumOk ;
+	Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk ;
 
 	/* Read the current value of RCC_APB2ENR register. */
 	uint32_t Copy_APB2Peripheral = RCC->RCC_APB2ENR;
@@ -603,5 +603,5 @@ RCC_enumError_t RCC_Disable_APB2_Peripheral(uint32_t Copy_APB2PeripheralName)
 	RCC->RCC_APB2ENR = Copy_APB2Peripheral;
 
 	/* Return the status indicating the success of disabling the APB2 peripheral. */
-	return Loc_enumReturnRCCErrorStatus ;
+	return Loc_enumReturnStatus ;
 }

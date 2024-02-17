@@ -27,7 +27,7 @@ typedef unsigned char boolean;
 #define LOGIC_HIGH        (1u)
 #define LOGIC_LOW         (0u)
 
-#define NULL_PTR    ((void*)0)
+#define NULL    ((void*)0)
 
 typedef unsigned char         uint8_t;          /*           0 .. 255              */
 typedef signed char           sint8_t;          /*        -128 .. +127             */

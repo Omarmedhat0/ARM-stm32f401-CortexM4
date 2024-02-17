@@ -13,6 +13,7 @@
  *******************************************************************************/
 #include  	"std_types.h"
 #include 	"Mask32.h"
+#include 	"Error.h"
 /*******************************************************************************
  *                                Definitions                                  *
  *******************************************************************************/
@@ -72,26 +73,6 @@
 /*******************************************************************************
  *                         Types Declaration                                   *
  *******************************************************************************/
-typedef enum
-{
-	/**
-	 *@brief : Everything Ok, Function had Performed Correctly.
-	 */
-	GPIO_enumOk ,
-	/**
-	 *@brief :NOT oK ERROR
-	 */
-	GPIO_enumNotOk ,
-	/**
-	 *@brief :Wrong Input error
-	 */
-	GPIO_enumWrongInput,
-	/**
-	 *@brief :Wrong Input error
-	 */
-	GPIO_enumNULLPointer,
-
-}GPIO_enumError_t;
 
 /*Struct for new GPIO pin configuration */
 typedef struct
@@ -112,28 +93,28 @@ typedef struct
 /*
  * @brief    : Initializes a GPIO pin based on the provided configuration.
  * @param[in]: Loc_GPIOElement - Pointer to a structure containing the GPIO pin configuration.
- * @return   : GPIO_enumError_t - Error status indicating success or failure of the initialization.
+ * @return   : Error_enumStatus_t - Error status indicating success or failure of the initialization.
  * @details  : This function initializes a GPIO pin according to the provided configuration.
  */
-GPIO_enumError_t GPIO_InitPin (GPIO_Config_t *Loc_GPIOElement);
+Error_enumStatus_t GPIO_InitPin (GPIO_Config_t *Loc_GPIOElement);
 /*
  * @brief    : Sets the value of a GPIO pin to a specified state.
  * @param[in]: Port - Pointer to the GPIO port (From GPIO_PORTA to GPIO_PORTH).
  * @param[in]: Copy_PinNum - The number of the pin to be set (FROM GPIO_PIN0 TO GPIO_PIN16) .
  * @param[in]: Copy_PinState - The state to set the pin to (GPIO_SET_PIN or GPIO_RESET_PIN).
- * @return   : GPIO_enumError_t - Error status indicating success or failure of setting the pin value.
+ * @return   : Error_enumStatus_t - Error status indicating success or failure of setting the pin value.
  * @details  : This function sets the value of a GPIO pin to the specified state (high or low).
  */
-GPIO_enumError_t GPIO_Set_PinValue(void *Port , uint32_t Copy_PinNum , uint32_t Copy_PinState );
+Error_enumStatus_t GPIO_Set_PinValue(void *Port , uint32_t Copy_PinNum , uint32_t Copy_PinState );
 /*
  * @brief    : Gets the current value of a GPIO pin.
  * @param[in]: Port - Pointer to the GPIO port (From GPIO_PORTA to GPIO_PORTH).
  * @param[in]: Copy_PinNum - The number of the pin to be set (FROM GPIO_PIN0 TO GPIO_PIN16) .
  * @param[out]: PinStatus - Pointer to a variable to store the pin status (1 for high, 0 for low).
- * @return   : GPIO_enumError_t - Error status indicating success or failure of reading the pin value.
+ * @return   : Error_enumStatus_t - Error status indicating success or failure of reading the pin value.
  * @details  : This function reads the current value of a GPIO pin and stores it in PinStatus.
  */
-GPIO_enumError_t GPIO_Get_GetPinValue(void *Port , uint32_t Copy_PinNum,  uint8_t * PinStatus) ;
+Error_enumStatus_t GPIO_Get_GetPinValue(void *Port , uint32_t Copy_PinNum,  uint8_t * PinStatus) ;
 
 
 
