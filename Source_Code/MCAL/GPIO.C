@@ -171,7 +171,7 @@ Error_enumStatus_t GPIO_Get_GetPinValue(void *Port , uint32_t Copy_PinNum,  uint
     else
     {
         /*Using BItSET Feture I read the desired value of the pin and assign it in PinStatus pointer */
-    	*PinStatus = ( ( (GPIO_PORT_t *)Port )-> IDR ) & (1 << Copy_PinNum );
+    	*PinStatus =(( ( ( (GPIO_PORT_t *)Port )-> IDR ) & (1 << Copy_PinNum )) >> Copy_PinNum );
     }
     return Loc_enumReturnStatus ;
 }
