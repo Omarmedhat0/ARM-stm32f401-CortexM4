@@ -29,7 +29,7 @@
 #define SysClk_HSE_MASK	BIT0_MASK
 #define SysClk_PLL_MASK	BIT1_MASK
 
-#define PLL_SRC_HSI		0XFFBFFFFF
+#define PLL_SRC_HSI		0X00000000
 #define PLL_SRC_HSE 	BIT22_MASK
 
 /************AHB1_BUS_Peripheral_Masks ************/
