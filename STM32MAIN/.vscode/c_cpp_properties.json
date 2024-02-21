@@ -1,0 +1,43 @@
+//
+// !!! WARNING !!! AUTO-GENERATED FILE!
+// PLEASE DO NOT MODIFY IT AND USE "platformio.ini":
+// https://docs.platformio.org/page/projectconf/section_env_build.html#build-flags
+//
+{
+    "configurations": [
+        {
+            "name": "PlatformIO",
+            "includePath": [
+                "e:/ITI/ARM/Repo/ARM-stm32f401-CortexM4/STM32MAIN/include",
+                "e:/ITI/ARM/Repo/ARM-stm32f401-CortexM4/STM32MAIN/src",
+                "C:/Users/C/.platformio/packages/framework-cmsis/CMSIS/Include",
+                "C:/Users/C/.platformio/packages/framework-cmsis-stm32f4/Include",
+                ""
+            ],
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true,
+                "path": [
+                    "e:/ITI/ARM/Repo/ARM-stm32f401-CortexM4/STM32MAIN/include",
+                    "e:/ITI/ARM/Repo/ARM-stm32f401-CortexM4/STM32MAIN/src",
+                    "C:/Users/C/.platformio/packages/framework-cmsis/CMSIS/Include",
+                    "C:/Users/C/.platformio/packages/framework-cmsis-stm32f4/Include",
+                    ""
+                ]
+            },
+            "defines": [
+                "PLATFORMIO=60113",
+                "STM32F401xC",
+                "STM32F4xx",
+                "F_CPU=84000000L",
+                ""
+            ],
+            "compilerPath": "C:/Users/C/.platformio/packages/toolchain-gccarmnoneeabi/bin/arm-none-eabi-gcc.exe",
+            "compilerArgs": [
+                "-mthumb",
+                "-mcpu=cortex-m4",
+                ""
+            ]
+        }
+    ],
+    "version": 4
+}
