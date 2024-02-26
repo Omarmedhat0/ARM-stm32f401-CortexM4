@@ -15,9 +15,9 @@
  *******************************************************************************/
 #define RCC_Base_ADDRESS 0x40023800 
 
-#define SysClk_HSI_Ready_MASK	0x00000000
-#define SysClk_HSE_Ready_MASK	0x00000004
-#define SysClk_PLL_Ready_MASK	0x00000008
+#define SysClk_HSI_READY_MASK	0x00000000
+#define SysClk_HSE_READY_MASK	0x00000004
+#define SysClk_PLL_READY_MASK	0x00000008
 
 
 #define	SysClk_CLR_MASK		0xFFFFFFFC

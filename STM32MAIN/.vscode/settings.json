@@ -1,5 +1,7 @@
 {
     "files.associations": {
+        "led.h": "c",
+        "switch.h": "c",
         "rcc.h": "c"
     }
 }

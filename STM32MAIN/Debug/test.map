@@ -117,7 +117,7 @@ Discarded input sections
  .debug_macro   0x00000000       0xd7 ./system/src/newlib/assert.o
  .debug_macro   0x00000000      0x513 ./system/src/newlib/assert.o
  .debug_line    0x00000000      0x330 ./system/src/newlib/assert.o
- .debug_str     0x00000000     0x79e2 ./system/src/newlib/assert.o
+ .debug_str     0x00000000     0x79d3 ./system/src/newlib/assert.o
  .comment       0x00000000       0x6f ./system/src/newlib/assert.o
  .debug_frame   0x00000000       0x40 ./system/src/newlib/assert.o
  .ARM.attributes
@@ -204,7 +204,7 @@ Discarded input sections
  .debug_macro   0x00000000       0x35 ./system/src/newlib/cxx.o
  .debug_macro   0x00000000      0x513 ./system/src/newlib/cxx.o
  .debug_line    0x00000000      0x3e9 ./system/src/newlib/cxx.o
- .debug_str     0x00000000     0x8699 ./system/src/newlib/cxx.o
+ .debug_str     0x00000000     0x868a ./system/src/newlib/cxx.o
  .comment       0x00000000       0x6f ./system/src/newlib/cxx.o
  .debug_frame   0x00000000       0x40 ./system/src/newlib/cxx.o
  .ARM.attributes
@@ -1048,7 +1048,7 @@ Discarded input sections
  .debug_macro   0x00000000      0x1e9 ./system/src/cortexm/reset-hardware.o
  .debug_macro   0x00000000      0x126 ./system/src/cortexm/reset-hardware.o
  .debug_line    0x00000000      0x811 ./system/src/cortexm/reset-hardware.o
- .debug_str     0x00000000    0x9f76f ./system/src/cortexm/reset-hardware.o
+ .debug_str     0x00000000    0x9f760 ./system/src/cortexm/reset-hardware.o
  .comment       0x00000000       0x6f ./system/src/cortexm/reset-hardware.o
  .debug_frame   0x00000000       0x20 ./system/src/cortexm/reset-hardware.o
  .ARM.attributes
@@ -2041,42 +2041,42 @@ END GROUP
  .debug_frame   0x000008cc       0x30 e:/iti/arm/arm_stm32f401/tools/arm gcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m\libg_nano.a(lib_a-mlock.o)
  .debug_frame   0x000008fc       0x20 e:/iti/arm/arm_stm32f401/tools/arm gcc/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7e-m\libg_nano.a(lib_a-nano-msizer.o)
 
-.debug_str      0x00000000    0xa7712
+.debug_str      0x00000000    0xa7703
  *(.debug_str)
- .debug_str     0x00000000     0x6d6a ./system/src/newlib/exit.o
-                               0x6edc (size before relaxing)
- .debug_str     0x00006d6a      0x4dd ./system/src/newlib/sbrk.o
-                               0x62c7 (size before relaxing)
- .debug_str     0x00007247      0xc28 ./system/src/newlib/startup.o
-                               0x5ee2 (size before relaxing)
- .debug_str     0x00007e6f      0xe17 ./system/src/newlib/syscalls.o
-                               0x7127 (size before relaxing)
- .debug_str     0x00008c86    0x9c647 ./system/src/diag/trace-impl.o
-                              0xa32a4 (size before relaxing)
- .debug_str     0x000a52cd      0x884 ./system/src/diag/trace.o
-                               0x76cd (size before relaxing)
- .debug_str     0x000a5b51      0x20c ./system/src/cortexm/exception-handlers.o
-                              0xa4066 (size before relaxing)
- .debug_str     0x000a5d5d       0x5d ./system/src/cortexm/initialize-hardware.o
-                              0x9f7ad (size before relaxing)
- .debug_str     0x000a5dba       0xf8 ./system/src/cmsis/system_stm32f4xx.o
-                              0x9f8ad (size before relaxing)
- .debug_str     0x000a5eb2       0x59 ./system/src/cmsis/vectors_stm32f401xc.o
-                               0x309a (size before relaxing)
- .debug_str     0x000a5f0b      0xa0a ./src/MCAL/GPIO.o
-                               0x2fef (size before relaxing)
- .debug_str     0x000a6915      0xbaa ./src/MCAL/RCC.o
-                               0x3508 (size before relaxing)
- .debug_str     0x000a74bf       0xfd ./src/HAL/LED.o
-                               0x2f01 (size before relaxing)
- .debug_str     0x000a75bc      0x117 ./src/HAL/Switch.o
-                               0x2f31 (size before relaxing)
- .debug_str     0x000a76d3       0x15 ./src/CFG/LED_Cfg.o
-                               0x2e00 (size before relaxing)
- .debug_str     0x000a76e8       0x18 ./src/CFG/Switch_Cfg.o
-                               0x2df6 (size before relaxing)
- .debug_str     0x000a7700       0x12 ./src/APP/main.o
-                               0x2e9b (size before relaxing)
+ .debug_str     0x00000000     0x6d5b ./system/src/newlib/exit.o
+                               0x6ecd (size before relaxing)
+ .debug_str     0x00006d5b      0x4dd ./system/src/newlib/sbrk.o
+                               0x62b8 (size before relaxing)
+ .debug_str     0x00007238      0xc28 ./system/src/newlib/startup.o
+                               0x5ed3 (size before relaxing)
+ .debug_str     0x00007e60      0xe17 ./system/src/newlib/syscalls.o
+                               0x7118 (size before relaxing)
+ .debug_str     0x00008c77    0x9c647 ./system/src/diag/trace-impl.o
+                              0xa3295 (size before relaxing)
+ .debug_str     0x000a52be      0x884 ./system/src/diag/trace.o
+                               0x76be (size before relaxing)
+ .debug_str     0x000a5b42      0x20c ./system/src/cortexm/exception-handlers.o
+                              0xa4057 (size before relaxing)
+ .debug_str     0x000a5d4e       0x5d ./system/src/cortexm/initialize-hardware.o
+                              0x9f79e (size before relaxing)
+ .debug_str     0x000a5dab       0xf8 ./system/src/cmsis/system_stm32f4xx.o
+                              0x9f89e (size before relaxing)
+ .debug_str     0x000a5ea3       0x59 ./system/src/cmsis/vectors_stm32f401xc.o
+                               0x308b (size before relaxing)
+ .debug_str     0x000a5efc      0xa0a ./src/MCAL/GPIO.o
+                               0x2fe0 (size before relaxing)
+ .debug_str     0x000a6906      0xbaa ./src/MCAL/RCC.o
+                               0x34f9 (size before relaxing)
+ .debug_str     0x000a74b0       0xfd ./src/HAL/LED.o
+                               0x2ef2 (size before relaxing)
+ .debug_str     0x000a75ad      0x117 ./src/HAL/Switch.o
+                               0x2f22 (size before relaxing)
+ .debug_str     0x000a76c4       0x15 ./src/CFG/LED_Cfg.o
+                               0x2df1 (size before relaxing)
+ .debug_str     0x000a76d9       0x18 ./src/CFG/Switch_Cfg.o
+                               0x2de7 (size before relaxing)
+ .debug_str     0x000a76f1       0x12 ./src/APP/main.o
+                               0x2e8c (size before relaxing)
 
 .debug_loc      0x00000000     0x17ae
  *(.debug_loc)
@@ -2106,7 +2106,7 @@ END GROUP
 
 .debug_varnames
  *(.debug_varnames)
-OUTPUT(STM32MAIN.elf elf32-littlearm)
+OUTPUT(test.elf elf32-littlearm)
 
 .debug_ranges   0x00000000      0x2c0
  .debug_ranges  0x00000000       0x18 ./system/src/newlib/exit.o

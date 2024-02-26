@@ -72,6 +72,6 @@ Error_enumStatus_t Switch_Get_Status(uint32_t Copy_SwitchName , uint8_t* Ptr_Sta
     GPIO_Get_GetPinValue(SwitchS[Copy_SwitchName].Port , SwitchS[Copy_SwitchName].Pin , &Loc_Status) ;
     /*Return the error status*/
 
-    * Ptr_Status = Loc_Status ^ ((SwitchS[Copy_SwitchName].Connection)>>Get_CURRENT_CONNECTION_SHIFT_MASK);
+    * Ptr_Status = Loc_Status ^ (((SwitchS[Copy_SwitchName].Connection)>>Get_CURRENT_CONNECTION_SHIFT_MASK)&0x1);
     return Loc_enumReturnStatus ;
 }
