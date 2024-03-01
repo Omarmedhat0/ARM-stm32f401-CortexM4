@@ -1,13 +1,29 @@
+
+/*
+ ============================================================================
+ Name        : log.h
+ Author      : Omar Medhat Mohamed
+ Description : Header file for the LOG driver
+ Date        : 29/2/2024
+ ============================================================================
+ */
+
 #ifndef LOG_H
 #define LOG_H
 
+/*******************************************************************************
+ *                                Includes                                    *
+ *******************************************************************************/
 #include <stdarg.h> /* Library for variable argument lists */
 #include <stdio.h>  /* Standard input/output library */
 #include <stdlib.h> /* Standard library */
 #include <time.h>   /* Time library */
 #include <string.h> /* String manipulation library */
 
-/* Define log output channels */
+/*******************************************************************************
+ *                             Definitions                                      *
+ *******************************************************************************/
+
 #define LOG_OUT_CONSOLE           0x1
 #define LOG_OUT_FILE              0x2
 #define LOG_OUT_CONSOLE_AND_FILE  0x3
@@ -15,14 +31,18 @@
 #define ERROR                     0x5
 #define WARNING                   0x6
 #define INFO                      0x7
+/*******************************************************************************
+ *                            Types Declaration                                 *
+ *******************************************************************************/
 
-/* Define log channel structure */
 typedef struct  {
     int channel_type; /* Channel type: Console, File, or both */
     char* file_name;  /* File name for logging */
 } log_channel_t;
 
-/* Function prototypes */
+/*******************************************************************************
+ *                             Functions Prototypes                             *
+ *******************************************************************************/
 
 /*
  * @brief    : Set output channel for logging.

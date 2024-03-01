@@ -1,7 +1,21 @@
+
+ /*============================================================================
+ Name        : Main.c
+ Author      : Omar Medhat Mohamed
+ Description : Example for the LOG driver
+ Date        : 29/2/2024
+ ============================================================================*/
+
+/*******************************************************************************
+ *                                Includes                                    *
+ *******************************************************************************/
 #include <stdio.h>   /* Standard input/output library */
 #include <stdlib.h>  /* Standard library */
 #include "log.h"     /* Include the custom logging library */
 
+/*******************************************************************************
+ *                             Implementation                                   *
+ *******************************************************************************/
 int main() {
     // Create a log_channel_t object
     log_channel_t channel_info;
