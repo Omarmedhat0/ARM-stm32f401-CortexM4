@@ -14,6 +14,7 @@
 #include  	"LIB/std_types.h"
 #include 	"LIB/Mask32.h"
 #include 	"LIB/Error.h"
+#include	"LIB/Stm32F401cc.h"
 /*******************************************************************************
  *                                Definitions                                  *
  *******************************************************************************/
@@ -22,21 +23,71 @@
  *                  	    Functions Prototypes                               *
  *******************************************************************************/
 /*
- * @brief    : 
- * @param[in]: 
- * @return   : 
- * @details  : 
+ * @brief    : Enable NVIC IRQ
+ * @param[in]: IRQn: Interrupt number
+ * @return   : Error_enumStatus_t: Status of the operation
+ * @details  : Enables the specified NVIC interrupt.
  */
-Error_enumStatus_t Set_Interrupt_Priority ();
+Error_enumStatus_t Enable_NVIC_IRQ(IRQn_t IRQn);
 
-Error_enumStatus_t Set_Interrupt_Enable ();
+/*
+ * @brief    : Disable NVIC IRQ
+ * @param[in]: IRQn: Interrupt number
+ * @return   : Error_enumStatus_t: Status of the operation
+ * @details  : Disables the specified NVIC interrupt.
+ */
+Error_enumStatus_t Disable_NVIC_IRQ(IRQn_t IRQn);
 
-Error_enumStatus_t Set_Interrupt_Disable ();
+/*
+ * @brief    : Set NVIC Pending IRQ
+ * @param[in]: IRQn: Interrupt number
+ * @return   : Error_enumStatus_t: Status of the operation
+ * @details  : Sets the specified NVIC interrupt as pending.
+ */
+Error_enumStatus_t Set_NVIC_Pending_IRQ(IRQn_t IRQn);
 
-Error_enumStatus_t Set_Pending ();
+/*
+ * @brief    : Clear NVIC Pending IRQ
+ * @param[in]: IRQn: Interrupt number
+ * @return   : Error_enumStatus_t: Status of the operation
+ * @details  : Clears the pending status of the specified NVIC interrupt.
+ */
+Error_enumStatus_t Clear_NVIC_Pending_IRQ(IRQn_t IRQn);
 
-Error_enumStatus_t Clear_Pending ();
+/*
+ * @brief    : Get NVIC Pending IRQ status
+ * @param[in]: IRQn: Interrupt number
+ * @param[in]: Ptr_u8Status: Pointer to store the status
+ * @return   : Error_enumStatus_t: Status of the operation
+ * @details  : Retrieves the pending status of the specified NVIC interrupt.
+ */
+Error_enumStatus_t Get_NVIC_Pending_IRQ(IRQn_t IRQn, uint8_t *Ptr_u8Status);
 
-Error_enumStatus_t Get_Interrupt_Status();
+/*
+ * @brief    : Get NVIC Active IRQ status
+ * @param[in]: IRQn: Interrupt number
+ * @param[in]: Ptr_u8Status: Pointer to store the status
+ * @return   : Error_enumStatus_t: Status of the operation
+ * @details  : Retrieves the active status of the specified NVIC interrupt.
+ */
+Error_enumStatus_t Get_NVIC_Active_IRQ(IRQn_t IRQn, uint8_t *Ptr_u8Status);
+
+/*
+ * @brief    : Set Interrupt Priority
+ * @param[in]: IRQn: Interrupt number
+ * @param[in]: priority: Priority level to set
+ * @return   : Error_enumStatus_t: Status of the operation
+ * @details  : Sets the priority level for the specified NVIC interrupt.
+ */
+Error_enumStatus_t Set_Interrupt_Priority(IRQn_t IRQn, uint32_t priority);
+
+/*
+ * @brief    : Get Interrupt Priority
+ * @param[in]: IRQn: Interrupt number
+ * @param[in]: Ptr_u8Status: Pointer to store the priority level
+ * @return   : Error_enumStatus_t: Status of the operation
+ * @details  : Retrieves the priority level of the specified NVIC interrupt.
+ */
+Error_enumStatus_t Get_Interrupt_Priority(IRQn_t IRQn, uint8_t *Ptr_u8Status);
 
 #endif /* NVIC_H_ */
