@@ -55,7 +55,7 @@ typedef struct
     /* Interrupt clear-enable register 7 */
     uint32_t NVIC_ICER7;
 
-    uint32_t RESERVED1[24];
+    uint32_t RESERVED2[24];
     /* Interrupt set-pending register 0 */
     uint32_t NVIC_ISPR0;
     /* Interrupt set-pending register 1 */
@@ -73,7 +73,7 @@ typedef struct
     /* Interrupt set-pending register 7 */
     uint32_t NVIC_ISPR7;
 
-    uint32_t RESERVED1[24];
+    uint32_t RESERVED3[24];
     /* Interrupt clear-pending register 0 */
     uint32_t NVIC_ICPR0;
     /* Interrupt clear-pending register 1 */
@@ -109,7 +109,7 @@ typedef struct
     /* Interrupt active bit register 7 */
     uint32_t NVIC_IABR7;
 
-    uint32_t RESERVED1[56];
+    uint32_t RESERVED4[56];
     /* Interrupt priority register 0 */
     uint32_t NVIC_IPR0;
     /* Interrupt priority register 1 */
@@ -231,7 +231,7 @@ typedef struct
     /* Interrupt priority register 59 */
     uint32_t NVIC_IPR59;
 
-    uint32_t RESERVED1[580];
+    uint32_t RESERVED5[580];
     /* Software trigger interrupt register */
     uint32_t NVIC_STIR;    
 } NVIC_PERI_t;
