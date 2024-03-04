@@ -90,4 +90,13 @@ Error_enumStatus_t Set_Interrupt_Priority(IRQn_t IRQn, uint32_t priority);
  */
 Error_enumStatus_t Get_Interrupt_Priority(IRQn_t IRQn, uint8_t *Ptr_u8Status);
 
+/*
+ * @brief    : Generated a Software  Interrupt
+ * @param[in]: IRQn: Interrupt number
+ * @return   : Error_enumStatus_t: Status of the operation
+ * @details  : The value to be written is
+			   the Interrupt ID of the required SGI, in the range 0-239. 
+			   For example, a value of 0x03 specifies interrupt IRQ3.
+ */
+Error_enumStatus_t SET_Software_Interrupt(IRQn_t IRQn);
 #endif /* NVIC_H_ */
