@@ -18,7 +18,11 @@
 /*******************************************************************************
  *                                Definitions                                  *
  *******************************************************************************/
-
+#define PRIORITY_GROUP0		0x05FA0000 /*[4] bits Preempt Group &  [0] bits Subpriority Group*/
+#define PRIORITY_GROUP1		0x05FA0400 /*[3] bits Preempt Group &  [1] bits Subpriority Group*/
+#define PRIORITY_GROUP2		0x05FA0500 /*[2] bits Preempt Group &  [2] bits Subpriority Group*/
+#define PRIORITY_GROUP3		0x05FA0600 /*[1] bits Preempt Group &  [3] bits Subpriority Group*/
+#define PRIORITY_GROUP5		0x05FA0700 /*[0] bits Preempt Group &  [4] bits Subpriority Group*/
 /*******************************************************************************
  *                  	    Functions Prototypes                               *
  *******************************************************************************/
@@ -75,11 +79,13 @@ Error_enumStatus_t Get_NVIC_Active_IRQ(IRQn_t IRQn, uint8_t *Ptr_u8Status);
 /*
  * @brief    : Set Interrupt Priority
  * @param[in]: IRQn: Interrupt number
- * @param[in]: priority: Priority level to set
+ * @param[in]: Copy_PreemptGroup: Preemption priority group
+ * @param[in]: Copy_SubpriorityGroup: Subpriority group
+ * @param[in]: GroupPriority: Group priority value
  * @return   : Error_enumStatus_t: Status of the operation
  * @details  : Sets the priority level for the specified NVIC interrupt.
  */
-Error_enumStatus_t Set_Interrupt_Priority(IRQn_t IRQn, uint32_t priority);
+Error_enumStatus_t Set_Interrupt_Priority(IRQn_t IRQn, uint8_t Copy_PreemptGroup ,uint8_t Copy_SubpriorityGroup ,uint32_t GroupPriority );
 
 /*
  * @brief    : Get Interrupt Priority
@@ -100,3 +106,10 @@ Error_enumStatus_t Get_Interrupt_Priority(IRQn_t IRQn, uint8_t *Ptr_u8Status);
  */
 Error_enumStatus_t SET_Software_Interrupt(IRQn_t IRQn);
 #endif /* NVIC_H_ */
+
+
+
+
+
+
+

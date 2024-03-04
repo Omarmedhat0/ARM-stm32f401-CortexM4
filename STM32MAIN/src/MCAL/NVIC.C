@@ -14,8 +14,12 @@
 /*******************************************************************************
  *                             Definitions                                      *
  *******************************************************************************/
-#define NVIC_Base_ADDRESS 0xE000E100
-#define BITS_PER_GROUP 32
+#define NVIC_Base_ADDRESS            0xE000E100
+#define SCB_Base_ADDRESS             0xE000ED00
+#define GROUP_SHIFT_MASK             0x05FA0300
+#define BITS_PER_GROUP               32
+#define MAX_ACTIVE_PROPRITY_BITS     15
+#define NUM_INT_IN_IPR_X             4
 /*******************************************************************************
  *                        	  Types Declaration                                 *
  *******************************************************************************/
@@ -50,10 +54,29 @@ typedef struct
     uint32_t NVIC_STIR;
 } NVIC_PERI_t;
 
+typedef struct
+{
+    uint32_t CPUID;
+    uint32_t ICSR;
+    uint32_t VTOR;
+    uint32_t AIRCR;
+    uint32_t SCR;
+    uint32_t CCR;
+    uint32_t SHPR1;
+    uint32_t SHPR2;
+    uint32_t SHPR3;
+    uint32_t SHCSR;
+    uint32_t CFSR;
+    uint32_t HFSR;
+    uint32_t MMAR;
+    uint32_t BFAR;
+    uint32_t AFSR;
+} SCB_PERI_t;
 /*******************************************************************************
  *                              Variables		                                *
  *******************************************************************************/
 volatile NVIC_PERI_t *const NVIC = (volatile NVIC_PERI_t *)NVIC_Base_ADDRESS;
+volatile SCB_PERI_t *const SCB = (volatile SCB_PERI_t *)SCB_Base_ADDRESS;
 /*******************************************************************************
  *                         Static Function Protoypes		                    *
  *******************************************************************************/
@@ -171,7 +194,7 @@ Error_enumStatus_t Get_NVIC_Pending_IRQ(IRQn_t IRQn, uint8_t *Ptr_u8Status)
     }
     else
     {
-       *Ptr_u8Status = (( NVIC->NVIC_ISPR[Loc_u8Index]) >> (IRQn % BITS_PER_GROUP)) & 0x01 ;
+        *Ptr_u8Status = ((NVIC->NVIC_ISPR[Loc_u8Index]) >> (IRQn % BITS_PER_GROUP)) & 0x01;
     }
     return Loc_enumReturnStatus;
 }
@@ -183,7 +206,7 @@ Error_enumStatus_t Get_NVIC_Pending_IRQ(IRQn_t IRQn, uint8_t *Ptr_u8Status)
  * @return   : Error_enumStatus_t: Status of the operation
  * @details  : Retrieves the active status of the specified NVIC interrupt.
  */
-Error_enumStatus_t Get_NVIC_Active_IRQ (IRQn_t IRQn , uint8_t *Ptr_u8Status)
+Error_enumStatus_t Get_NVIC_Active_IRQ(IRQn_t IRQn, uint8_t *Ptr_u8Status)
 {
     /* Local Variable to store error status */
     Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk;
@@ -199,7 +222,7 @@ Error_enumStatus_t Get_NVIC_Active_IRQ (IRQn_t IRQn , uint8_t *Ptr_u8Status)
     }
     else
     {
-       *Ptr_u8Status = (( NVIC->NVIC_IABR[Loc_u8Index]) >> (IRQn % BITS_PER_GROUP)) & 0x01 ;
+        *Ptr_u8Status = ((NVIC->NVIC_IABR[Loc_u8Index]) >> (IRQn % BITS_PER_GROUP)) & 0x01;
     }
     return Loc_enumReturnStatus;
 }
@@ -207,11 +230,37 @@ Error_enumStatus_t Get_NVIC_Active_IRQ (IRQn_t IRQn , uint8_t *Ptr_u8Status)
 /*
  * @brief    : Set Interrupt Priority
  * @param[in]: IRQn: Interrupt number
- * @param[in]: priority: Priority level to set
+ * @param[in]: Copy_PreemptGroup: Preemption priority group
+ * @param[in]: Copy_SubpriorityGroup: Subpriority group
+ * @param[in]: GroupPriority: Group priority value
  * @return   : Error_enumStatus_t: Status of the operation
  * @details  : Sets the priority level for the specified NVIC interrupt.
  */
-Error_enumStatus_t Set_Interrupt_Priority(IRQn_t IRQn, uint32_t priority);
+Error_enumStatus_t Set_Interrupt_Priority(IRQn_t IRQn, uint8_t Copy_PreemptGroup, uint8_t Copy_SubpriorityGroup, uint32_t GroupPriority)
+{
+    /* Local Variable to store error status */
+    Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk;
+    uint8_t Loc_u8Index = IRQn / NUM_INT_IN_IPR_X;
+    uint32_t Loc_ValueAssiged =  (Copy_SubpriorityGroup | (Copy_PreemptGroup << ( (GroupPriority - GROUP_SHIFT_MASK) / 256 )  )  );
+    uint8_t Loc_Shift_value = ((IRQn % 4) * 8) + 4;
+    uint32_t Loc_TempReg = NVIC->NVIC_IPR[Loc_u8Index] ;
+    if (Copy_PreemptGroup > MAX_ACTIVE_PROPRITY_BITS     ||
+        Copy_SubpriorityGroup > MAX_ACTIVE_PROPRITY_BITS ||
+        IRQn > _INT_Num                                  ||
+        (GroupPriority < PRIORITY_GROUP0)                ||
+        (GroupPriority > PRIORITY_GROUP5)                )
+    {
+        Loc_enumReturnStatus = Status_enumWrongInput;
+    }
+    else
+    {
+        Loc_TempReg |= Loc_ValueAssiged << Loc_Shift_value ;
+        NVIC->NVIC_IPR[Loc_u8Index] = Loc_TempReg ;
+        SCB->AIRCR = GroupPriority ;
+    }
+
+    return Loc_enumReturnStatus;
+}
 
 /*
  * @brief    : Get Interrupt Priority
@@ -220,15 +269,36 @@ Error_enumStatus_t Set_Interrupt_Priority(IRQn_t IRQn, uint32_t priority);
  * @return   : Error_enumStatus_t: Status of the operation
  * @details  : Retrieves the priority level of the specified NVIC interrupt.
  */
-Error_enumStatus_t Get_Interrupt_Priority(IRQn_t IRQn, uint8_t *Ptr_u8Status);
+Error_enumStatus_t Get_Interrupt_Priority(IRQn_t IRQn, uint8_t *Ptr_u8Status)
+{
+    /* Local Variable to store error status */
+    Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk;
+    uint8_t Loc_u8Index = IRQn / NUM_INT_IN_IPR_X;
+    uint8_t Loc_Shift_value = ((IRQn % 4) * 8) + 4;
+    uint32_t Loc_TempReg = NVIC->NVIC_IPR[Loc_u8Index] ;
+    if ( IRQn > _INT_Num     )           
+    {
+        Loc_enumReturnStatus = Status_enumWrongInput;
+    }
+    else if ( Ptr_u8Status == NULL)
+    {
+        Loc_enumReturnStatus = Status_enumNULLPointer;
+    }
+    else
+    {
+      * Ptr_u8Status = (( NVIC->NVIC_IPR[Loc_u8Index]) >> Loc_Shift_value ) & 0x0F ;
+    }
+    return Loc_enumReturnStatus;
+}
+
 
 /*
  * @brief    : Generated a Software  Interrupt
  * @param[in]: IRQn: Interrupt number
  * @return   : Error_enumStatus_t: Status of the operation
  * @details  : The value to be written is
-			   the Interrupt ID of the required SGI, in the range 0-239. 
-			   For example, a value of 0x03 specifies interrupt IRQ3.
+               the Interrupt ID of the required SGI, in the range 0-239.
+               For example, a value of 0x03 specifies interrupt IRQ3.
  */
 Error_enumStatus_t SET_Software_Interrupt(IRQn_t IRQn)
 {
@@ -240,7 +310,7 @@ Error_enumStatus_t SET_Software_Interrupt(IRQn_t IRQn)
     }
     else
     {
-        NVIC->NVIC_STIR = IRQn ; 
+        NVIC->NVIC_STIR = IRQn;
     }
     return Loc_enumReturnStatus;
 }
