@@ -4,6 +4,7 @@
         "switch.h": "c",
         "rcc.h": "c",
         "NVEC.C": "cpp",
-        "NVIC.C": "cpp"
+        "NVIC.C": "cpp",
+        "std_types.h": "c"
     }
 }

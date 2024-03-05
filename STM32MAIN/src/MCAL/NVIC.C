@@ -10,16 +10,17 @@
 /*******************************************************************************
  *                                Includes	                                  *
  *******************************************************************************/
+/* Include the header file for NVIC driver */
 #include "MCAL/NVIC.h"
 /*******************************************************************************
  *                             Definitions                                      *
  *******************************************************************************/
-#define NVIC_Base_ADDRESS            0xE000E100
-#define SCB_Base_ADDRESS             0xE000ED00
-#define GROUP_SHIFT_MASK             0x05FA0300
-#define BITS_PER_GROUP               32
-#define MAX_ACTIVE_PROPRITY_BITS     15
-#define NUM_INT_IN_IPR_X             4
+#define NVIC_Base_ADDRESS            0xE000E100 /* Base address of NVIC peripheral */
+#define SCB_Base_ADDRESS             0xE000ED00 /* Base address of SCB peripheral */
+#define GROUP_SHIFT_MASK             0x05FA0300 /* Mask for priority group */
+#define BITS_PER_GROUP               32 /* Number of bits per priority group */
+#define MAX_ACTIVE_PROPRITY_BITS     15 /* Maximum number of active priority bits */
+#define NUM_INT_IN_IPR_X             4 /* Number of interrupts per IPR register */
 /*******************************************************************************
  *                        	  Types Declaration                                 *
  *******************************************************************************/
@@ -75,11 +76,11 @@ typedef struct
 /*******************************************************************************
  *                              Variables		                                *
  *******************************************************************************/
+/* Pointer to NVIC peripheral */
 volatile NVIC_PERI_t *const NVIC = (volatile NVIC_PERI_t *)NVIC_Base_ADDRESS;
+/* Pointer to SCB peripheral */
 volatile SCB_PERI_t *const SCB = (volatile SCB_PERI_t *)SCB_Base_ADDRESS;
-/*******************************************************************************
- *                         Static Function Protoypes		                    *
- *******************************************************************************/
+
 /*******************************************************************************
  *                             Implementation   				                *
  *******************************************************************************/
@@ -93,15 +94,19 @@ Error_enumStatus_t Enable_NVIC_IRQ(IRQn_t IRQn)
 {
     /* Local Variable to store error status */
     Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk;
+    /* Calculate the index of the required register according to IRQn */
     uint8_t Loc_u8Index = IRQn / BITS_PER_GROUP;
+    /* If IRQn is out of range, set error status */
     if (IRQn >= _INT_Num)
     {
         Loc_enumReturnStatus = Status_enumWrongInput;
     }
     else
     {
+        /* Enable the specified NVIC interrupt */
         NVIC->NVIC_ISER[Loc_u8Index] = (1 << (IRQn % BITS_PER_GROUP));
     }
+    /*ٌReturn error status*/
     return Loc_enumReturnStatus;
 }
 
@@ -115,15 +120,19 @@ Error_enumStatus_t Disable_NVIC_IRQ(IRQn_t IRQn)
 {
     /* Local Variable to store error status */
     Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk;
+    /* Calculate the index of the required register according to IRQn */
     uint8_t Loc_u8Index = IRQn / BITS_PER_GROUP;
+     /* Local Variable to store error status */
     if (IRQn >= _INT_Num)
     {
         Loc_enumReturnStatus = Status_enumWrongInput;
     }
     else
     {
+        /* Disable the specified NVIC interrupt */
         NVIC->NVIC_ICER[Loc_u8Index] = (1 << (IRQn % BITS_PER_GROUP));
     }
+    /*ٌReturn error status*/
     return Loc_enumReturnStatus;
 }
 
@@ -137,6 +146,7 @@ Error_enumStatus_t Set_NVIC_Pending_IRQ(IRQn_t IRQn)
 {
     /* Local Variable to store error status */
     Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk;
+    /* Calculate the index of the required register according to IRQn */
     uint8_t Loc_u8Index = IRQn / BITS_PER_GROUP;
     if (IRQn >= _INT_Num)
     {
@@ -144,8 +154,10 @@ Error_enumStatus_t Set_NVIC_Pending_IRQ(IRQn_t IRQn)
     }
     else
     {
+        /* Set the specified NVIC interrupt as pending */
         NVIC->NVIC_ISPR[Loc_u8Index] = (1 << (IRQn % BITS_PER_GROUP));
     }
+    /*ٌReturn error status*/
     return Loc_enumReturnStatus;
 }
 
@@ -159,6 +171,7 @@ Error_enumStatus_t Clear_NVIC_Pending_IRQ(IRQn_t IRQn)
 {
     /* Local Variable to store error status */
     Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk;
+    /* Calculate the index of the required register according to IRQn */
     uint8_t Loc_u8Index = IRQn / BITS_PER_GROUP;
     if (IRQn >= _INT_Num)
     {
@@ -166,8 +179,10 @@ Error_enumStatus_t Clear_NVIC_Pending_IRQ(IRQn_t IRQn)
     }
     else
     {
+        /* Clear the pending status of the specified NVIC interrupt */
         NVIC->NVIC_ICPR[Loc_u8Index] = (1 << (IRQn % BITS_PER_GROUP));
     }
+    /*ٌReturn error status*/
     return Loc_enumReturnStatus;
 }
 
@@ -182,20 +197,24 @@ Error_enumStatus_t Get_NVIC_Pending_IRQ(IRQn_t IRQn, uint8_t *Ptr_u8Status)
 {
     /* Local Variable to store error status */
     Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk;
+    /* Calculate the index of the required register according to IRQn */
     uint8_t Loc_u8Index = IRQn / BITS_PER_GROUP;
-
+    /* If IRQn is out of range, set error status */
     if (IRQn >= _INT_Num)
     {
         Loc_enumReturnStatus = Status_enumWrongInput;
     }
     else if (Ptr_u8Status == NULL)
     {
+        /* If Ptr_u8Status is a NULL Pointer, set error status */
         Loc_enumReturnStatus = Status_enumNULLPointer;
     }
     else
     {
+        /* Retrieve the pending status of the specified NVIC interrupt */
         *Ptr_u8Status = ((NVIC->NVIC_ISPR[Loc_u8Index]) >> (IRQn % BITS_PER_GROUP)) & 0x01;
     }
+    /*ٌReturn error status*/
     return Loc_enumReturnStatus;
 }
 
@@ -210,20 +229,25 @@ Error_enumStatus_t Get_NVIC_Active_IRQ(IRQn_t IRQn, uint8_t *Ptr_u8Status)
 {
     /* Local Variable to store error status */
     Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk;
+    /* Calculate the index of the required register according to IRQn */
     uint8_t Loc_u8Index = IRQn / BITS_PER_GROUP;
-
+    /* If IRQn is out of range, set error status */
     if (IRQn >= _INT_Num)
     {
+    /* If IRQn is out of range, set error status */   
         Loc_enumReturnStatus = Status_enumWrongInput;
     }
     else if (Ptr_u8Status == NULL)
     {
+        /* If Ptr_u8Status is NULL, set error status */
         Loc_enumReturnStatus = Status_enumNULLPointer;
     }
     else
     {
-        *Ptr_u8Status = ((NVIC->NVIC_IABR[Loc_u8Index]) >> (IRQn % BITS_PER_GROUP)) & 0x01;
+        /* Retrieve the active status of the specified NVIC interrupt */
+       *Ptr_u8Status = ((NVIC->NVIC_IABR[Loc_u8Index]) >> (IRQn % BITS_PER_GROUP)) & 0x01;
     }
+    /*ٌReturn error status*/
     return Loc_enumReturnStatus;
 }
 
@@ -240,10 +264,20 @@ Error_enumStatus_t Set_Interrupt_Priority(IRQn_t IRQn, uint8_t Copy_PreemptGroup
 {
     /* Local Variable to store error status */
     Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk;
+    /* Calculate the index of the required register according to IRQn */
     uint8_t Loc_u8Index = IRQn / NUM_INT_IN_IPR_X;
-    uint32_t Loc_ValueAssiged =  (Copy_SubpriorityGroup | (Copy_PreemptGroup << ( (GroupPriority - GROUP_SHIFT_MASK) / 256 )  )  );
+    /*Local Variable to hold the desired value of the 4 bits that will represent Preempt Group Subpriori tyGroup 
+     * At first, I calulate the desired shifting for Preempt Group if it was 1,2,3,4 
+     * Then , Put Subpriority Group Value 
+     * At the end make bitwise or between Copy_SubpriorityGroup and Copy_PreemptGroup to adjust the 4 bits with desired values
+     * If the user choose PRIORITY_GROUP0 so the value will  by Copy_PreemptGroup directly 
+     */
+    uint32_t Loc_ValueAssiged = (GroupPriority == PRIORITY_GROUP0) ? Copy_PreemptGroup : (Copy_SubpriorityGroup | (Copy_PreemptGroup << ((GroupPriority - GROUP_SHIFT_MASK) / 256)));
+    /* Calculate the index of the required register according to IRQn for IPR resgter */
     uint8_t Loc_Shift_value = ((IRQn % 4) * 8) + 4;
+    /*Assign the current value of NVIC_IPR register in temp variable*/
     uint32_t Loc_TempReg = NVIC->NVIC_IPR[Loc_u8Index] ;
+    /* If IRQn is out of range, set error status */
     if (Copy_PreemptGroup > MAX_ACTIVE_PROPRITY_BITS     ||
         Copy_SubpriorityGroup > MAX_ACTIVE_PROPRITY_BITS ||
         IRQn > _INT_Num                                  ||
@@ -254,11 +288,14 @@ Error_enumStatus_t Set_Interrupt_Priority(IRQn_t IRQn, uint8_t Copy_PreemptGroup
     }
     else
     {
+        /*Prebare the last shape of desired data of grouping and assign in in temp variable */
         Loc_TempReg |= Loc_ValueAssiged << Loc_Shift_value ;
+        /*Assign the new grouping data in NVIC_IPR register*/
         NVIC->NVIC_IPR[Loc_u8Index] = Loc_TempReg ;
+        /*Configure the 4bits of grouping shape according to GroupPriority*/
         SCB->AIRCR = GroupPriority ;
     }
-
+    /*ٌReturn error status*/
     return Loc_enumReturnStatus;
 }
 
@@ -273,19 +310,23 @@ Error_enumStatus_t Get_Interrupt_Priority(IRQn_t IRQn, uint8_t *Ptr_u8Status)
 {
     /* Local Variable to store error status */
     Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk;
+    /* Calculate the index of the required register according to IRQn */
     uint8_t Loc_u8Index = IRQn / NUM_INT_IN_IPR_X;
+    /* Calculate the index of the required register according to IRQn for IPR resgter */
     uint8_t Loc_Shift_value = ((IRQn % 4) * 8) + 4;
-    uint32_t Loc_TempReg = NVIC->NVIC_IPR[Loc_u8Index] ;
+    /* If IRQn is out of range, set error status */
     if ( IRQn > _INT_Num     )           
     {
         Loc_enumReturnStatus = Status_enumWrongInput;
     }
+    /* If IRQn is out of range, set error status */ 
     else if ( Ptr_u8Status == NULL)
     {
         Loc_enumReturnStatus = Status_enumNULLPointer;
     }
     else
     {
+        /* Get the priority level of the specified NVIC interrupt*/
       * Ptr_u8Status = (( NVIC->NVIC_IPR[Loc_u8Index]) >> Loc_Shift_value ) & 0x0F ;
     }
     return Loc_enumReturnStatus;
@@ -304,12 +345,14 @@ Error_enumStatus_t SET_Software_Interrupt(IRQn_t IRQn)
 {
     /* Local Variable to store error status */
     Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk;
+    /* If IRQn is out of range, set error status */
     if (IRQn >= _INT_Num)
     {
         Loc_enumReturnStatus = Status_enumWrongInput;
     }
     else
     {
+        /* Generated a Software Interrupt */
         NVIC->NVIC_STIR = IRQn;
     }
     return Loc_enumReturnStatus;

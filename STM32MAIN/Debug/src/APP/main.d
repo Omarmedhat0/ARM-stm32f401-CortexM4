@@ -1,9 +1,9 @@
-src/APP/main.o: ../src/APP/main.c ../include/MCAL\RCC.h \
+src/APP/main.o: ../src/APP/main.c ../include/MCAL/NVIC.h \
  ../include/LIB/std_types.h ../include/LIB/Mask32.h \
- ../include/LIB/Error.h ../include/HAL\LED.h ../include/CFG/LED_Cfg.h \
- ../include/HAL\Switch.h ../include/CFG/Switch_Cfg.h
+ ../include/LIB/Error.h ../include/LIB/Stm32F401cc.h ../include/HAL/LED.h \
+ ../include/CFG/LED_Cfg.h ../include/MCAL/RCC.h
 
-../include/MCAL\RCC.h:
+../include/MCAL/NVIC.h:
 
 ../include/LIB/std_types.h:
 
@@ -11,10 +11,10 @@ src/APP/main.o: ../src/APP/main.c ../include/MCAL\RCC.h \
 
 ../include/LIB/Error.h:
 
-../include/HAL\LED.h:
+../include/LIB/Stm32F401cc.h:
+
+../include/HAL/LED.h:
 
 ../include/CFG/LED_Cfg.h:
 
-../include/HAL\Switch.h:
-
-../include/CFG/Switch_Cfg.h:
+../include/MCAL/RCC.h:

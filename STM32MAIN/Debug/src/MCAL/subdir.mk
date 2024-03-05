@@ -5,14 +5,17 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ../src/MCAL/GPIO.c \
+../src/MCAL/NVIC.c \
 ../src/MCAL/RCC.c 
 
 C_DEPS += \
 ./src/MCAL/GPIO.d \
+./src/MCAL/NVIC.d \
 ./src/MCAL/RCC.d 
 
 OBJS += \
 ./src/MCAL/GPIO.o \
+./src/MCAL/NVIC.o \
 ./src/MCAL/RCC.o 
 
 
