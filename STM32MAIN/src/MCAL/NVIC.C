@@ -353,7 +353,7 @@ Error_enumStatus_t SET_Software_Interrupt(IRQn_t IRQn)
     else
     {
         /* Generated a Software Interrupt */
-        NVIC->NVIC_STIR = IRQn;
+        NVIC->NVIC_STIR |= IRQn;
     }
     return Loc_enumReturnStatus;
 }

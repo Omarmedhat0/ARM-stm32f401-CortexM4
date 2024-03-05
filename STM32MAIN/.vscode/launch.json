@@ -4,7 +4,7 @@
 //
 // Documentation: https://docs.platformio.org/en/latest/plus/debugging.html
 // Configuration: https://docs.platformio.org/en/latest/projectconf/sections/env/options/debug/index.html
-
+//"svdPath": "C:/Users/C/.platformio/platforms/ststm32/misc/svd/STM32F40x.svd",
 {
     "version": "0.2.0",
     "configurations": [
@@ -16,7 +16,7 @@
             "projectEnvName": "blackpill_f401cc",
             "toolchainBinDir": "C:/Users/C/.platformio/packages/toolchain-gccarmnoneeabi/bin",
             "internalConsoleOptions": "openOnSessionStart",
-            "svdPath": "C:/Users/C/.platformio/platforms/ststm32/misc/svd/STM32F40x.svd",
+            "svdPath": "E:/ITI/ARM/ARM_stm32f401/st32f401/debug_files_openOCD/STM32F401.svd",
             "preLaunchTask": {
                 "type": "PlatformIO",
                 "task": "Pre-Debug"

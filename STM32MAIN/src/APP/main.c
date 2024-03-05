@@ -30,6 +30,7 @@ int main (void)
   Set_Interrupt_Priority(EXTI1,3,1,PRIORITY_GROUP1);
   Set_Interrupt_Priority(EXTI0,7,1,PRIORITY_GROUP1);
   Set_NVIC_Pending_IRQ(EXTI0);
+  SET_Software_Interrupt(EXTI16_PVD);
   while(1)
   {
 
