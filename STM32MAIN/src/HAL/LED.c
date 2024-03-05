@@ -11,7 +11,6 @@
  *******************************************************************************/
 #include "HAL/LED.h"
 #include "MCAL/GPIO.h"
-
 /*******************************************************************************
  *                              Variables                                       *
  *******************************************************************************/
@@ -66,8 +65,16 @@ Error_enumStatus_t LED_Set_Status(uint32_t Copy_LEDName , uint32_t Copy_LEDStatu
 {
     /* Local Variable to store error status */
 	Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk ; 
+    /*Check if the LED name is valid or not */
+    if(Copy_LEDName >= _Led_Num)
+    {
+        Loc_enumReturnStatus = Status_enumWrongInput ;
+    }
+    else
+    {
     /*Set the required pin the the required status whether it was on of off */
 	Loc_enumReturnStatus=  GPIO_Set_PinValue(LEDS[Copy_LEDName].Port , LEDS[Copy_LEDName].Pin ,(LEDS[Copy_LEDName].Connection)^Copy_LEDStatus ) ;
+    }
     /*Return the error status*/
     return Loc_enumReturnStatus ;
 }

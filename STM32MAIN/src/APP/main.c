@@ -1,6 +1,6 @@
 #include "MCAL/NVIC.h"
 #include "HAL/LED.h"
-#include "MCAL/RCC.h"
+#include "HAL/CLK_Control.h"
 void delay_ms(uint32_t ms)
  {
     for (volatile uint32_t i = 0; i < ms * 16000; ++i)
@@ -22,7 +22,7 @@ void EXTI1_IRQHandler(void)
 }
 int main (void)
 {
-  RCC_Enable_AHB1_Peripheral(GPIOA);
+  Set_PORT_Clock_ON(GPIOA);
   LED_Init();
   SET_Software_Interrupt(EXTI0)  ;
   Enable_NVIC_IRQ(EXTI0);

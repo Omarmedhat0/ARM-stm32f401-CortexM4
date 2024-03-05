@@ -4,14 +4,17 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
+../src/HAL/CLK_Control.c \
 ../src/HAL/LED.c \
 ../src/HAL/Switch.c 
 
 C_DEPS += \
+./src/HAL/CLK_Control.d \
 ./src/HAL/LED.d \
 ./src/HAL/Switch.d 
 
 OBJS += \
+./src/HAL/CLK_Control.o \
 ./src/HAL/LED.o \
 ./src/HAL/Switch.o 
 
