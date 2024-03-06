@@ -1,0 +1,42 @@
+---
+:source:
+  :path: test
+  :file: test_LED.c
+:successes:
+- :test: test_LED_Init_ValidParameters
+  :line: 17
+  :message: ''
+  :unity_test_time: 0
+- :test: test_LED_Init_InValidParameters
+  :line: 23
+  :message: ''
+  :unity_test_time: 0
+- :test: test_LED_SetState_InvalidLedName
+  :line: 30
+  :message: ''
+  :unity_test_time: 0
+- :test: test_LED_SetState_ValidLedName
+  :line: 36
+  :message: ''
+  :unity_test_time: 0
+- :test: test_LED_SetState_ValidLedStatus
+  :line: 45
+  :message: ''
+  :unity_test_time: 0
+- :test: test_LED_SetState_ValidLedStatus2
+  :line: 56
+  :message: ''
+  :unity_test_time: 0
+- :test: test_LED_SetState_InvalidLedStatus
+  :line: 67
+  :message: ''
+  :unity_test_time: 0
+:failures: []
+:ignores: []
+:counts:
+  :total: 7
+  :passed: 7
+  :failed: 0
+  :ignored: 0
+:stdout: []
+:time: 0.01354319999973086

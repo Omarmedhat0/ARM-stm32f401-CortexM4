@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "mock_gpio.h": "c",
+        "led_cfg.h": "c",
+        "std_types.h": "c",
+        "error.h": "c",
+        "mask32.h": "c",
+        "switch.h": "c",
+        "switch_cfg.h": "c"
+    }
+}

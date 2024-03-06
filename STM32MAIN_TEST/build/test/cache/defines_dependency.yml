@@ -1,0 +1,15 @@
+---
+build/test/mocks/mock_GPIO.c:
+- TEST
+src/LED.c:
+- TEST
+src/LED_Cfg.c:
+- TEST
+src/LED/LED.c:
+- TEST
+src/LED/LED_Cfg.c:
+- TEST
+src/Switch/Switch.c:
+- TEST
+src/Switch/Switch_Cfg.c:
+- TEST

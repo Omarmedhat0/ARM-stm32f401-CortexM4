@@ -9,8 +9,8 @@
 /*******************************************************************************
  *                                Includes	                                  *
  *******************************************************************************/
-#include "HAL/LED.h"
-#include "MCAL/GPIO.h"
+#include "HAL\LED.h"
+#include "MCAL\GPIO.h"
 /*******************************************************************************
  *                              Variables                                       *
  *******************************************************************************/
@@ -37,7 +37,7 @@ Error_enumStatus_t LED_Init (void)
     /*Configure all LEDs Moode as Push PUll */ 
     Loc_Led_GPIO_Handler.Mood = GPIO_OUTPUT_PP ;
     /*Initiate a local index to loop with it */
-    uint8_t Loc_idx = 0 ;
+    u8_t Loc_idx = 0 ;
     /*Loop for each led to configure it's port and pin in GPIO*/
     for (Loc_idx = 0 ; Loc_idx < _Led_Num ; Loc_idx ++)
     {
@@ -61,7 +61,7 @@ Error_enumStatus_t LED_Init (void)
  * @return   : Error_enumStatus_t - Error status indicating success or failure of setting the pin value.
  * @details  : This function sets the value of a LED pin to the specified state (high or low).
  */
-Error_enumStatus_t LED_Set_Status(uint32_t Copy_LEDName , uint32_t Copy_LEDStatus)
+Error_enumStatus_t LED_Set_Status(u32_t Copy_LEDName , u32_t Copy_LEDStatus)
 {
     /* Local Variable to store error status */
 	Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk ; 

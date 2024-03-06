@@ -69,6 +69,7 @@ typedef struct
     uint32_t SHCSR;
     uint32_t CFSR;
     uint32_t HFSR;
+    uint32_t reserved;
     uint32_t MMAR;
     uint32_t BFAR;
     uint32_t AFSR;

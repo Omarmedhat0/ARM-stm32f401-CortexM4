@@ -1,3 +1,11 @@
+/*
+ ============================================================================
+ Name        : main.c
+ Author      : Omar Medhat Mohamed
+ Description : Source File for test
+ Date        : 
+ ============================================================================
+ */
 #include "MCAL/NVIC.h"
 #include "HAL/LED.h"
 #include "HAL/CLK_Control.h"

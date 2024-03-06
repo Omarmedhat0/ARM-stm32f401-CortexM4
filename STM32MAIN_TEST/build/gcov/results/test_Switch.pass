@@ -1,0 +1,38 @@
+---
+:source:
+  :path: test
+  :file: test_Switch.c
+:successes:
+- :test: test_Switch_Init_ValidParameters
+  :line: 17
+  :message: ''
+  :unity_test_time: 0
+- :test: test_Switch_Init_InValidParameters
+  :line: 22
+  :message: ''
+  :unity_test_time: 0
+- :test: test_Switch_SetState_InvalidSwitchName
+  :line: 28
+  :message: ''
+  :unity_test_time: 0
+- :test: test_Switch_SetState_ValidSwitchName
+  :line: 36
+  :message: ''
+  :unity_test_time: 0
+- :test: test_Switch_SetState_ValidSwitchPointerStatus
+  :line: 48
+  :message: ''
+  :unity_test_time: 0
+- :test: test_Switch_SetState_InValidSwitchPointerStatus_NULL
+  :line: 60
+  :message: ''
+  :unity_test_time: 0
+:failures: []
+:ignores: []
+:counts:
+  :total: 6
+  :passed: 6
+  :failed: 0
+  :ignored: 0
+:stdout: []
+:time: 0.01184319999993022
