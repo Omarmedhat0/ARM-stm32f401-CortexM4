@@ -289,8 +289,13 @@ Error_enumStatus_t Set_Interrupt_Priority(IRQn_t IRQn, uint8_t Copy_PreemptGroup
     }
     else
     {
+
         /*Prebare the last shape of desired data of grouping and assign in in temp variable */
-        Loc_TempReg |= Loc_ValueAssiged << Loc_Shift_value ;
+        Loc_ValueAssiged = Loc_ValueAssiged << Loc_Shift_value ;
+        /*Clear the previous value for the required register  */
+        Loc_TempReg &= ~(0x0000000f <<Loc_Shift_value );
+         /*Assign the new grouping data in Temp variable */
+        Loc_TempReg |= Loc_ValueAssiged ;
         /*Assign the new grouping data in NVIC_IPR register*/
         NVIC->NVIC_IPR[Loc_u8Index] = Loc_TempReg ;
         /*Configure the 4bits of grouping shape according to GroupPriority*/
@@ -354,7 +359,7 @@ Error_enumStatus_t SET_Software_Interrupt(IRQn_t IRQn)
     else
     {
         /* Generated a Software Interrupt */
-        NVIC->NVIC_STIR |= IRQn;
+        NVIC->NVIC_STIR = IRQn;
     }
     return Loc_enumReturnStatus;
 }
