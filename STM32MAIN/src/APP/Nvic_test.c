@@ -6,6 +6,9 @@
  Date        : 
  ============================================================================
  */
+#include "CTRMain.h"
+#ifdef NVIC_TEST
+
 #include "MCAL/NVIC.h"
 #include "HAL/LED.h"
 #include "HAL/CLK_Control.h"
@@ -46,6 +49,7 @@ int main (void)
     return 0   ;
 }
 
+#endif
 
 
 

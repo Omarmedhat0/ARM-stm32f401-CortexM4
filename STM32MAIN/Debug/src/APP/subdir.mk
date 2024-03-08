@@ -4,13 +4,16 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../src/APP/main.c 
+../src/APP/Nvic_test.c \
+../src/APP/SysTick_Test.c 
 
 C_DEPS += \
-./src/APP/main.d 
+./src/APP/Nvic_test.d \
+./src/APP/SysTick_Test.d 
 
 OBJS += \
-./src/APP/main.o 
+./src/APP/Nvic_test.o \
+./src/APP/SysTick_Test.o 
 
 
 # Each subdirectory must supply rules for building sources it contributes

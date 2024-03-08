@@ -6,17 +6,20 @@
 C_SRCS += \
 ../src/MCAL/GPIO.c \
 ../src/MCAL/NVIC.c \
-../src/MCAL/RCC.c 
+../src/MCAL/RCC.c \
+../src/MCAL/STK.c 
 
 C_DEPS += \
 ./src/MCAL/GPIO.d \
 ./src/MCAL/NVIC.d \
-./src/MCAL/RCC.d 
+./src/MCAL/RCC.d \
+./src/MCAL/STK.d 
 
 OBJS += \
 ./src/MCAL/GPIO.o \
 ./src/MCAL/NVIC.o \
-./src/MCAL/RCC.o 
+./src/MCAL/RCC.o \
+./src/MCAL/STK.o 
 
 
 # Each subdirectory must supply rules for building sources it contributes
