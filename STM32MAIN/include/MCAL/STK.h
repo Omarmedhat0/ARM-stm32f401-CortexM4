@@ -14,6 +14,7 @@
 #include "LIB/std_types.h"
 #include "LIB/Mask32.h"
 #include "LIB/Error.h"
+#include "LIB/Stm32F401cc.h"
 /*******************************************************************************
  *                                Definitions                                  *
  *******************************************************************************/
@@ -25,8 +26,6 @@
 #define STK_AHB_8_ENB_INT 				0x00000002 
  /*Configure with clock source by Processor clock (AHB) and  the SysTick exception request*/
 #define STK_PROCESSOR_CLOCK_ENB_INT 	0x00000006 
- /*Configure with clock frequancy */
-#define CLK_FREQANCY_IN_MHZ				16000000
 /*******************************************************************************
  *                        	  Types Declaration                                 *
  *******************************************************************************/

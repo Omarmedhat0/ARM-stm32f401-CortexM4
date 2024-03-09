@@ -21,6 +21,10 @@
 #define BITS_PER_GROUP               32 /* Number of bits per priority group */
 #define MAX_ACTIVE_PROPRITY_BITS     15 /* Maximum number of active priority bits */
 #define NUM_INT_IN_IPR_X             4 /* Number of interrupts per IPR register */
+#define NUM_BITS_PER_EACH_IPR        8 /* Number of interrupts per IPR register */
+#define NUM_BITS_TO_CONTROL_GROUPING 4
+#define SHIFTING_DIVISION_FACTOR     256
+#define PREV_VALUE_CLR_MASK          0x0000000F
 /*******************************************************************************
  *                        	  Types Declaration                                 *
  *******************************************************************************/
@@ -273,9 +277,9 @@ Error_enumStatus_t Set_Interrupt_Priority(IRQn_t IRQn, uint8_t Copy_PreemptGroup
      * At the end make bitwise or between Copy_SubpriorityGroup and Copy_PreemptGroup to adjust the 4 bits with desired values
      * If the user choose PRIORITY_GROUP0 so the value will  by Copy_PreemptGroup directly 
      */
-    uint32_t Loc_ValueAssiged = (GroupPriority == PRIORITY_GROUP0) ? Copy_PreemptGroup : (Copy_SubpriorityGroup | (Copy_PreemptGroup << ((GroupPriority - GROUP_SHIFT_MASK) / 256)));
+    uint32_t Loc_ValueAssiged = (GroupPriority == PRIORITY_GROUP0) ? Copy_PreemptGroup : (Copy_SubpriorityGroup | (Copy_PreemptGroup << ((GroupPriority - GROUP_SHIFT_MASK) / SHIFTING_DIVISION_FACTOR)));
     /* Calculate the index of the required register according to IRQn for IPR resgter */
-    uint8_t Loc_Shift_value = ((IRQn % 4) * 8) + 4;
+    uint8_t Loc_Shift_value = ((IRQn % NUM_INT_IN_IPR_X) * NUM_BITS_PER_EACH_IPR) + NUM_BITS_TO_CONTROL_GROUPING;
     /*Assign the current value of NVIC_IPR register in temp variable*/
     uint32_t Loc_TempReg = NVIC->NVIC_IPR[Loc_u8Index] ;
     /* If IRQn is out of range, set error status */
@@ -293,7 +297,7 @@ Error_enumStatus_t Set_Interrupt_Priority(IRQn_t IRQn, uint8_t Copy_PreemptGroup
         /*Prebare the last shape of desired data of grouping and assign in in temp variable */
         Loc_ValueAssiged = Loc_ValueAssiged << Loc_Shift_value ;
         /*Clear the previous value for the required register  */
-        Loc_TempReg &= ~(0x0000000f <<Loc_Shift_value );
+        Loc_TempReg &= ~(PREV_VALUE_CLR_MASK <<Loc_Shift_value );
          /*Assign the new grouping data in Temp variable */
         Loc_TempReg |= Loc_ValueAssiged ;
         /*Assign the new grouping data in NVIC_IPR register*/
@@ -319,7 +323,7 @@ Error_enumStatus_t Get_Interrupt_Priority(IRQn_t IRQn, uint8_t *Ptr_u8Status)
     /* Calculate the index of the required register according to IRQn */
     uint8_t Loc_u8Index = IRQn / NUM_INT_IN_IPR_X;
     /* Calculate the index of the required register according to IRQn for IPR resgter */
-    uint8_t Loc_Shift_value = ((IRQn % 4) * 8) + 4;
+    uint8_t Loc_Shift_value = ((IRQn % NUM_INT_IN_IPR_X) * NUM_BITS_PER_EACH_IPR) + NUM_BITS_TO_CONTROL_GROUPING;
     /* If IRQn is out of range, set error status */
     if ( IRQn > _INT_Num     )           
     {

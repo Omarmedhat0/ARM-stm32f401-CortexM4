@@ -19,6 +19,8 @@
 #define RELOAD_LOW_BOUNDARY     0x00000001
 #define RELOAD_HIGH_BOUNDARY    0x00FFFFFF
 #define CLK_SRC_MASK            0x00000004
+#define CONVERT_SEC_TO_MSEC     1000
+#define N_COUNT                 1
 /*******************************************************************************
  *                        	  Types Declaration                                 *
  *******************************************************************************/
@@ -123,7 +125,7 @@ Error_enumStatus_t STK_SetTimeMs(uint32_t Copy_TimeMs)
     /* Calculate the microcontroller clock frequency */
     uint32_t Loc_u32MicroClock =  ((STK->STK_CTRL) & (CLK_SRC_MASK)) ? CLK_FREQANCY_IN_MHZ : CLK_FREQANCY_IN_MHZ / 8;
     /* Calculate the reload value for the given time interval */
-    uint32_t Loc_u32Temp =  ((Loc_u32MicroClock * Copy_TimeMs) / 1000) - 1;
+    uint32_t Loc_u32Temp =  ((Loc_u32MicroClock * Copy_TimeMs) / CONVERT_SEC_TO_MSEC) - N_COUNT;
     /* Check if the provided time interval is within the valid range */
     if (Copy_TimeMs < RELOAD_LOW_BOUNDARY || Copy_TimeMs > RELOAD_HIGH_BOUNDARY)
     {
