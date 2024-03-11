@@ -10,7 +10,9 @@
         "stk_cfg.h": "c"
     },
     "cSpell.words": [
+        "delayms",
         "Medhat",
-        "Runinfo"
+        "Runinfo",
+        "Runnablecb"
     ]
 }

@@ -18,7 +18,7 @@
 /*******************************************************************************
  *                                Definitions                                  *
  *******************************************************************************/
-#define CLOCK_HSI BIT0_MASK
+
 /*******************************************************************************
  *                        	  Types Declaration                                 *
  *******************************************************************************/
@@ -30,17 +30,17 @@ typedef struct
 	uint32_t		PeriodicityMs;
 	uint32_t		priority;
 	Runnablecb_t	cb;
+	uint32_t		delayms ;
 } Runnable_t;
 
 /*******************************************************************************
  *                  	    Functions Prototypes                               *
  *******************************************************************************/
 /*
- * @brief    : Function to Creat Task
- * @param[in]: Copy_Clock The clock source to be set on. It can be CLOCK_HSI, CLOCK_HSE, or CLOCK_PLL.
- * @return   : Error_enumStatus_t Error status indicating the success or failure of setting the clock on.
- * @details  : This function turns on the specified clock source.
-			   It enables the clock according to the provided clock source.
+ * @brief    :
+ * @param[in]:
+ * @return   :
+ * @details  :      
  */
 Error_enumStatus_t Sched_RegistersRunnable(Runnable_t* Runnable);
 /*Scheduler needs timer*/
