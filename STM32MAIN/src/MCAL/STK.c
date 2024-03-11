@@ -127,7 +127,7 @@ Error_enumStatus_t STK_SetTimeMs(uint32_t Copy_TimeMs)
     /* Calculate the reload value for the given time interval */
     uint32_t Loc_u32Temp =  ((Loc_u32MicroClock * Copy_TimeMs) / CONVERT_SEC_TO_MSEC) - N_COUNT;
     /* Check if the provided time interval is within the valid range */
-    if (Copy_TimeMs < RELOAD_LOW_BOUNDARY || Copy_TimeMs > RELOAD_HIGH_BOUNDARY)
+    if (Loc_u32Temp < RELOAD_LOW_BOUNDARY || Loc_u32Temp > RELOAD_HIGH_BOUNDARY)
     {
         Loc_enumReturnStatus = Status_enumWrongInput;
     }

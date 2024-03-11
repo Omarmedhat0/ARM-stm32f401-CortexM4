@@ -2,7 +2,7 @@
  ============================================================================
  Name        : Switch.c
  Author      : Omar Medhat Mohamed
- Description : Source File for the Switch Driver
+ Description : Header Config File for the Switch Driver
  Date        : 17/2/2024
  ============================================================================
  */

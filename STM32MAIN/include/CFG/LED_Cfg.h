@@ -2,7 +2,7 @@
  ============================================================================
  Name        : LED.c
  Author      : Omar Medhat Mohamed
- Description : Source File for the LED Driver
+ Description : Header Config File for the LED Driver
  Date        : 17/2/2024
  ============================================================================
  */

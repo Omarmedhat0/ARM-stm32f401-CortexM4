@@ -14,7 +14,8 @@
 #include "LIB/std_types.h"
 #include "LIB/Mask32.h"
 #include "LIB/Error.h"
-#include "LIB/Stm32F401cc.h"
+#include "CFG/STK_Cfg.h"
+
 /*******************************************************************************
  *                                Definitions                                  *
  *******************************************************************************/

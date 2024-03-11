@@ -6,6 +6,11 @@
         "NVEC.C": "cpp",
         "NVIC.C": "cpp",
         "std_types.h": "c",
-        "error.h": "c"
-    }
+        "error.h": "c",
+        "stk_cfg.h": "c"
+    },
+    "cSpell.words": [
+        "Medhat",
+        "Runinfo"
+    ]
 }
