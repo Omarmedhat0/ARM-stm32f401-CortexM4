@@ -15,8 +15,8 @@
 /*******************************************************************************
  *                             Definitions                                      *
  *******************************************************************************/
-#define NVIC_Base_ADDRESS            0xE000E100 /* Base address of NVIC peripheral */
-#define SCB_Base_ADDRESS             0xE000ED00 /* Base address of SCB peripheral */
+#define NVIC_BASE_ADDRESS            0xE000E100 /* Base address of NVIC peripheral */
+#define SCB_BASE_ADDRESS             0xE000ED00 /* Base address of SCB peripheral */
 #define GROUP_SHIFT_MASK             0x05FA0300 /* Mask for priority group */
 #define BITS_PER_GROUP               32 /* Number of bits per priority group */
 #define MAX_ACTIVE_PROPRITY_BITS     15 /* Maximum number of active priority bits */
