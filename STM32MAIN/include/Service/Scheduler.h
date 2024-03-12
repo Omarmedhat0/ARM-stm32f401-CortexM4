@@ -15,6 +15,7 @@
 #include "LIB/Mask32.h"
 #include "LIB/Error.h"
 #include "MCAL/STK.h"
+#include "CFG/RunnableList_Cfg.h"
 /*******************************************************************************
  *                                Definitions                                  *
  *******************************************************************************/
@@ -28,21 +29,13 @@ typedef struct
 {
     char* 			Name ;
 	uint32_t		PeriodicityMs;
-	uint32_t		priority;
 	Runnablecb_t	cb;
-	uint32_t		delayms ;
 } Runnable_t;
 
 /*******************************************************************************
  *                  	    Functions Prototypes                               *
  *******************************************************************************/
-/*
- * @brief    :
- * @param[in]:
- * @return   :
- * @details  :      
- */
-Error_enumStatus_t Sched_RegistersRunnable(Runnable_t* Runnable);
+
 /*Scheduler needs timer*/
 void Sched_Init(void);
 /*Task should be created between Init and start*/

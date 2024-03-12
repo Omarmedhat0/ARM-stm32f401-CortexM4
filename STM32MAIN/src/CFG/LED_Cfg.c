@@ -49,11 +49,6 @@
  It implicitly make it static fri this file so the other files can't see it */
 const  LED_Config_t LEDS[_Led_Num] = {
    /*Ex : Set Led1 Configuration*/
-    [Led1] = {
-        .Pin = LED_PIN0,
-        .Port = LED_PORTA,
-        .Connection = LED_FWD,
-        .Init_Status = LED_OFF
-    }
-
+    [Led1] = {.Pin = LED_PIN0,.Port = LED_PORTA,.Connection = LED_FWD,.Init_Status = LED_OFF},
+    [Led2] = {.Pin = LED_PIN1,.Port = LED_PORTA,.Connection = LED_FWD,.Init_Status = LED_OFF}
 };

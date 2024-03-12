@@ -26,7 +26,8 @@
  /*Configure with clock source by AHB/8 and  assert the SysTick exception request*/
 #define STK_AHB_8_ENB_INT 				0x00000002 
  /*Configure with clock source by Processor clock (AHB) and  the SysTick exception request*/
-#define STK_PROCESSOR_CLOCK_ENB_INT 	0x00000006 /*******************************************************************************
+#define STK_PROCESSOR_CLOCK_ENB_INT 	0x00000006 
+/*******************************************************************************
  *                        	  Types Declaration                                 *
  *******************************************************************************/
 

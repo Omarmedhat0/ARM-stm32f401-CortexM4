@@ -1,6 +1,6 @@
 /*
  ============================================================================
- Name        : Switch.c
+ Name        : STK_Cfg.h
  Author      : Omar Medhat Mohamed
  Description : Header Config File for the Switch Driver
  Date        : 17/2/2024

@@ -1,6 +1,6 @@
 /*
  ============================================================================
- Name        : LED.c
+ Name        : LED_Cfg.h
  Author      : Omar Medhat Mohamed
  Description : Header Config File for the LED Driver
  Date        : 17/2/2024
@@ -16,6 +16,7 @@ typedef enum
 {
 	/* EX : Led */
 	Led1,
+	Led2,
 	/*Indicate number of Ledd don't use it */
     _Led_Num 
 }LEDS_t;

@@ -7,12 +7,15 @@
         "NVIC.C": "cpp",
         "std_types.h": "c",
         "error.h": "c",
-        "stk_cfg.h": "c"
+        "stk_cfg.h": "c",
+        "runnablelist_cfg.h": "c",
+        "scheduler.h": "c"
     },
     "cSpell.words": [
         "delayms",
         "Medhat",
         "Runinfo",
-        "Runnablecb"
+        "Runnablecb",
+        "Tickcb"
     ]
 }
