@@ -82,9 +82,9 @@ typedef struct
  *                              Variables		                                *
  *******************************************************************************/
 /* Pointer to NVIC peripheral */
-volatile NVIC_PERI_t *const NVIC = (volatile NVIC_PERI_t *)NVIC_Base_ADDRESS;
+volatile NVIC_PERI_t *const NVIC = (volatile NVIC_PERI_t *)NVIC_BASE_ADDRESS;
 /* Pointer to SCB peripheral */
-volatile SCB_PERI_t *const SCB = (volatile SCB_PERI_t *)SCB_Base_ADDRESS;
+volatile SCB_PERI_t *const SCB = (volatile SCB_PERI_t *)SCB_BASE_ADDRESS;
 
 /*******************************************************************************
  *                             Implementation   				                *

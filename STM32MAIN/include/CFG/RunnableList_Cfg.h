@@ -15,13 +15,19 @@
  *******************************************************************************/
 typedef enum
 {
-    app1 ,
-    app2 ,
+    SWITCH,
+    app3,
+    // app1 ,
+    // app2 ,
     _RunNum
 }Run_t;
-
+/*******************************************************************************
+ *                  	    Functions Prototypes                               *
+ *******************************************************************************/
 extern void Runnable_Toggle_Led1(void) ;
 extern void Runnable_Toggle_Led2(void) ;
+extern void Runnable_Switch(void) ;
+extern void Runnable_APP3(void);
 
 
 #endif
