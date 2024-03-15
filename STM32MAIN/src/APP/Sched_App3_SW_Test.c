@@ -1,6 +1,6 @@
 #include "HAL\LED.h"
 #include "HAL\HSwitch.h"
-
+#ifdef SCHED_TEST
 void APP3_init(void)
 {
   LED_Init();
@@ -28,3 +28,4 @@ void Runnable_APP3(void)
    LED_Set_Status(Led2 , LED2_status);
   }
 }
+#endif

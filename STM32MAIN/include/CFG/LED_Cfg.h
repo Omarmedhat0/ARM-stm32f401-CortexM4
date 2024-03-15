@@ -15,8 +15,9 @@
 typedef enum 
 {
 	/* EX : Led */
-	Led1,
-	Led2,
+	Green_Light,
+	Yellow_Light,
+	Red_Light,
 	/*Indicate number of Ledd don't use it */
     _Led_Num 
 }LEDS_t;

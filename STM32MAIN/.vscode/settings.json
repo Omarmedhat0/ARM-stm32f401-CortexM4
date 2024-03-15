@@ -9,7 +9,10 @@
         "error.h": "c",
         "stk_cfg.h": "c",
         "runnablelist_cfg.h": "c",
-        "scheduler.h": "c"
+        "scheduler.h": "c",
+        "stk.h": "c",
+        "clk_control.h": "c",
+        "trafficlight.h": "c"
     },
     "cSpell.words": [
         "delayms",

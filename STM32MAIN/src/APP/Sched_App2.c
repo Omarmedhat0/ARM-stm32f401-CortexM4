@@ -6,6 +6,7 @@
  Date        : 8/3/2024
  ============================================================================
  */
+#ifdef SCHED_TEST
 #include "HAL\LED.h"
 void Runnable_Toggle_Led2(void)
 {
@@ -23,3 +24,4 @@ void Runnable_Toggle_Led2(void)
     /* Set the LED status */
   LED_Set_Status(Led2 , status);
 }
+#endif
