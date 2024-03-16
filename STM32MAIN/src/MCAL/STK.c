@@ -125,7 +125,7 @@ Error_enumStatus_t STK_SetTimeMs(uint32_t Copy_TimeMs)
     /* Calculate the microcontroller clock frequency */
     uint32_t Loc_u32MicroClock =  ((STK->STK_CTRL) & (CLK_SRC_MASK)) ? CLK_FREQANCY_IN_MHZ : CLK_FREQANCY_IN_MHZ / 8;
     /* Calculate the reload value for the given time interval */
-    uint32_t Loc_u32Temp =  ((Loc_u32MicroClock * Copy_TimeMs) / CONVERT_SEC_TO_MSEC) - N_COUNT;
+    uint32_t Loc_u32Temp =  ((Loc_u32MicroClock / CONVERT_SEC_TO_MSEC)* Copy_TimeMs)  - N_COUNT;
     /* Check if the provided time interval is within the valid range */
     if (Loc_u32Temp < RELOAD_LOW_BOUNDARY || Loc_u32Temp > RELOAD_HIGH_BOUNDARY)
     {
