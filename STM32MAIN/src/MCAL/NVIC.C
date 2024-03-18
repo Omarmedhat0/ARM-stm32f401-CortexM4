@@ -54,7 +54,7 @@ typedef struct
     /* Interrupt priority register  */
     uint32_t NVIC_IPR[60];
     /* Reserved Bits */
-    uint32_t RESERVED6[580];
+    uint32_t RESERVED6[644];
     /* Software trigger interrupt register */
     uint32_t NVIC_STIR;
 } NVIC_PERI_t;
