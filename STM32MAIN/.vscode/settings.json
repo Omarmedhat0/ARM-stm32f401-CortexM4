@@ -12,7 +12,9 @@
         "scheduler.h": "c",
         "stk.h": "c",
         "clk_control.h": "c",
-        "trafficlight.h": "c"
+        "trafficlight.h": "c",
+        "gpio.h": "c",
+        "lcd_cfg.h": "c"
     },
     "cSpell.words": [
         "delayms",

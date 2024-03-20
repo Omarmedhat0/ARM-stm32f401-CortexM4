@@ -15,11 +15,13 @@
  *******************************************************************************/
 typedef enum
 {
-    // SWITCH,
-    // app3,
+    //SWITCH,
+    //app3,
     // app1 ,
     // app2 ,
-    Traffic,
+    //Traffic,
+    LCD,
+    LCDTest,
     _RunNum
 }Run_t;
 /*******************************************************************************
@@ -27,8 +29,9 @@ typedef enum
  *******************************************************************************/
 extern void Runnable_Toggle_Led1(void) ;
 extern void Runnable_Toggle_Led2(void) ;
-extern void Runnable_Switch(void) ;
+extern void HSwitch_Runnable(void) ;
 extern void Runnable_APP3(void);
-extern void Runnable_Traffic(void);
-
+extern void  Traffic_Runnable(void);
+extern void LCD_Runnable(void) ;
+extern void LCDTest_Runnable(void);
 #endif

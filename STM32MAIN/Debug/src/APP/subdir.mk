@@ -4,6 +4,7 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
+../src/APP/LCD_test.c \
 ../src/APP/Nvic_test.c \
 ../src/APP/Sched_App1.c \
 ../src/APP/Sched_App2.c \
@@ -14,6 +15,7 @@ C_SRCS += \
 ../src/APP/TrafficLight_test.c 
 
 C_DEPS += \
+./src/APP/LCD_test.d \
 ./src/APP/Nvic_test.d \
 ./src/APP/Sched_App1.d \
 ./src/APP/Sched_App2.d \
@@ -24,6 +26,7 @@ C_DEPS += \
 ./src/APP/TrafficLight_test.d 
 
 OBJS += \
+./src/APP/LCD_test.o \
 ./src/APP/Nvic_test.o \
 ./src/APP/Sched_App1.o \
 ./src/APP/Sched_App2.o \

@@ -1,5 +1,6 @@
 #include "HAL\LED.h"
 #include "HAL\HSwitch.h"
+#include "CTRMain.h"
 #ifdef SCHED_TEST
 void APP3_init(void)
 {
@@ -19,13 +20,13 @@ void Runnable_APP3(void)
   {
   /* Toggle the LED status */
 	LED1_status ^= (LED_ON | LED_OFF);
-  LED_Set_Status(Led1 , LED1_status);
+  LED_Set_Status(Green_Light , LED1_status);
   }
   if (SWitch2_status == HSwitch_PRESSED)
   {
   /* Toggle the LED status */
 	LED2_status ^= (LED_ON | LED_OFF);
-   LED_Set_Status(Led2 , LED2_status);
+   LED_Set_Status(Green_Light , LED2_status);
   }
 }
 #endif

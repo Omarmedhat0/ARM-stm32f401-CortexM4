@@ -35,14 +35,12 @@ int main (void)
 {
   Set_PORT_Clock_ON(GPIOA);
   LED_Init();
-  Set_NVIC_Pending_IRQ(EXTI0);
   SET_Software_Interrupt(EXTI0)  ;
   Enable_NVIC_IRQ(EXTI0);
   Enable_NVIC_IRQ(EXTI1);
   Set_Interrupt_Priority(EXTI1,3,1,PRIORITY_GROUP1);
   Set_Interrupt_Priority(EXTI0,7,1,PRIORITY_GROUP1);
-
-  SET_Software_Interrupt(EXTI0);
+  Set_NVIC_Pending_IRQ(EXTI0);
   while(1)
   {
 

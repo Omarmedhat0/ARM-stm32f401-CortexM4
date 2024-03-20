@@ -18,50 +18,68 @@
 /*******************************************************************************
  *                                Definitions                                  *
  *******************************************************************************/
-#define LCD_ON 					0x00000001
-#define LCD_OFF 				0x00010000
-#define LCD_REV 				0x00010001
-#define LCD_FWD 				0x00000000
+#define LCD_DISPLAY_LINE1		0
+#define LCD_DISPLAY_LINE2		1
+#define LCD_DISPLAY_LINE3		3
+#define LCD_DISPLAY_LINE4		4
+
+#define LCD_DISPLAY_COL1		0
+#define LCD_DISPLAY_COL2		1
+#define LCD_DISPLAY_COL3		2
+#define LCD_DISPLAY_COL4		3
+#define LCD_DISPLAY_COL5		4
+#define LCD_DISPLAY_COL6		5
+#define LCD_DISPLAY_COL7		6
+#define LCD_DISPLAY_COL8		7
+#define LCD_DISPLAY_COL9		8
+#define LCD_DISPLAY_COL10		9
+#define LCD_DISPLAY_COL11		10
+#define LCD_DISPLAY_COL12		11
+#define LCD_DISPLAY_COL13		12
+#define LCD_DISPLAY_COL14		13
+#define LCD_DISPLAY_COL15		14
+#define LCD_DISPLAY_COL16		15
+
+/*Configure Maximum number of rows in LCD */
+#define MAX_NUM_OF_LINES 		2
+/*Configure Maximum number of column in LCD */
+#define MAX_NUM_OF_CHARACTERS 	16
 
 /*******************************************************************************
  *                         Types Declaration                                   *
  *******************************************************************************/
-
+typedef void (*LCD_CBF_t)(void);
 /*Struct for new LCD  configuration */
 typedef struct
 {
 	uint32_t  Pin;
 	void* 	  Port;
-	uint32_t  Connection;
-	uint32_t  Init_Status;
-
 }LCD_Config_t;
+
 
 /*******************************************************************************
  *                  	    Functions Prototypes                               *
  *******************************************************************************/
 /*
- * @brief    : Initializes a LCD pin based on the provided configuration.
- * @param[in]: Void.
- * @return   : Error_enumStatus_t - Error status indicating success or failure of the initialization.
- * @details  : This function initializes a LCD pin according to the provided configuration.
+ * @brief    : 
+ * @param[in]: 
+ * @return   :
+ * @details  :
  */
-Error_enumStatus_t LCD_Init (void);
-/*
- * @brief    : Sets the value of a LCD pin to a specified state.
- * @param[in]: Copy_LCDName - LCD Name or ID.
- * @param[in]: Copy_LCDStatus - The state that desired to be set if it was LCD_ON or LCD_OFF .
- * @return   : Error_enumStatus_t - Error status indicating success or failure of setting the pin value.
- * @details  : This function sets the value of a LCD pin to the specified state (high or low).
- */
-Error_enumStatus_t LCD_Get_Status(uint32_t Copy_LCDName , uint32_t Copy_LCDStatus);
 
-Error_enumStatus_t LCD_Clear_Screen(uint32_t Copy_LCDName , uint32_t Copy_LCDStatus);
+Error_enumStatus_t LCD_InitAsync (void);
 
-Error_enumStatus_t LCD_Write_String(uint32_t* Ptr_string , uint8_t size , uint8_t postion_x , uint8_t postion_y );
+Error_enumStatus_t LCD_Get_Status(uint8_t* Ptr_LCDStatus);
 
-Error_enumStatus_t LCD_Set_Cursor(uint32_t Copy_LCDName );
+Error_enumStatus_t LCD_Clear_ScreenAsync(void);
 
+Error_enumStatus_t LCD_Write_StringAsync(const uint8_t* Ptr_string, uint16_t size);
+
+Error_enumStatus_t LCD_Set_CursorPosAsync(uint8_t Copy_LCDPosX , uint8_t Copy_LCDPosY );
+
+Error_enumStatus_t LCD_Set_WriteCallBack(LCD_CBF_t Copy_WriteCBF);
+Error_enumStatus_t LCD_Set_ClearCallBack(LCD_CBF_t Copy_ClearCBF);
+Error_enumStatus_t LCD_Set_SetCursorCallBack(LCD_CBF_t Copy_SetCursorCBF);
 
 
 #endif /* LCD_H_ */

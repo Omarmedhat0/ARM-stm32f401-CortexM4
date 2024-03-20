@@ -11,13 +11,20 @@
 /*******************************************************************************
  *                        	  Types Declaration                                 *
  *******************************************************************************/
-/* Configure The LCDs Namein this Enum */
+/* Configure The LCDs Name in this Enum */
 typedef enum 
 {
-	/* EX : LCD */
-	Green_Light,
-	Yellow_Light,
-	Red_Light,
+	D0,
+	D1,
+	D2,
+	D3,
+	D4,
+	D5,
+	D6,
+	D7,
+	RS,
+	RW,
+	EN,
 	/*Indicate number of LCDd don't use it */
     _LCD_Num 
 }LCDS_t;

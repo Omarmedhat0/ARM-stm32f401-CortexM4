@@ -31,7 +31,7 @@ static void RedLight(void)
   LED_Set_Status(Yellow_Light, LED_OFF);
   LED_Set_Status(Red_Light, LED_ON);
 }
-void Runnable_Traffic(void)
+void Traffic_Runnable(void)
 {
   static uint32_t seconds = 0;
   static uint8_t prev = 0 ;

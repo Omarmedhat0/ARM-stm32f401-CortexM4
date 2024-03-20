@@ -49,7 +49,15 @@
  It implicitly make it static fri this file so the other files can't see it */
 const  LCD_Config_t LCDS[_LCD_Num] = {
    /*Ex : Set LCD1 Configuration*/
-    [Green_Light] = {.Pin = LCD_PIN0,.Port = LCD_PORTA,.Connection = LCD_FWD,.Init_Status = LCD_OFF},
-    [Yellow_Light] = {.Pin = LCD_PIN1,.Port = LCD_PORTA,.Connection = LCD_FWD,.Init_Status = LCD_OFF},
-    [Red_Light] = {.Pin = LCD_PIN2,.Port = LCD_PORTA,.Connection = LCD_FWD,.Init_Status = LCD_OFF}
+    [D0] = {.Port=LCD_PORTA , .Pin= LCD_PIN0 },
+    [D1] = {.Port=LCD_PORTA , .Pin= LCD_PIN1 },
+    [D2] = {.Port=LCD_PORTA , .Pin= LCD_PIN2 },
+    [D3] = {.Port=LCD_PORTA , .Pin= LCD_PIN3 },
+    [D4] = {.Port=LCD_PORTA , .Pin= LCD_PIN4 },
+    [D5] = {.Port=LCD_PORTA , .Pin= LCD_PIN5 },
+    [D6] = {.Port=LCD_PORTA , .Pin= LCD_PIN6 },
+    [D7] = {.Port=LCD_PORTA , .Pin= LCD_PIN7 },
+    [RS] = {.Port=LCD_PORTA , .Pin= LCD_PIN8 },
+    [RW] = {.Port=LCD_PORTA , .Pin= LCD_PIN9 },
+    [EN] = {.Port=LCD_PORTA , .Pin= LCD_PIN10 },
 };

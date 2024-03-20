@@ -90,7 +90,7 @@ Error_enumStatus_t HSwitch_Get_Status(uint32_t Copy_HSwitchName, uint8_t *Ptr_St
  * @return   : Error_enumStatus_t - Error status indicating success or failure of setting the pin value.
  * @details  : This function to handle swirch debounce problem according to schedular .
  */
-void Runnable_Switch(void)
+void HSwitch_Runnable(void)
 {
     /* Declare variable to hold current switch state */
     uint8_t current;
