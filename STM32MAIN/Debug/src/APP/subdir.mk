@@ -5,15 +5,33 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ../src/APP/Nvic_test.c \
-../src/APP/SysTick_Test.c 
+../src/APP/Sched_App1.c \
+../src/APP/Sched_App2.c \
+../src/APP/Sched_App3_SW_Test.c \
+../src/APP/Sched_Test.c \
+../src/APP/SysTick_Test.c \
+../src/APP/TrafficLight.c \
+../src/APP/TrafficLight_test.c 
 
 C_DEPS += \
 ./src/APP/Nvic_test.d \
-./src/APP/SysTick_Test.d 
+./src/APP/Sched_App1.d \
+./src/APP/Sched_App2.d \
+./src/APP/Sched_App3_SW_Test.d \
+./src/APP/Sched_Test.d \
+./src/APP/SysTick_Test.d \
+./src/APP/TrafficLight.d \
+./src/APP/TrafficLight_test.d 
 
 OBJS += \
 ./src/APP/Nvic_test.o \
-./src/APP/SysTick_Test.o 
+./src/APP/Sched_App1.o \
+./src/APP/Sched_App2.o \
+./src/APP/Sched_App3_SW_Test.o \
+./src/APP/Sched_Test.o \
+./src/APP/SysTick_Test.o \
+./src/APP/TrafficLight.o \
+./src/APP/TrafficLight_test.o 
 
 
 # Each subdirectory must supply rules for building sources it contributes

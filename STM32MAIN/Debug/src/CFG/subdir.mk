@@ -4,15 +4,24 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
+../src/CFG/HSwitch_Cfg.c \
+../src/CFG/LCD_Cfg.c \
 ../src/CFG/LED_Cfg.c \
+../src/CFG/RunnableList_Cfg.c \
 ../src/CFG/Switch_Cfg.c 
 
 C_DEPS += \
+./src/CFG/HSwitch_Cfg.d \
+./src/CFG/LCD_Cfg.d \
 ./src/CFG/LED_Cfg.d \
+./src/CFG/RunnableList_Cfg.d \
 ./src/CFG/Switch_Cfg.d 
 
 OBJS += \
+./src/CFG/HSwitch_Cfg.o \
+./src/CFG/LCD_Cfg.o \
 ./src/CFG/LED_Cfg.o \
+./src/CFG/RunnableList_Cfg.o \
 ./src/CFG/Switch_Cfg.o 
 
 

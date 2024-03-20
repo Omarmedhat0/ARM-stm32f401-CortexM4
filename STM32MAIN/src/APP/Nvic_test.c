@@ -21,7 +21,7 @@ void delay_ms(uint32_t ms)
 }
 void EXTI0_IRQHandler(void)
 {
-  LED_Set_Status(Led1 , LED_ON);
+  LED_Set_Status(Green_Light , LED_ON);
   Set_NVIC_Pending_IRQ(EXTI1);
   delay_ms(500);/*500 = 5 Sec*/
 }
@@ -29,19 +29,20 @@ void EXTI0_IRQHandler(void)
 
 void EXTI1_IRQHandler(void)
 {
-  LED_Set_Status(Led1 , LED_OFF);
+  LED_Set_Status(Green_Light , LED_OFF);
 }
 int main (void)
 {
   Set_PORT_Clock_ON(GPIOA);
   LED_Init();
+  Set_NVIC_Pending_IRQ(EXTI0);
   SET_Software_Interrupt(EXTI0)  ;
   Enable_NVIC_IRQ(EXTI0);
   Enable_NVIC_IRQ(EXTI1);
   Set_Interrupt_Priority(EXTI1,3,1,PRIORITY_GROUP1);
   Set_Interrupt_Priority(EXTI0,7,1,PRIORITY_GROUP1);
-  Set_NVIC_Pending_IRQ(EXTI0);
-  SET_Software_Interrupt(EXTI16_PVD);
+
+  SET_Software_Interrupt(EXTI0);
   while(1)
   {
 

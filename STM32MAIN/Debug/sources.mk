@@ -37,6 +37,7 @@ src/APP \
 src/CFG \
 src/HAL \
 src/MCAL \
+src/Service \
 system/src/cmsis \
 system/src/cortexm \
 system/src/diag \
