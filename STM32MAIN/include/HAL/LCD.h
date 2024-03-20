@@ -48,14 +48,13 @@
 /*******************************************************************************
  *                         Types Declaration                                   *
  *******************************************************************************/
-typedef void (*LCD_CBF_t)(void);
+/*typedef void (*LCD_CBF_t)(void);*/
 /*Struct for new LCD  configuration */
 typedef struct
 {
 	uint32_t  Pin;
 	void* 	  Port;
 }LCD_Config_t;
-
 
 /*******************************************************************************
  *                  	    Functions Prototypes                               *
@@ -77,9 +76,9 @@ Error_enumStatus_t LCD_Write_StringAsync(const uint8_t* Ptr_string, uint16_t siz
 
 Error_enumStatus_t LCD_Set_CursorPosAsync(uint8_t Copy_LCDPosX , uint8_t Copy_LCDPosY );
 
-Error_enumStatus_t LCD_Set_WriteCallBack(LCD_CBF_t Copy_WriteCBF);
+/*Error_enumStatus_t LCD_Set_WriteCallBack(LCD_CBF_t Copy_WriteCBF);
 Error_enumStatus_t LCD_Set_ClearCallBack(LCD_CBF_t Copy_ClearCBF);
-Error_enumStatus_t LCD_Set_SetCursorCallBack(LCD_CBF_t Copy_SetCursorCBF);
+Error_enumStatus_t LCD_Set_SetCursorCallBack(LCD_CBF_t Copy_SetCursorCBF);*/
 
 
 #endif /* LCD_H_ */

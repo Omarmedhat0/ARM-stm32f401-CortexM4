@@ -113,21 +113,21 @@ static Error_enumStatus_t LCD_PowerOnProc(void);
 static Error_enumStatus_t LCD_Write_Proc(void);
 static Error_enumStatus_t LCD_SetPosition_Proc(void);
 static Error_enumStatus_t LCD_Helper_SetPosition(uint8_t *PTR_PostionDDRAM);
+static Error_enumStatus_t LCD_Helper_Clear(void);
 static Error_enumStatus_t LCD_WriteCommand(uint8_t Copy_LCDCommand, uint32_t Copy_WriteType);
 static Error_enumStatus_t LCD_CtrlEnablePin(uint32_t Copy_LCDEnablePinState);
-static Error_enumStatus_t LCD_Helper_Clear(void);
-
 
 /*******************************************************************************
  *                             Implementation   				                *
  *******************************************************************************/
+
 /*
  * @brief    :
  * @param[in]:
  * @return   :
  * @details  :
  */
-
+/****************************Processes Implementation************************************/
 void LCD_Runnable(void)
 {
     switch (g_LCD_State)
@@ -281,6 +281,7 @@ static Error_enumStatus_t LCD_SetPosition_Proc(void)
     /*Return the error status*/
     return Loc_enumReturnStatus;
 }
+/****************************User Async Functions************************************/
 
 Error_enumStatus_t LCD_InitAsync(void)
 {
@@ -361,7 +362,7 @@ Error_enumStatus_t LCD_Set_CursorPosAsync(uint8_t Copy_LCDPosX, uint8_t Copy_LCD
     /*Return the error status*/
     return Loc_enumReturnStatus;
 }
-/**********************Synch Functions********************************/
+/****************************User Sync Functions************************************/
 Error_enumStatus_t LCD_Get_Status(uint8_t *Ptr_LCDStatus)
 {
     /* Local Variable to store error status */
@@ -377,7 +378,7 @@ Error_enumStatus_t LCD_Get_Status(uint8_t *Ptr_LCDStatus)
     /*Return the error status*/
     return Loc_enumReturnStatus;
 }
-/****************Static Functions*******************/
+/**********************************Static Helper Functions*********************************/
 static Error_enumStatus_t LCD_PowerOnProc(void)
 {
     /* Local Variable to store error status */
@@ -433,8 +434,6 @@ static Error_enumStatus_t LCD_CtrlEnablePin(uint32_t Copy_LCDEnablePinState)
     /*Return the error status*/
     return Loc_enumReturnStatus;
 }
-
-/*********************Helper Static Functions************************/
 
 static Error_enumStatus_t LCD_Helper_Clear(void)
 {
