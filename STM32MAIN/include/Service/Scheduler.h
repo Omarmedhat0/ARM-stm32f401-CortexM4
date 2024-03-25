@@ -19,7 +19,7 @@
 /*******************************************************************************
  *                             Definitions                                     *
  *******************************************************************************/
-#define TICK_TIME_MS 2
+#define TICK_TIME_MS 10
 /*******************************************************************************
  *                        	  Types Declaration                                 *
  *******************************************************************************/
@@ -29,11 +29,12 @@ typedef void (*Runnablecb_t)(void);
 typedef struct
 {
     /* Name or ID of the runnable task */
-    char* Name;
+    char        *Name;
     /* Periodicity of the task in milliseconds */
-    uint32_t PeriodicityMs;
+    uint32_t    PeriodicityMs;
     /* Callback function for the task */
     Runnablecb_t cb;
+    uint32_t    DelayTime;
 } Runnable_t;
 /*******************************************************************************
  *                  	    Functions Prototypes                               *
@@ -55,7 +56,5 @@ Error_enumStatus_t Sched_Init(void);
  *             Task should be created between Init and start.
  */
 Error_enumStatus_t Sched_Start(void);
-
-
 
 #endif /* Scheduler_H_ */

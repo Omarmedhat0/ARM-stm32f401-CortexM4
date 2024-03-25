@@ -12,14 +12,14 @@
 // #include "HAL/LED.h"
 #include "HAL/CLK_Control.h"
 #include "Service/Scheduler.h"
-
+#include "HAL/LED.h"
 extern void APP3_init(void);
 
 int main (void)
 {
   Set_PORT_Clock_ON(GPIOA);
   Set_PORT_Clock_ON(GPIOB);
-  APP3_init();
+  LED_Init();
   Sched_Init();
   Sched_Start();
 }

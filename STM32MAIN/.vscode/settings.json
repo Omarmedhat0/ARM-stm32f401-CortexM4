@@ -14,7 +14,10 @@
         "clk_control.h": "c",
         "trafficlight.h": "c",
         "gpio.h": "c",
-        "lcd_cfg.h": "c"
+        "lcd_cfg.h": "c",
+        "atomic": "c",
+        "cstdint": "c",
+        "led_cfg.h": "c"
     },
     "cSpell.words": [
         "delayms",

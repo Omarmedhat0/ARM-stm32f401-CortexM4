@@ -6,6 +6,7 @@
  Date        : 8/3/2024
  ============================================================================
  */
+#include "CTRMain.h"
 #ifdef SCHED_TEST
 #include "HAL\LED.h"
 void Runnable_Toggle_Led2(void)
@@ -16,12 +17,12 @@ void Runnable_Toggle_Led2(void)
   /* Increment the counter */
   COUNTER++;
   /* Check if the counter reaches 1000 milliseconds */
-  if ((COUNTER % 600) ==0)
+  if ((COUNTER % 300) ==0)
   {
   /* Toggle the LED status */
 	status ^= (LED_ON | LED_OFF);
   }
     /* Set the LED status */
-  LED_Set_Status(Led2 , status);
+  LED_Set_Status(Yellow_Light , status);
 }
 #endif

@@ -12,16 +12,30 @@
  *******************************************************************************/
 #include "Service/Scheduler.h"
 /*******************************************************************************
+ *                        	  Types Declaration                                 *
+ *******************************************************************************/
+/*Any info or new feature developer needs to add to the task during the run time should be configured here*/
+typedef struct
+{
+    const Runnable_t *runnable;
+    /*This indicate the remaining time to execute the the current task it should update automatically
+     *When the value of it reaches 0 this mean that this the time to execute the task
+     *After that ou should reset it by PeriodicityMs value*/
+    uint32_t RemainingTimeMs;
+
+} RunnableInfo_t;
+/*******************************************************************************
  *                              Variables		                               *
  *******************************************************************************/
-extern const  Runnable_t RunnableList[_RunNum] ;
-static volatile uint32_t PendingTicks  ;
+extern const Runnable_t RunnableList[_RunNum];
+static volatile uint32_t PendingTicks;
+RunnableInfo_t Runinfo[_RunNum];
 /*******************************************************************************
  *                         Static Function Prototypes		                   *
  *******************************************************************************/
-static void Sched(void) ;
-static void Tickcb(void) ;
-/******************************************************************************* 
+static void Sched(void);
+static void Tickcb(void);
+/*******************************************************************************
  *                             Implementation   				               *
  *******************************************************************************/
 /*
@@ -34,14 +48,30 @@ Error_enumStatus_t Sched_Init(void)
 {
     /* Local variable to store the error status */
     Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk;
+    uint8_t Loc_idx ;
     /* Configure  the system timer for scheduler operation */
     STK_SetConfig(STK_PROCESSOR_CLOCK_ENB_INT);
     /* Set the callback function for system timer interrupts */
     STK_SetCallBack(Tickcb);
     /* Set the tick time for the scheduler */
-    Loc_enumReturnStatus = STK_SetTimeMs(TICK_TIME_MS);
+    STK_SetTimeMs(TICK_TIME_MS);
+    for (Loc_idx =0 ; Loc_idx < _RunNum; Loc_idx++)
+    {
+        if (Runinfo[Loc_idx].runnable == NULL)
+        {
+            /*Pass pointer which user pass to me in the current struct of RunnableInfo_t */
+            Runinfo[Loc_idx].runnable = &RunnableList[Loc_idx];
+            /*Initiate the remaining time with delayms */
+            Runinfo[Loc_idx].RemainingTimeMs = Runinfo[Loc_idx].runnable->DelayTime;
+        }
+        else
+        {
+            Loc_enumReturnStatus = Status_enumNotOk;
+        }
+    }
+
     /* Return the error status */
-    return Loc_enumReturnStatus ;
+    return Loc_enumReturnStatus;
 }
 /*
  * @brief    : Starts the scheduler.
@@ -63,14 +93,14 @@ Error_enumStatus_t Sched_Start(void)
         /* Check if there are pending ticks */
         if (PendingTicks)
         {
-            /* Decrement pending ticks counter */          
-            PendingTicks -- ;
+            /* Decrement pending ticks counter */
+            PendingTicks--;
             /* Execute the scheduler function */
             Sched();
         }
     }
     /* Return the error status */
-    return Loc_enumReturnStatus ;
+    return Loc_enumReturnStatus;
 }
 /*
  * @brief    : Executes the scheduler.
@@ -83,20 +113,18 @@ static void Sched(void)
 {
     /* Declare variable for loop index */
     uint32_t idx;
-    /* Declare static variable to hold time stamp */
-    static uint32_t TimeStamp = 0 ;    
     /* Loop through all runnables */
     for (idx = 0; idx < _RunNum; idx++)
     {
         /* Check if the callback function is not NULL and if the time condition is met */
-        if ((RunnableList[idx].cb) && (TimeStamp % RunnableList[idx].PeriodicityMs == 0)) 
+        if ((Runinfo[idx].runnable->cb) && (Runinfo[idx].RemainingTimeMs== 0))
         {
             /* Call the callback function */
             RunnableList[idx].cb();
+            Runinfo[idx].RemainingTimeMs = Runinfo[idx].runnable->PeriodicityMs ;
         }
+        Runinfo[idx].RemainingTimeMs -= TICK_TIME_MS ;
     }
-    /* Increment time stamp by tick time */
-    TimeStamp += TICK_TIME_MS ;
 }
 /*
  * @brief    : Callback function for system timer interrupts.
@@ -107,5 +135,5 @@ static void Sched(void)
 static void Tickcb(void)
 {
     /* Increment pending ticks counter */
-    PendingTicks ++ ;    
+    PendingTicks++;
 }

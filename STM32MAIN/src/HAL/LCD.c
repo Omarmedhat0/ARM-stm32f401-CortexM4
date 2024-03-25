@@ -114,7 +114,8 @@ static Error_enumStatus_t LCD_Write_Proc(void);
 static Error_enumStatus_t LCD_SetPosition_Proc(void);
 static Error_enumStatus_t LCD_Helper_SetPosition(uint8_t *PTR_PostionDDRAM);
 static Error_enumStatus_t LCD_Helper_Clear(void);
-static Error_enumStatus_t LCD_WriteCommand(uint8_t Copy_LCDCommand, uint32_t Copy_WriteType);
+static Error_enumStatus_t LCD_WriteCommand(uint8_t Copy_LCDCommand);
+static Error_enumStatus_t LCD_WriteData( uint8_t Copy_LCDCommand);
 static Error_enumStatus_t LCD_CtrlEnablePin(uint32_t Copy_LCDEnablePinState);
 
 /*******************************************************************************
@@ -174,28 +175,28 @@ static Error_enumStatus_t LCD_InitState(void)
         g_LCD_InitMode = LCD_FunctionSet;
         break;
     case LCD_FunctionSet:
-        Loc_enumReturnStatus = LCD_WriteCommand(LCD_TWO_LINES_EIGHT_BITS_MODE, LCD_WRITE_COMMAND);
+        Loc_enumReturnStatus = LCD_WriteCommand(LCD_TWO_LINES_EIGHT_BITS_MODE);
         if (g_LCD_EnablePinState == LCD_ENABLE_OFF)
         {
             g_LCD_InitMode = LCD_DisplayControl;
         }
         break;
     case LCD_DisplayControl:
-        Loc_enumReturnStatus = LCD_WriteCommand(LCD_CURSOR_ON, LCD_WRITE_COMMAND);
+        Loc_enumReturnStatus = LCD_WriteCommand(LCD_CURSOR_ON);
         if (g_LCD_EnablePinState == LCD_ENABLE_OFF)
         {
             g_LCD_InitMode = LCD_ClearDisplay;
         }
         break;
     case LCD_ClearDisplay:
-        Loc_enumReturnStatus = LCD_WriteCommand(LCD_CLEAR_COMMAND, LCD_WRITE_COMMAND);
+        Loc_enumReturnStatus = LCD_WriteCommand(LCD_CLEAR_COMMAND);
         if (g_LCD_EnablePinState == LCD_ENABLE_OFF)
         {
             g_LCD_InitMode = LCD_EntryModeSet;
         }
         break;
     case LCD_EntryModeSet:
-        Loc_enumReturnStatus = LCD_WriteCommand(LCD_INCREMENT_CRUSOR_SHIFT_RIGHT_MODE, LCD_WRITE_COMMAND);
+        Loc_enumReturnStatus = LCD_WriteCommand(LCD_INCREMENT_CRUSOR_SHIFT_RIGHT_MODE);
         if (g_LCD_EnablePinState == LCD_ENABLE_OFF)
         {
             g_LCD_InitMode = LCD_EndInit;
@@ -227,7 +228,7 @@ static Error_enumStatus_t LCD_Write_Proc(void)
     case LCD_WriteCharacter:
         if (g_CurrentWritePostion.CurColPostion != LCD_UserRequest.Len)
         {
-            LCD_WriteCommand(LCD_UserRequest.UserString[g_CurrentWritePostion.CurColPostion], LCD_WRITE_DATA);
+            LCD_WriteData(LCD_UserRequest.UserString[g_CurrentWritePostion.CurColPostion]);
             if  (g_LCD_EnablePinState == LCD_ENABLE_OFF) 
              {
                 g_CurrentWritePostion.CurColPostion++;
@@ -263,7 +264,7 @@ static Error_enumStatus_t LCD_SetPosition_Proc(void)
         Loc_u8PostionState = LCD_SetPos;
         break;
     case LCD_SetPos:
-        Loc_enumReturnStatus = LCD_WriteCommand((WRITE_ON_DDRAM_INDEX + Loc_Location), LCD_WRITE_COMMAND);
+        Loc_enumReturnStatus = LCD_WriteCommand((WRITE_ON_DDRAM_INDEX + Loc_Location));
         if (g_LCD_EnablePinState == LCD_ENABLE_OFF)
         {
             Loc_u8PostionState = LCD_SetPosEnd;
@@ -400,7 +401,7 @@ static Error_enumStatus_t LCD_PowerOnProc(void)
     return Loc_enumReturnStatus;
 }
 
-static Error_enumStatus_t LCD_WriteCommand(uint8_t Copy_LCDCommand, uint32_t Copy_WriteType)
+static Error_enumStatus_t LCD_WriteCommand(uint8_t Copy_LCDCommand)
 {
     /* Local Variable to store error status */
     Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk;
@@ -408,7 +409,33 @@ static Error_enumStatus_t LCD_WriteCommand(uint8_t Copy_LCDCommand, uint32_t Cop
     uint32_t Loc_u32PinState;
     if (g_LCD_EnablePinState == LCD_ENABLE_OFF)
     {
-        Loc_enumReturnStatus = GPIO_Set_PinValue(LCDS[RS].Port, LCDS[RS].Pin, Copy_WriteType);
+        Loc_enumReturnStatus = GPIO_Set_PinValue(LCDS[RS].Port, LCDS[RS].Pin, GPIO_RESET_PIN);
+        Loc_enumReturnStatus |= GPIO_Set_PinValue(LCDS[RW].Port, LCDS[RW].Pin, GPIO_RESET_PIN);
+        for (Loc_idx = 0; (Loc_enumReturnStatus == Status_enumOk) && (Loc_idx < (_LCD_Num - CONTROL_PINS_NUM)); Loc_idx++)
+        {
+            Loc_u32PinState = (Copy_LCDCommand & (1 << Loc_idx)) ? GPIO_SET_PIN : GPIO_RESET_PIN;
+            Loc_enumReturnStatus = GPIO_Set_PinValue(LCDS[Loc_idx].Port, LCDS[Loc_idx].Pin, Loc_u32PinState);
+        }
+        g_LCD_EnablePinState = LCD_ENABLE_ON;
+        LCD_CtrlEnablePin(g_LCD_EnablePinState);
+    }
+    else
+    {
+        g_LCD_EnablePinState = LCD_ENABLE_OFF;
+        LCD_CtrlEnablePin(g_LCD_EnablePinState);
+    }
+    /*Return the error status*/
+    return Loc_enumReturnStatus;
+}
+static Error_enumStatus_t LCD_WriteData(uint8_t Copy_LCDCommand)
+{
+    /* Local Variable to store error status */
+    Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk;
+    uint8_t Loc_idx;
+    uint32_t Loc_u32PinState;
+    if (g_LCD_EnablePinState == LCD_ENABLE_OFF)
+    {
+        Loc_enumReturnStatus = GPIO_Set_PinValue(LCDS[RS].Port, LCDS[RS].Pin, GPIO_SET_PIN);
         Loc_enumReturnStatus |= GPIO_Set_PinValue(LCDS[RW].Port, LCDS[RW].Pin, GPIO_RESET_PIN);
         for (Loc_idx = 0; (Loc_enumReturnStatus == Status_enumOk) && (Loc_idx < (_LCD_Num - CONTROL_PINS_NUM)); Loc_idx++)
         {
@@ -439,7 +466,7 @@ static Error_enumStatus_t LCD_Helper_Clear(void)
 {
     /* Local Variable to store error status */
     Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk;
-    LCD_WriteCommand(LCD_CLEAR_COMMAND, LCD_WRITE_COMMAND);
+    LCD_WriteCommand(LCD_CLEAR_COMMAND);
     if (g_LCD_EnablePinState == LCD_ENABLE_OFF)
     {
         LCD_UserRequest.State = LCD_ReqReady;
