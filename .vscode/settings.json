@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "gpio.h": "c",
+        "error.h": "c",
+        "led_cfg.h": "c",
+        "usart.h": "c",
+        "std_types.h": "c",
+        "usart_cfg.h": "c"
+    }
+}

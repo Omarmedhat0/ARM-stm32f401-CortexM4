@@ -29,6 +29,10 @@ typedef enum
 	 */
 	Status_enumNULLPointer,
 
+	Status_enumBusyState,
+
+	Status_enumTimOut
+
 }Error_enumStatus_t;
 
 #endif /* ERROR */

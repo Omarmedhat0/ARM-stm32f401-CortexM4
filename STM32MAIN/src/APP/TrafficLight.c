@@ -10,7 +10,7 @@
 Traffic_Config_t Traffic_Status = Green;
 void Traffic_Light_Init(void)
 {
-  Set_PORT_Clock_ON(GPIOA);
+  Set_Clock_ON(GPIOA);
   LED_Init();
 }
 static void GreenLight(void)

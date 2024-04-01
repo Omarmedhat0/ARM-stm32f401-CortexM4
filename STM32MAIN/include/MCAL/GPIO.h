@@ -70,6 +70,24 @@
 #define GPIO_SET_PIN 					0x00000001
 #define GPIO_RESET_PIN 					0x00010000
 
+#define GPIO_AF_0						0x00000000
+#define GPIO_AF_1						0x00000001
+#define GPIO_AF_2						0x00000002
+#define GPIO_AF_3						0x00000003
+#define GPIO_AF_4						0x00000004
+#define GPIO_AF_5						0x00000005
+#define GPIO_AF_6						0x00000006
+#define GPIO_AF_7						0x00000007
+#define GPIO_AF_8						0x00000008
+#define GPIO_AF_9						0x00000009
+#define GPIO_AF_10						0x0000000A
+#define GPIO_AF_11						0x0000000B
+#define GPIO_AF_12						0x0000000C
+#define GPIO_AF_13						0x0000000D
+#define GPIO_AF_14						0x0000000E
+#define GPIO_AF_15						0x0000000F
+
+
 /*******************************************************************************
  *                         Types Declaration                                   *
  *******************************************************************************/
@@ -108,7 +126,7 @@ Error_enumStatus_t GPIO_InitPin (GPIO_Config_t *Loc_GPIOElement);
 Error_enumStatus_t GPIO_Set_PinValue(void *Port , uint32_t Copy_PinNum , uint32_t Copy_PinState );
 /*
  * @brief    : Gets the current value of a GPIO pin.
- * @param[in]: Port - Pointer to the GPIO port (From GPIO_PORTA to GPIO_PORTH).
+ * @param[in] : Port - Pointer to the GPIO port (From GPIO_PORTA to GPIO_PORTH).
  * @param[in]: Copy_PinNum - The number of the pin to be set (FROM GPIO_PIN0 TO GPIO_PIN16) .
  * @param[out]: PinStatus - Pointer to a variable to store the pin status (1 for high, 0 for low).
  * @return   : Error_enumStatus_t - Error status indicating success or failure of reading the pin value.
@@ -117,5 +135,5 @@ Error_enumStatus_t GPIO_Set_PinValue(void *Port , uint32_t Copy_PinNum , uint32_
 Error_enumStatus_t GPIO_Get_GetPinValue(void *Port , uint32_t Copy_PinNum,  uint8_t * PinStatus) ;
 
 
-
+Error_enumStatus_t GPIO_CFG_AlternativeFunction(void *Port , uint32_t Copy_PinNum,  uint32_t Copy_AFNumber) ;
 #endif /* GPIO_H_ */

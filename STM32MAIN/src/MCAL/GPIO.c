@@ -23,6 +23,7 @@
 #define GPIO_PULL_TYPE_SHIFT 3
 #define GPIO_GROUP_OF_2_BITS 2
 #define GPIO_GROUP_OF_3_BITS 3
+#define GPIO_AF_CLR_MASK 0x0000000F
 /*******************************************************************************
  *                        	  Types Declaration                                 *
  *******************************************************************************/
@@ -196,4 +197,50 @@ Error_enumStatus_t GPIO_Get_GetPinValue(void *Port, uint32_t Copy_PinNum, uint8_
         *PinStatus = (((((GPIO_PORT_t *)Port)->IDR) & (1 << Copy_PinNum)) >> Copy_PinNum);
     }
     return Loc_enumReturnStatus;
+}
+
+Error_enumStatus_t GPIO_CFG_AlternativeFunction(void *Port , uint32_t Copy_PinNum,  uint32_t Copy_AFNumber) 
+{
+    /* Local Variable to store error status */
+    Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk; /*Validate the input parameters*/
+    uint32_t Loc_AFRValue = 0 ;
+    if (Port == NULL)
+    {
+        Loc_enumReturnStatus = Status_enumNULLPointer;
+    }
+    else if  (Copy_PinNum > GPIO_PIN15)
+    {
+        Loc_enumReturnStatus = Status_enumWrongInput;
+    }
+    else if(    (Port != GPIO_PORTA) && (Port != GPIO_PORTB) &&
+                (Port != GPIO_PORTC) && (Port != GPIO_PORTD) &&
+                (Port != GPIO_PORTE) && (Port != GPIO_PORTH)
+            )
+    {
+        Loc_enumReturnStatus = Status_enumWrongInput;
+    }   
+    else if (Copy_AFNumber>GPIO_AF_15)
+    {
+        Loc_enumReturnStatus = Status_enumWrongInput;
+    }
+    else
+    {
+        if (Copy_PinNum <= GPIO_AF_7)
+        {
+            Loc_AFRValue = ((GPIO_PORT_t *)Port)->AFRL ;
+            Loc_AFRValue &= ~(GPIO_AF_CLR_MASK<<(Copy_PinNum*4));
+            Loc_AFRValue |= (Copy_AFNumber<<(Copy_PinNum*4));
+            ((GPIO_PORT_t *)Port)->AFRL = Loc_AFRValue ;
+        }
+        else
+        {
+            Loc_AFRValue = ((GPIO_PORT_t *)Port)->AFRH ;
+            Loc_AFRValue &= ~(GPIO_AF_CLR_MASK<<((Copy_PinNum-8)*4));
+            Loc_AFRValue |= (Copy_AFNumber<<((Copy_PinNum-8)*4));
+            ((GPIO_PORT_t *)Port)->AFRH = Loc_AFRValue ;
+        }
+        
+    }
+    return Loc_enumReturnStatus;
+
 }

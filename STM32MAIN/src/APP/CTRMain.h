@@ -1,5 +1,5 @@
 #ifndef CTR_MAIN_H_
 #define CTR_MAIN_H_
 
-#define SCHED_TEST
+#define UART_TEST
 #endif

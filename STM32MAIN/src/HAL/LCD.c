@@ -352,8 +352,6 @@ Error_enumStatus_t LCD_Set_CursorPosAsync(uint8_t Copy_LCDPosX, uint8_t Copy_LCD
         {
             LCD_UserRequest.State = LCD_ReqBusy;
             LCD_UserRequest.Type = LCD_ReqSetPos;
-            LCD_UserRequest.CurrentPos.CurColPostion = Copy_LCDPosY;
-            LCD_UserRequest.CurrentPos.CurLinePostion = Copy_LCDPosX;
         }
     }
     else

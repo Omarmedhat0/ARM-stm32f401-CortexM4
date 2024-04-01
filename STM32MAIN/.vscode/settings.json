@@ -17,7 +17,16 @@
         "lcd_cfg.h": "c",
         "atomic": "c",
         "cstdint": "c",
-        "led_cfg.h": "c"
+        "led_cfg.h": "c",
+        "lcd.h": "c",
+        "array": "c",
+        "string": "c",
+        "string_view": "c",
+        "nvic.h": "c",
+        "stm32f401cc.h": "c",
+        "usart_cfg.h": "c",
+        "ctrmain.h": "c",
+        "usart.h": "c"
     },
     "cSpell.words": [
         "delayms",
