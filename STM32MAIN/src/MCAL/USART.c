@@ -213,7 +213,7 @@ Error_enumStatus_t USART_SendByte(USART_UserReq_t *Ptr_UserReq)
         }
         if (Time == 0)
         {
-            if (((((USART_PERI_t *)USART[Ptr_UserReq->USART_ID])->USART_SR) & UART_TX_EMPTY_FLAG )== 0)
+            if (((((USART_PERI_t *)USART[Ptr_UserReq->USART_ID])->USART_SR) & UART_TX_EMPTY_FLAG) == 0)
             {
                 Loc_enumReturnStatus = Status_enumTimOut;
             }
@@ -243,8 +243,8 @@ Error_enumStatus_t USART_GetByte(USART_UserReq_t *Ptr_UserReq)
     {
         volatile uint16_t Time = 2000;
         RxReq[Ptr_UserReq->USART_ID].state = USART_ReqBusy;
-        ((USART_PERI_t *)USART[Ptr_UserReq->USART_ID])->USART_CR1 |= UART_RX_ENABLE_MASK;
-        while ( ( ( ( ( ( USART_PERI_t * )USART[Ptr_UserReq->USART_ID] )  ->USART_SR )& UART_RX_NOT_EMPTY_FLAG )== 0) && Time)
+       ((USART_PERI_t *)USART[Ptr_UserReq->USART_ID])->USART_CR1 |= UART_RX_ENABLE_MASK;
+        while ((((((USART_PERI_t *)USART[Ptr_UserReq->USART_ID])->USART_SR) & UART_RX_NOT_EMPTY_FLAG) == 0) && Time)
         {
             Time--;
         }
@@ -263,7 +263,8 @@ Error_enumStatus_t USART_GetByte(USART_UserReq_t *Ptr_UserReq)
         {
             *(Ptr_UserReq->Ptr_buffer) = ((USART_PERI_t *)USART[Ptr_UserReq->USART_ID])->USART_DR;
         }
-        TxReq[Ptr_UserReq->USART_ID].state = USART_ReqReady;
+        ((USART_PERI_t *)USART[Ptr_UserReq->USART_ID])->USART_CR1 &= ~UART_RX_ENABLE_MASK;
+        RxReq[Ptr_UserReq->USART_ID].state = USART_ReqReady;
     }
     else
     {
@@ -273,28 +274,6 @@ Error_enumStatus_t USART_GetByte(USART_UserReq_t *Ptr_UserReq)
     return Loc_enumReturnStatus;
 }
 Error_enumStatus_t USART_TxDone(uint8_t USART_ID, uint8_t *Ptr_Status)
-{
-    /* Local Variable to store error status */
-    Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk;
-    if (Ptr_Status == NULL)
-    {
-        Loc_enumReturnStatus = Status_enumNULLPointer;
-    }
-    else
-    {
-        if ((((((USART_PERI_t *)USART[USART_ID])->USART_SR) & UART_RX_NOT_EMPTY_FLAG )!= 0))
-        {
-            *Ptr_Status = Done;
-        }
-        else
-        {
-            *Ptr_Status = NOT_Done;
-        }
-    }
-    /* Return the status of the clock operation */
-    return Loc_enumReturnStatus;
-}
-Error_enumStatus_t USART_IsRx(uint8_t USART_ID, uint8_t *Ptr_Status)
 {
     /* Local Variable to store error status */
     Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk;
@@ -316,114 +295,148 @@ Error_enumStatus_t USART_IsRx(uint8_t USART_ID, uint8_t *Ptr_Status)
     /* Return the status of the clock operation */
     return Loc_enumReturnStatus;
 }
-
-void USART1_IRQHandler(void)
+Error_enumStatus_t USART_IsRx(uint8_t USART_ID, uint8_t *Ptr_Status)
 {
-    if ((((USART_PERI_t *)USART[USART1_ID])->USART_SR) & UART_RX_NOT_EMPTY_FLAG)
+    /* Local Variable to store error status */
+    Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk;
+    if (Ptr_Status == NULL)
     {
-        if (RxReq->buffer.Pos < RxReq->buffer.size)
-        {
-            RxReq->buffer.data[RxReq->buffer.Pos] = ((USART_PERI_t *)USART[USART1_ID])->USART_DR;
-            RxReq->buffer.Pos++;
-            if (RxReq->buffer.Pos == RxReq->buffer.size)
-            {
-                RxReq->state = USART_ReqReady;
-                ((USART_PERI_t *)USART[USART1_ID])->USART_CR1 &= UART_RXE_ENABLE_MASK;
-                if (RxReq->CB)
-                {
-                    RxReq->CB();
-                }
-            }
-        }
+        Loc_enumReturnStatus = Status_enumNULLPointer;
     }
-    if ((((USART_PERI_t *)USART[USART1_ID])->USART_SR) & UART_TX_DONE_FLAG)
+    else
     {
-        if (TxReq->buffer.Pos < TxReq->buffer.size)
+        if ((((((USART_PERI_t *)USART[USART_ID])->USART_SR) & UART_RX_NOT_EMPTY_FLAG) != 0))
         {
-            ((USART_PERI_t *)USART[USART1_ID])->USART_DR = TxReq->buffer.data[TxReq->buffer.Pos];
-            TxReq->buffer.Pos++;
+            *Ptr_Status = Done;
         }
         else
         {
-            ((USART_PERI_t *)USART[USART1_ID])->USART_CR1 &= UART_TXE_ENABLE_MASK;
-            TxReq->state = USART_ReqReady;
-            if (TxReq->CB)
+            *Ptr_Status = NOT_Done;
+        }
+    }
+    /* Return the status of the clock operation */
+    return Loc_enumReturnStatus;
+}
+
+void USART1_IRQHandler(void)
+{
+    uint32_t Lo_CR1_Value = ((USART_PERI_t *)USART[USART1_ID])->USART_CR1 ;
+    if ((((USART_PERI_t *)USART[USART1_ID])->USART_SR) & UART_TX_DONE_FLAG)
+    {
+        if ((TxReq[USART1_ID].buffer.Pos) < (TxReq[USART1_ID].buffer.size))
+        {
+            ((USART_PERI_t *)USART[USART1_ID])->USART_DR = TxReq[USART1_ID].buffer.data[TxReq[USART1_ID].buffer.Pos];
+            TxReq[USART1_ID].buffer.Pos++;
+        }
+        else
+        {
+            
+            Lo_CR1_Value &= ~(UART_TXE_ENABLE_MASK); 
+            Lo_CR1_Value&= ~(UART_TX_ENABLE_MASK);
+            TxReq[USART1_ID].state = USART_ReqReady;
+            ((USART_PERI_t *)USART[USART1_ID])->USART_CR1 = Lo_CR1_Value ;           
+            if (TxReq[USART1_ID].CB)
             {
-                TxReq->CB();
+                TxReq[USART1_ID].CB();
+            }
+        }
+    }
+    if ((((USART_PERI_t *)USART[USART1_ID])->USART_SR) & UART_RX_NOT_EMPTY_FLAG)
+    {
+        if (RxReq[USART1_ID].buffer.Pos < RxReq[USART1_ID].buffer.size)
+        {
+            RxReq[USART1_ID].buffer.data[RxReq[USART1_ID].buffer.Pos] = ((USART_PERI_t *)USART[USART1_ID])->USART_DR;
+            RxReq[USART1_ID].buffer.Pos++;
+            if (RxReq[USART1_ID].buffer.Pos == RxReq[USART1_ID].buffer.size)
+            {
+                RxReq[USART1_ID].state = USART_ReqReady;
+                ((USART_PERI_t *)USART[USART1_ID])->USART_CR1 &= ~UART_RXE_ENABLE_MASK;
+                if (RxReq[USART1_ID].CB)
+                {
+                    RxReq[USART1_ID].CB();
+                }
             }
         }
     }
 }
 void USART2_IRQHandler(void)
 {
-    if ((((USART_PERI_t *)USART[USART2_ID])->USART_SR) & UART_RX_NOT_EMPTY_FLAG)
-    {
-        if (RxReq->buffer.Pos < RxReq->buffer.size)
-        {
-            RxReq->buffer.data[RxReq->buffer.Pos] = ((USART_PERI_t *)USART[USART2_ID])->USART_DR;
-            RxReq->buffer.Pos++;
-            if (RxReq->buffer.Pos == RxReq->buffer.size)
-            {
-                RxReq->state = USART_ReqReady;
-                ((USART_PERI_t *)USART[USART2_ID])->USART_CR1 &= UART_RXE_ENABLE_MASK;
-                if (RxReq->CB)
-                {
-                    RxReq->CB();
-                }
-            }
-        }
-    }
+    uint32_t Lo_CR1_Value = ((USART_PERI_t *)USART[USART2_ID])->USART_CR1 ;
     if ((((USART_PERI_t *)USART[USART2_ID])->USART_SR) & UART_TX_DONE_FLAG)
     {
-        if (TxReq->buffer.Pos < TxReq->buffer.size)
+        if ((TxReq[USART2_ID].buffer.Pos) < (TxReq[USART2_ID].buffer.size))
         {
-            ((USART_PERI_t *)USART[USART2_ID])->USART_DR = TxReq->buffer.data[TxReq->buffer.Pos];
-            TxReq->buffer.Pos++;
+            ((USART_PERI_t *)USART[USART2_ID])->USART_DR = TxReq[USART2_ID].buffer.data[TxReq[USART2_ID].buffer.Pos];
+            TxReq[USART2_ID].buffer.Pos++;
         }
         else
         {
-            ((USART_PERI_t *)USART[USART2_ID])->USART_CR1 &= UART_TXE_ENABLE_MASK;
-            TxReq->state = USART_ReqReady;
-            if (TxReq->CB)
+            
+            Lo_CR1_Value &= ~(UART_TXE_ENABLE_MASK); 
+            Lo_CR1_Value&= ~(UART_TX_ENABLE_MASK);
+            TxReq[USART2_ID].state = USART_ReqReady;
+            ((USART_PERI_t *)USART[USART2_ID])->USART_CR1 = Lo_CR1_Value ;           
+            if (TxReq[USART2_ID].CB)
             {
-                TxReq->CB();
+                TxReq[USART2_ID].CB();
+            }
+        }
+    }
+    if ((((USART_PERI_t *)USART[USART2_ID])->USART_SR) & UART_RX_NOT_EMPTY_FLAG)
+    {
+        if (RxReq[USART2_ID].buffer.Pos < RxReq[USART2_ID].buffer.size)
+        {
+            RxReq[USART2_ID].buffer.data[RxReq[USART2_ID].buffer.Pos] = ((USART_PERI_t *)USART[USART2_ID])->USART_DR;
+            RxReq[USART2_ID].buffer.Pos++;
+            if (RxReq[USART2_ID].buffer.Pos == RxReq[USART2_ID].buffer.size)
+            {
+                RxReq[USART2_ID].state = USART_ReqReady;
+                ((USART_PERI_t *)USART[USART2_ID])->USART_CR1 &= ~UART_RXE_ENABLE_MASK;
+                if (RxReq[USART2_ID].CB)
+                {
+                    RxReq[USART2_ID].CB();
+                }
             }
         }
     }
 }
 void USART6_IRQHandler(void)
 {
-        if ((((USART_PERI_t *)USART[USART6_ID])->USART_SR) & UART_RX_NOT_EMPTY_FLAG)
-    {
-        if (RxReq->buffer.Pos < RxReq->buffer.size)
-        {
-            RxReq->buffer.data[RxReq->buffer.Pos] = ((USART_PERI_t *)USART[USART6_ID])->USART_DR;
-            RxReq->buffer.Pos++;
-            if (RxReq->buffer.Pos == RxReq->buffer.size)
-            {
-                RxReq->state = USART_ReqReady;
-                ((USART_PERI_t *)USART[USART6_ID])->USART_CR1 &= UART_RXE_ENABLE_MASK;
-                if (RxReq->CB)
-                {
-                    RxReq->CB();
-                }
-            }
-        }
-    }
+    uint32_t Lo_CR1_Value = ((USART_PERI_t *)USART[USART6_ID])->USART_CR1 ;
     if ((((USART_PERI_t *)USART[USART6_ID])->USART_SR) & UART_TX_DONE_FLAG)
     {
-        if (TxReq->buffer.Pos < TxReq->buffer.size)
+        if ((TxReq[USART6_ID].buffer.Pos) < (TxReq[USART6_ID].buffer.size))
         {
-            ((USART_PERI_t *)USART[USART6_ID])->USART_DR = TxReq->buffer.data[TxReq->buffer.Pos];
-            TxReq->buffer.Pos++;
+            ((USART_PERI_t *)USART[USART6_ID])->USART_DR = TxReq[USART6_ID].buffer.data[TxReq[USART6_ID].buffer.Pos];
+            TxReq[USART6_ID].buffer.Pos++;
         }
         else
         {
-            ((USART_PERI_t *)USART[USART6_ID])->USART_CR1 &= UART_TXE_ENABLE_MASK;
-            TxReq->state = USART_ReqReady;
-            if (TxReq->CB)
+            
+            Lo_CR1_Value &= ~(UART_TXE_ENABLE_MASK); 
+            Lo_CR1_Value&= ~(UART_TX_ENABLE_MASK);
+            TxReq[USART6_ID].state = USART_ReqReady;
+            ((USART_PERI_t *)USART[USART6_ID])->USART_CR1 = Lo_CR1_Value ;           
+            if (TxReq[USART6_ID].CB)
             {
-                TxReq->CB();
+                TxReq[USART6_ID].CB();
+            }
+        }
+    }
+    if ((((USART_PERI_t *)USART[USART6_ID])->USART_SR) & UART_RX_NOT_EMPTY_FLAG)
+    {
+        if (RxReq[USART6_ID].buffer.Pos < RxReq[USART6_ID].buffer.size)
+        {
+            RxReq[USART6_ID].buffer.data[RxReq[USART6_ID].buffer.Pos] = ((USART_PERI_t *)USART[USART6_ID])->USART_DR;
+            RxReq[USART6_ID].buffer.Pos++;
+            if (RxReq[USART6_ID].buffer.Pos == RxReq[USART6_ID].buffer.size)
+            {
+                RxReq[USART6_ID].state = USART_ReqReady;
+                ((USART_PERI_t *)USART[USART6_ID])->USART_CR1 &= ~UART_RXE_ENABLE_MASK;
+                if (RxReq[USART6_ID].CB)
+                {
+                    RxReq[USART6_ID].CB();
+                }
             }
         }
     }

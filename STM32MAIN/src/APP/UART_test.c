@@ -31,11 +31,11 @@ void SET_LED(void)
 int main (void)
 {
   uint8_t x = 'c';
-  uint8_t y[4] = "Omar";
+  uint8_t y[4] ;
   volatile uint8_t z = 0;
   GPIO_Config_t UART1_PINS[UART1_PINS_NUM] = {
-    [TX_ID]={.Mood=GPIO_AF_PP , .Pin=GPIO_PIN9 , .Port=GPIO_PORTA , .Speed=GPIO_HIGH_SPEED},
-    [RX_ID]={.Mood=GPIO_AF_PP , .Pin=GPIO_PIN10 , .Port=GPIO_PORTA , .Speed=GPIO_HIGH_SPEED}
+    [TX_ID]={.Mood=GPIO_AF_PP , .Pin=GPIO_PIN9 , .Port=GPIO_PORTA , .Speed=GPIO_VERY_HIGH_SPEED},
+    [RX_ID]={.Mood=GPIO_AF_PP , .Pin=GPIO_PIN10 , .Port=GPIO_PORTA , .Speed=GPIO_VERY_HIGH_SPEED}
   };
  USART_UserReq_t USART1_Req1 = {.USART_ID=USART1_ID ,.Ptr_buffer=&x,.Buff_Len= 1,.Buff_cb= NULL};
  USART_UserReq_t USART1_Req2 = {.USART_ID=USART1_ID ,.Ptr_buffer=y,.Buff_Len= 4 , .Buff_cb = SET_LED};
@@ -50,23 +50,24 @@ int main (void)
   {
     GPIO_InitPin(&UART1_PINS[idx]);
   }
-  GPIO_CFG_AlternativeFunction(UART1_PINS[TX_ID].Port , UART1_PINS[TX_ID].Pin ,GPIO_AF_7);
-  GPIO_CFG_AlternativeFunction(UART1_PINS[RX_ID].Port , UART1_PINS[RX_ID].Pin ,GPIO_AF_7);
+ GPIO_CFG_AlternativeFunction(UART1_PINS[TX_ID].Port , UART1_PINS[TX_ID].Pin ,GPIO_AF_7);
+ GPIO_CFG_AlternativeFunction(UART1_PINS[RX_ID].Port , UART1_PINS[RX_ID].Pin ,GPIO_AF_7);
   USART_Init();
  USART_SendByte(&USART1_Req1);
  USART_TxBufferAsyncZeroCopy(&USART1_Req2);
+ 
   while(1)
   {
-    // USART_GetByte(&USART1_Req3);
-    // if (z=='w')
-    // {
-    //   SET_LED();
-    // }
-  }
+    USART_GetByte(&USART1_Req3);
+    if (z=='1')
+    {
+      z=0;
+      SET_LED();
+    }
+   }
+    USART_RxBufferAsyncZeroCopy(&USART1_Req2);
+
 }
 
 
 #endif
-
-
-
