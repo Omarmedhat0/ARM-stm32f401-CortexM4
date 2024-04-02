@@ -31,7 +31,7 @@ void SET_LED(void)
 int main (void)
 {
   uint8_t x = 'c';
-  uint8_t y[4] ;
+  uint8_t y[4] ="Omar" ;
   volatile uint8_t z = 0;
   GPIO_Config_t UART1_PINS[UART1_PINS_NUM] = {
     [TX_ID]={.Mood=GPIO_AF_PP , .Pin=GPIO_PIN9 , .Port=GPIO_PORTA , .Speed=GPIO_VERY_HIGH_SPEED},
