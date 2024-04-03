@@ -317,11 +317,11 @@ Error_enumStatus_t USART_IsRx(uint8_t USART_ID, uint8_t *Ptr_Status)
     /* Return the status of the clock operation */
     return Loc_enumReturnStatus;
 }
-
+//UART_TX_DONE_FLAG
 void USART1_IRQHandler(void)
 {
     uint32_t Lo_CR1_Value = ((USART_PERI_t *)USART[USART1_ID])->USART_CR1 ;
-    if ((((USART_PERI_t *)USART[USART1_ID])->USART_SR) & UART_TX_DONE_FLAG)
+    if ((((USART_PERI_t *)USART[USART1_ID])->USART_SR) &UART_TX_EMPTY_FLAG )
     {
         if ((TxReq[USART1_ID].buffer.Pos) < (TxReq[USART1_ID].buffer.size))
         {
@@ -332,7 +332,6 @@ void USART1_IRQHandler(void)
         {
             
             Lo_CR1_Value &= ~(UART_TXE_ENABLE_MASK); 
-            Lo_CR1_Value&= ~(UART_TX_ENABLE_MASK);
             TxReq[USART1_ID].state = USART_ReqReady;
             ((USART_PERI_t *)USART[USART1_ID])->USART_CR1 = Lo_CR1_Value ;           
             if (TxReq[USART1_ID].CB)
@@ -362,7 +361,7 @@ void USART1_IRQHandler(void)
 void USART2_IRQHandler(void)
 {
     uint32_t Lo_CR1_Value = ((USART_PERI_t *)USART[USART2_ID])->USART_CR1 ;
-    if ((((USART_PERI_t *)USART[USART2_ID])->USART_SR) & UART_TX_DONE_FLAG)
+    if ((((USART_PERI_t *)USART[USART2_ID])->USART_SR) & UART_TX_EMPTY_FLAG)
     {
         if ((TxReq[USART2_ID].buffer.Pos) < (TxReq[USART2_ID].buffer.size))
         {
@@ -373,7 +372,6 @@ void USART2_IRQHandler(void)
         {
             
             Lo_CR1_Value &= ~(UART_TXE_ENABLE_MASK); 
-            Lo_CR1_Value&= ~(UART_TX_ENABLE_MASK);
             TxReq[USART2_ID].state = USART_ReqReady;
             ((USART_PERI_t *)USART[USART2_ID])->USART_CR1 = Lo_CR1_Value ;           
             if (TxReq[USART2_ID].CB)
@@ -403,7 +401,7 @@ void USART2_IRQHandler(void)
 void USART6_IRQHandler(void)
 {
     uint32_t Lo_CR1_Value = ((USART_PERI_t *)USART[USART6_ID])->USART_CR1 ;
-    if ((((USART_PERI_t *)USART[USART6_ID])->USART_SR) & UART_TX_DONE_FLAG)
+    if ((((USART_PERI_t *)USART[USART6_ID])->USART_SR) & UART_TX_EMPTY_FLAG)
     {
         if ((TxReq[USART6_ID].buffer.Pos) < (TxReq[USART6_ID].buffer.size))
         {
@@ -414,7 +412,6 @@ void USART6_IRQHandler(void)
         {
             
             Lo_CR1_Value &= ~(UART_TXE_ENABLE_MASK); 
-            Lo_CR1_Value&= ~(UART_TX_ENABLE_MASK);
             TxReq[USART6_ID].state = USART_ReqReady;
             ((USART_PERI_t *)USART[USART6_ID])->USART_CR1 = Lo_CR1_Value ;           
             if (TxReq[USART6_ID].CB)
