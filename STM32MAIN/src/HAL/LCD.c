@@ -36,6 +36,7 @@
 #define INDEX_FOR_LINE_3 0X10
 #define INDEX_FOR_LINE_4 0X50
 #define WRITE_ON_DDRAM_INDEX 0X80
+#define INTEGER_OVER_FLOW   0xFF
 /*******************************************************************************
  *                        	  Types Declaration                                 *
  *******************************************************************************/
@@ -49,7 +50,8 @@ typedef enum
     LCD_NoReq,
     LCD_ReqWrite,
     LCD_ReqClear,
-    LCD_ReqSetPos
+    LCD_ReqSetPos,
+    LCD_ReqWriteNumber
 } LCD_UserRequestType;
 typedef enum
 {
@@ -61,9 +63,12 @@ typedef enum
 {
     LCD_WriteStart,
     LCD_WriteCharacter,
-    LCD_WriteDone
 } LCD_WriteState_t;
-
+typedef enum
+{
+    LCD_WriteNumberStart,
+    LCD_WriteNumber,
+} LCD_WriteNumberState_t;
 typedef enum
 {
     LCD_SetPosStart,
@@ -104,6 +109,7 @@ static uint32_t g_LCD_EnablePinState = LCD_ENABLE_OFF;
 static LCD_State_t g_LCD_State = LCD_Off;
 static LCD_InitMode_t g_LCD_InitMode = LCD_PowerOn;
 static LCD_WriteState_t g_WriteState = LCD_WriteStart;
+static LCD_WriteNumberState_t g_WriteNumState = LCD_WriteNumberStart ;
 static LCD_Write_t g_CurrentWritePostion;
 /*******************************************************************************
  *                         Static Function Prototypes		                   *
@@ -113,9 +119,10 @@ static Error_enumStatus_t LCD_PowerOnProc(void);
 static Error_enumStatus_t LCD_Write_Proc(void);
 static Error_enumStatus_t LCD_SetPosition_Proc(void);
 static Error_enumStatus_t LCD_Helper_SetPosition(uint8_t *PTR_PostionDDRAM);
-static Error_enumStatus_t LCD_Helper_Clear(void);
+static Error_enumStatus_t LCD_Clear_Proc(void);
+static Error_enumStatus_t LCD_WriteNumber_Proc(void);
 static Error_enumStatus_t LCD_WriteCommand(uint8_t Copy_LCDCommand);
-static Error_enumStatus_t LCD_WriteData( uint8_t Copy_LCDCommand);
+static Error_enumStatus_t LCD_WriteData(uint8_t Copy_LCDCommand);
 static Error_enumStatus_t LCD_CtrlEnablePin(uint32_t Copy_LCDEnablePinState);
 
 /*******************************************************************************
@@ -145,11 +152,13 @@ void LCD_Runnable(void)
                 LCD_Write_Proc();
                 break;
             case LCD_ReqClear:
-                LCD_Helper_Clear();
+                LCD_Clear_Proc();
                 break;
             case LCD_ReqSetPos:
                 LCD_SetPosition_Proc();
-
+                break;
+            case LCD_ReqWriteNumber:
+                LCD_WriteNumber_Proc();
                 break;
             default:
                 break;
@@ -229,20 +238,17 @@ static Error_enumStatus_t LCD_Write_Proc(void)
         if (g_CurrentWritePostion.CurColPostion != LCD_UserRequest.Len)
         {
             LCD_WriteData(LCD_UserRequest.UserString[g_CurrentWritePostion.CurColPostion]);
-            if  (g_LCD_EnablePinState == LCD_ENABLE_OFF) 
-             {
+            if (g_LCD_EnablePinState == LCD_ENABLE_OFF)
+            {
                 g_CurrentWritePostion.CurColPostion++;
-             }
+            }
         }
         else
         {
-            g_WriteState = LCD_WriteDone;
+             LCD_UserRequest.State = LCD_ReqReady;
+            LCD_UserRequest.Type = LCD_NoReq;
+            g_WriteState = LCD_WriteStart;
         }
-        break;
-    case LCD_WriteDone:
-        LCD_UserRequest.State = LCD_ReqReady;
-        LCD_UserRequest.Type = LCD_NoReq;
-        g_WriteState = LCD_WriteStart;
         break;
     default:
         break;
@@ -267,13 +273,10 @@ static Error_enumStatus_t LCD_SetPosition_Proc(void)
         Loc_enumReturnStatus = LCD_WriteCommand((WRITE_ON_DDRAM_INDEX + Loc_Location));
         if (g_LCD_EnablePinState == LCD_ENABLE_OFF)
         {
-            Loc_u8PostionState = LCD_SetPosEnd;
-        }
-        break;
-    case LCD_SetPosEnd:
         LCD_UserRequest.State = LCD_ReqReady;
         LCD_UserRequest.Type = LCD_NoReq;
         Loc_u8PostionState = LCD_SetPosStart;
+        }
         break;
     default:
         break;
@@ -282,6 +285,53 @@ static Error_enumStatus_t LCD_SetPosition_Proc(void)
     /*Return the error status*/
     return Loc_enumReturnStatus;
 }
+static Error_enumStatus_t LCD_Clear_Proc(void)
+{
+    /* Local Variable to store error status */
+    Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk;
+    LCD_WriteCommand(LCD_CLEAR_COMMAND);
+    if (g_LCD_EnablePinState == LCD_ENABLE_OFF)
+    {
+        LCD_UserRequest.State = LCD_ReqReady;
+        LCD_UserRequest.Type = LCD_NoReq;
+    }
+    /*Return the error status*/
+    return Loc_enumReturnStatus;
+}
+static Error_enumStatus_t LCD_WriteNumber_Proc(void)
+{
+    /* Local Variable to store error status */
+    Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk;
+
+    switch (g_WriteNumState)
+    {
+    case LCD_WriteNumberStart:
+        g_WriteNumState = LCD_WriteNumber;
+        g_CurrentWritePostion.CurColPostion = 0;
+        break;
+    case LCD_WriteNumber:
+        if (g_CurrentWritePostion.CurColPostion != LCD_UserRequest.Len)
+        {
+            LCD_WriteData(LCD_UserRequest.UserString[g_CurrentWritePostion.CurColPostion]);
+            if (g_LCD_EnablePinState == LCD_ENABLE_OFF)
+            {
+                g_CurrentWritePostion.CurColPostion++;
+            }
+        }
+        else
+        {
+             LCD_UserRequest.State = LCD_ReqReady;
+            LCD_UserRequest.Type = LCD_NoReq;
+            g_WriteNumState = LCD_WriteNumberStart;
+        }
+        break;
+    default:
+        break;
+    }
+    /*Return the error status*/
+    return Loc_enumReturnStatus;
+}
+
 /****************************User Async Functions************************************/
 
 Error_enumStatus_t LCD_InitAsync(void)
@@ -352,6 +402,8 @@ Error_enumStatus_t LCD_Set_CursorPosAsync(uint8_t Copy_LCDPosX, uint8_t Copy_LCD
         {
             LCD_UserRequest.State = LCD_ReqBusy;
             LCD_UserRequest.Type = LCD_ReqSetPos;
+            LCD_UserRequest.CurrentPos.CurColPostion = Copy_LCDPosY;
+            LCD_UserRequest.CurrentPos.CurLinePostion = Copy_LCDPosX;
         }
     }
     else
@@ -360,6 +412,50 @@ Error_enumStatus_t LCD_Set_CursorPosAsync(uint8_t Copy_LCDPosX, uint8_t Copy_LCD
     }
     /*Return the error status*/
     return Loc_enumReturnStatus;
+}
+
+Error_enumStatus_t LCD_Write_NUmberAsync(uint32_t Copy_Number)
+{
+    /* Local Variable to store error status */
+    Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk;
+    static uint8_t NumberBuffer[16];
+    uint8_t counter = 0;
+    uint8_t Loc_idx = 0 ;
+    uint32_t Loc_TempNum = Copy_Number;
+    if (g_LCD_State == LCD_Operation && LCD_UserRequest.State == LCD_ReqReady)
+    {
+        LCD_UserRequest.State = LCD_ReqBusy;
+        LCD_UserRequest.Type = LCD_ReqWriteNumber;
+        if (Copy_Number == 0)
+        {
+            counter ++;
+        }
+        else
+        {
+            while (Loc_TempNum != 0)
+            {
+                Loc_TempNum = Loc_TempNum / 10;
+                counter++;
+            }
+        }
+        Loc_idx = counter-1 ;
+        while (Loc_idx != INTEGER_OVER_FLOW)
+        {
+            NumberBuffer[Loc_idx] = (Copy_Number % 10) + '0';
+            Copy_Number = Copy_Number / 10;
+            Loc_idx -- ;
+        }
+        LCD_UserRequest.Len = counter;
+        LCD_UserRequest.UserString = NumberBuffer;
+    }
+    else
+    {
+        Loc_enumReturnStatus = Status_enumNotOk;
+
+        /*Return the error status*/
+      
+    }
+      return Loc_enumReturnStatus;
 }
 /****************************User Sync Functions************************************/
 Error_enumStatus_t LCD_Get_Status(uint8_t *Ptr_LCDStatus)
@@ -393,8 +489,6 @@ static Error_enumStatus_t LCD_PowerOnProc(void)
         LCD_PinsHandler.Pin = LCDS[Loc_idx].Pin;
         Loc_enumReturnStatus = GPIO_InitPin(&LCD_PinsHandler);
     }
-    LCD_UserRequest.CurrentPos.CurColPostion = LCD_DISPLAY_COL1;
-    LCD_UserRequest.CurrentPos.CurLinePostion = LCD_DISPLAY_LINE1;
     /*Return the error status*/
     return Loc_enumReturnStatus;
 }
@@ -460,19 +554,6 @@ static Error_enumStatus_t LCD_CtrlEnablePin(uint32_t Copy_LCDEnablePinState)
     return Loc_enumReturnStatus;
 }
 
-static Error_enumStatus_t LCD_Helper_Clear(void)
-{
-    /* Local Variable to store error status */
-    Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk;
-    LCD_WriteCommand(LCD_CLEAR_COMMAND);
-    if (g_LCD_EnablePinState == LCD_ENABLE_OFF)
-    {
-        LCD_UserRequest.State = LCD_ReqReady;
-        LCD_UserRequest.Type = LCD_NoReq;
-    }
-    /*Return the error status*/
-    return Loc_enumReturnStatus;
-}
 static Error_enumStatus_t LCD_Helper_SetPosition(uint8_t *PTR_PostionDDRAM)
 {
     /* Local Variable to store error status */

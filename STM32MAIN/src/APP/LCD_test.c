@@ -15,27 +15,32 @@
 void LCDTest_Runnable(void)
 {   
   static uint32_t time=0;
-    if (time==3)
+    time ++ ;
+    if (time==1)
     {
     LCD_Write_StringAsync("Hello",5);
     }
-    else if (time==4)
+    else if (time==2)
     {
       LCD_Clear_ScreenAsync();
     }
-    else if (time==5)
+    else if (time==3)
     {
       LCD_Set_CursorPosAsync(LCD_DISPLAY_LINE2 , LCD_DISPLAY_COL3);
     }
-    else if (time==6)
+    else if (time==4)
     {
       LCD_Write_StringAsync("Omar",4);
     }
-    time ++ ;
+    else if (time==5)
+    {
+      LCD_Write_NUmberAsync(9030);
+    }
+    
 }
 int main (void)
 {
-  Set_PORT_Clock_ON(GPIOA);
+  Set_Clock_ON(GPIOA);
   LCD_InitAsync();
   Sched_Init();
   Sched_Start();

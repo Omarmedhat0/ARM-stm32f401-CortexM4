@@ -17,11 +17,11 @@ typedef enum
 {
     //SWITCH,
     //app3,
-     app1 ,
-     app2 ,
+    //  app1 ,
+    //  app2 ,
     //Traffic,
-    //LCD,
-    //LCDTest,
+    LCD,
+    LCDTest,
     _RunNum
 }Run_t;
 /*******************************************************************************

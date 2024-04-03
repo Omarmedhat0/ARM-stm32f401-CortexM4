@@ -76,6 +76,8 @@ Error_enumStatus_t LCD_Write_StringAsync(const uint8_t* Ptr_string, uint16_t siz
 
 Error_enumStatus_t LCD_Set_CursorPosAsync(uint8_t Copy_LCDPosX , uint8_t Copy_LCDPosY );
 
+Error_enumStatus_t LCD_Write_NUmberAsync(uint32_t Copy_Number);
+
 /*Error_enumStatus_t LCD_Set_WriteCallBack(LCD_CBF_t Copy_WriteCBF);
 Error_enumStatus_t LCD_Set_ClearCallBack(LCD_CBF_t Copy_ClearCBF);
 Error_enumStatus_t LCD_Set_SetCursorCallBack(LCD_CBF_t Copy_SetCursorCBF);*/
