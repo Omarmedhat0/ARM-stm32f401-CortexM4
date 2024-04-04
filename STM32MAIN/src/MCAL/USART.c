@@ -115,7 +115,7 @@ Error_enumStatus_t USART_Init(void)
             Loc_DIV_Mantissa = Loc_USARTDIVValue / 100;
             if (((Loc_OVER8 == 1) && (Loc_DIV_Fraction == 800)) || ((Loc_OVER8 == 0) && (Loc_DIV_Fraction == 1600)))
             {
-                Loc_DIV_Fraction--;
+                Loc_DIV_Fraction = 0;
                 Loc_DIV_Mantissa++;
             }
             Loc_DIV_Fraction = Loc_DIV_Fraction / 100;

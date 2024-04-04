@@ -47,6 +47,3 @@ int main (void)
 }
 
 #endif
-
-
-
