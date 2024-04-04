@@ -109,16 +109,14 @@ Error_enumStatus_t USART_Init(void)
             Loc_DIV_Fraction = (Loc_USARTDIVValue % 100) * (8 * (2 - Loc_OVER8));
             if (Loc_DIV_Fraction % 100 != 0)
             {
-                Loc_DIV_Fraction = Loc_DIV_Fraction / 100;
-                Loc_DIV_Fraction = Loc_DIV_Fraction * 100 + 100;
+                Loc_DIV_Fraction = ((Loc_DIV_Fraction / 100 ) +1 );
             }
             Loc_DIV_Mantissa = Loc_USARTDIVValue / 100;
-            if (((Loc_OVER8 == 1) && (Loc_DIV_Fraction == 800)) || ((Loc_OVER8 == 0) && (Loc_DIV_Fraction == 1600)))
+            if (((Loc_OVER8 == 1) && (Loc_DIV_Fraction == 8)) || ((Loc_OVER8 == 0) && (Loc_DIV_Fraction == 16)))
             {
                 Loc_DIV_Fraction = 0;
                 Loc_DIV_Mantissa++;
             }
-            Loc_DIV_Fraction = Loc_DIV_Fraction / 100;
             Loc_DIV_Mantissa = Loc_DIV_Mantissa << MANTISSA_SHIFT;
             Loc_BRRValue = Loc_DIV_Mantissa | Loc_DIV_Fraction;
             Loc_CR1Value = UART_PRE_ENABLE_MASK | USARTS[Loc_idx].OverSamplingMode | USARTS[Loc_idx].WordLength | USARTS[Loc_idx].ParityEn | USARTS[Loc_idx].ParityType;
