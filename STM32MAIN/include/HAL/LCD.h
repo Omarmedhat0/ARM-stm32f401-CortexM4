@@ -59,23 +59,55 @@ typedef struct
 /*******************************************************************************
  *                  	    Functions Prototypes                               *
  *******************************************************************************/
-/*
- * @brief    : 
- * @param[in]: 
- * @return   :
- * @details  :
- */
-
+/**
+ * @brief    : Initializes the LCD asynchronously.
+ * @details  : This function sets the LCD state to LCD_Init.
+ * @param    : None
+ * @return   : Error_enumStatus_t Error status indicating the success or failure of the initialization process.
+ **/
 Error_enumStatus_t LCD_InitAsync (void);
-
+/**
+ * @brief    : Retrieves the current status of the LCD.
+ * @details  : This function retrieves the current status of the LCD and stores it in the provided pointer variable.
+ * @param[out]: Ptr_LCDStatus Pointer to a variable to store the current status of the LCD.
+ * @return   : Error_enumStatus_t Error status indicating the success or failure of retrieving the LCD status.
+ **/
 Error_enumStatus_t LCD_Get_Status(uint8_t* Ptr_LCDStatus);
-
+/**
+ * @brief    : Clears the LCD screen asynchronously.
+ * @details  : This function sets the LCD user request state and type to initiate the clear process if the LCD state is LCD_Operation
+ *             and the LCD user request state is LCD_ReqReady.
+ * @param    : None
+ * @return   : Error_enumStatus_t Error status indicating the success or failure of the clear process initiation.
+ **/
 Error_enumStatus_t LCD_Clear_ScreenAsync(void);
-
+/**
+ * @brief    : Writes a string to the LCD asynchronously.
+ * @details  : This function sets the LCD user request state and type to initiate the write process with the provided string
+ *             if the LCD state is LCD_Operation and the LCD user request state is LCD_ReqReady.
+ * @param[in]: Ptr_string Pointer to the string to be written to the LCD.
+ * @param[in]: size       Size of the string to be written.
+ * @return   : Error_enumStatus_t Error status indicating the success or failure of the write process initiation.
+ **/
 Error_enumStatus_t LCD_Write_StringAsync(const uint8_t* Ptr_string, uint16_t size);
-
+/**
+ * @brief    : Sets the cursor position on the LCD asynchronously.
+ * @details  : This function sets the cursor position on the LCD based on the provided row and column numbers.
+ *             It sets the LCD user request state and type to initiate the process if the LCD state is LCD_Operation
+ *             and the LCD user request state is LCD_ReqReady.
+ * @param[in]: Copy_LCDPosX Row number for the cursor position.
+ * @param[in]: Copy_LCDPosY Column number for the cursor position.
+ * @return   : Error_enumStatus_t Error status indicating the success or failure of the position setting process initiation.
+ **/
 Error_enumStatus_t LCD_Set_CursorPosAsync(uint8_t Copy_LCDPosX , uint8_t Copy_LCDPosY );
-
+/**
+ * @brief    : Writes a number to the LCD asynchronously.
+ * @details  : This function writes a number to the LCD based on the provided number.
+ *             It sets the LCD user request state and type to initiate the write number process if the LCD state is LCD_Operation
+ *             and the LCD user request state is LCD_ReqReady.
+ * @param[in]: Copy_Number Number to be written to the LCD.
+ * @return   : Error_enumStatus_t Error status indicating the success or failure of the write number process initiation.
+ **/
 Error_enumStatus_t LCD_Write_NUmberAsync(uint32_t Copy_Number);
 
 

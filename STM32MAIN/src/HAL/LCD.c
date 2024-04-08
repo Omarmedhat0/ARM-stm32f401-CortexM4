@@ -129,18 +129,28 @@ static Error_enumStatus_t LCD_CtrlEnablePin(uint32_t Copy_LCDEnablePinState);
  *                             Implementation   				                *
  *******************************************************************************/
 
-/*
- * @brief    :
- * @param[in]:
- * @return   :
- * @details  :
- */
 /****************************Processes Implementation************************************/
+/**
+ * @brief    : Handles the LCD tasks based on its current state.
+ * @details  : This function checks the current state of the LCD and performs the corresponding actions.
+ *             - If the LCD state is LCD_Init, it initializes the LCD by calling LCD_InitState().
+ *             - If the LCD state is LCD_Operation and there's a pending user request:
+ *               - If the request type is LCD_ReqWrite, it processes the write request by calling LCD_Write_Proc().
+ *               - If the request type is LCD_ReqClear, it clears the LCD screen by calling LCD_Clear_Proc().
+ *               - If the request type is LCD_ReqSetPos, it sets the cursor position by calling LCD_SetPosition_Proc().
+ *               - If the request type is LCD_ReqWriteNumber, it writes a number to the LCD by calling LCD_WriteNumber_Proc().
+ *             - If the LCD state is LCD_Off, no action is taken.
+ * @param[in]: None
+ * @param[out]: None
+ * @return   : None
+ **/
 void LCD_Runnable(void)
 {
     switch (g_LCD_State)
     {
     case LCD_Init:
+        /* Handles the initialization process of the LCD */
+        /* Calls LCD_InitState() to perform the initialization steps */
         LCD_InitState();
         break;
     case LCD_Operation:
@@ -149,15 +159,23 @@ void LCD_Runnable(void)
             switch (LCD_UserRequest.Type)
             {
             case LCD_ReqWrite:
+                /* Handles the LCD write request */
+                /* Calls LCD_Write_Proc() to process the write request */
                 LCD_Write_Proc();
                 break;
             case LCD_ReqClear:
+                /* Handles the LCD clear request */
+                /* Calls LCD_Clear_Proc() to clear the LCD screen */
                 LCD_Clear_Proc();
                 break;
             case LCD_ReqSetPos:
+                /* Handles the LCD set position request */
+                /* Calls LCD_SetPosition_Proc() to set the cursor position */
                 LCD_SetPosition_Proc();
                 break;
             case LCD_ReqWriteNumber:
+                /* Handles the LCD write number request */
+                /* Calls LCD_WriteNumber_Proc() to write a number to the LCD */
                 LCD_WriteNumber_Proc();
                 break;
             default:
@@ -166,63 +184,115 @@ void LCD_Runnable(void)
         }
         break;
     case LCD_Off:
-        /*Do Nothing*/
+        /* No action is taken when the LCD is turned off */
+        /* Do Nothing */
         break;
     default:
         break;
     }
 }
 
+/**
+ * @brief    : Handles the LCD initialization process.
+ * @details  : This function initializes the LCD based on the current initialization mode.
+ *             - If the initialization mode is LCD_PowerOn, it performs power-on initialization by calling LCD_PowerOnProc()
+ *               and sets the initialization mode to LCD_FunctionSet.
+ *             - If the initialization mode is LCD_FunctionSet, it configures the LCD function settings by sending the appropriate command.
+ *               If the LCD enable pin state is off, it sets the initialization mode to LCD_DisplayControl.
+ *             - If the initialization mode is LCD_DisplayControl, it turns on the LCD cursor. If the LCD enable pin state is off,
+ *               it sets the initialization mode to LCD_ClearDisplay.
+ *             - If the initialization mode is LCD_ClearDisplay, it clears the LCD display. If the LCD enable pin state is off,
+ *               it sets the initialization mode to LCD_EntryModeSet.
+ *             - If the initialization mode is LCD_EntryModeSet, it configures the cursor increment and shift direction. If the LCD enable pin state is off,
+ *               it sets the initialization mode to LCD_EndInit.
+ *             - If the initialization mode is LCD_EndInit, it sets the LCD user request state to LCD_ReqReady and changes the LCD state to LCD_Operation.
+ * @param    : None
+ * @return   : Error_enumStatus_t Error status indicating the success or failure of the initialization process.
+ **/
 static Error_enumStatus_t LCD_InitState(void)
 {
     /* Local Variable to store error status */
     Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk;
+    
     switch (g_LCD_InitMode)
     {
-    case LCD_PowerOn:
-        Loc_enumReturnStatus = LCD_PowerOnProc();
-        g_LCD_InitMode = LCD_FunctionSet;
-        break;
-    case LCD_FunctionSet:
-        Loc_enumReturnStatus = LCD_WriteCommand(LCD_TWO_LINES_EIGHT_BITS_MODE);
-        if (g_LCD_EnablePinState == LCD_ENABLE_OFF)
-        {
-            g_LCD_InitMode = LCD_DisplayControl;
-        }
-        break;
-    case LCD_DisplayControl:
-        Loc_enumReturnStatus = LCD_WriteCommand(LCD_CURSOR_ON);
-        if (g_LCD_EnablePinState == LCD_ENABLE_OFF)
-        {
-            g_LCD_InitMode = LCD_ClearDisplay;
-        }
-        break;
-    case LCD_ClearDisplay:
-        Loc_enumReturnStatus = LCD_WriteCommand(LCD_CLEAR_COMMAND);
-        if (g_LCD_EnablePinState == LCD_ENABLE_OFF)
-        {
-            g_LCD_InitMode = LCD_EntryModeSet;
-        }
-        break;
-    case LCD_EntryModeSet:
-        Loc_enumReturnStatus = LCD_WriteCommand(LCD_INCREMENT_CRUSOR_SHIFT_RIGHT_MODE);
-        if (g_LCD_EnablePinState == LCD_ENABLE_OFF)
-        {
-            g_LCD_InitMode = LCD_EndInit;
-        }
-        break;
-    case LCD_EndInit:
-        LCD_UserRequest.State = LCD_ReqReady;
-        g_LCD_State = LCD_Operation;
-        break;
-    default:
-        Loc_enumReturnStatus = Status_enumNotOk;
-        break;
+        /* Handles the LCD power-on initialization */
+        /* Calls LCD_PowerOnProc() to perform power-on initialization */
+        /* Sets the initialization mode to LCD_FunctionSet */
+        case LCD_PowerOn:
+            Loc_enumReturnStatus = LCD_PowerOnProc(); 
+            g_LCD_InitMode = LCD_FunctionSet; 
+            break;
+        
+        /* Handles the configuration of LCD function settings */
+        /* Sends the appropriate command */
+        /* If the LCD enable pin state is off, sets the initialization mode to LCD_DisplayControl */
+        case LCD_FunctionSet:
+            Loc_enumReturnStatus = LCD_WriteCommand(LCD_TWO_LINES_EIGHT_BITS_MODE); 
+            if (g_LCD_EnablePinState == LCD_ENABLE_OFF) 
+            {
+                g_LCD_InitMode = LCD_DisplayControl;
+            }
+            break;
+        
+        /* Turns on the LCD cursor */
+        /* If the LCD enable pin state is off, sets the initialization mode to LCD_ClearDisplay */
+        case LCD_DisplayControl:
+            Loc_enumReturnStatus = LCD_WriteCommand(LCD_CURSOR_ON); 
+            if (g_LCD_EnablePinState == LCD_ENABLE_OFF) 
+            {
+                g_LCD_InitMode = LCD_ClearDisplay;
+            }
+            break;
+        
+        /* Clears the LCD display */
+        /* If the LCD enable pin state is off, sets the initialization mode to LCD_EntryModeSet */
+        case LCD_ClearDisplay:
+            Loc_enumReturnStatus = LCD_WriteCommand(LCD_CLEAR_COMMAND); 
+            if (g_LCD_EnablePinState == LCD_ENABLE_OFF) 
+            {
+                g_LCD_InitMode = LCD_EntryModeSet;
+            }
+            break;
+        
+        /* Configures the cursor increment and shift direction */
+        /* If the LCD enable pin state is off, sets the initialization mode to LCD_EndInit */
+        case LCD_EntryModeSet:
+            Loc_enumReturnStatus = LCD_WriteCommand(LCD_INCREMENT_CRUSOR_SHIFT_RIGHT_MODE); 
+            if (g_LCD_EnablePinState == LCD_ENABLE_OFF) 
+            {
+                g_LCD_InitMode = LCD_EndInit;
+            }
+            break;
+        
+        /* Sets the LCD user request state to LCD_ReqReady */
+        /* Changes the LCD state to LCD_Operation */
+        case LCD_EndInit:
+            LCD_UserRequest.State = LCD_ReqReady; 
+            g_LCD_State = LCD_Operation; 
+            break;
+        
+        default:
+            Loc_enumReturnStatus = Status_enumNotOk; 
+            break;
     }
-    /*Return the error status*/
+    
+    /* Return the error status */
     return Loc_enumReturnStatus;
 }
 
+
+
+/**
+ * @brief    : Handles the LCD write process.
+ * @details  : This function writes characters or numbers to the LCD based on the current write state.
+ *             - If the write state is LCD_WriteStart, it initializes the write process by setting the write state to LCD_WriteCharacter
+ *               and resetting the current column position.
+ *             - If the write state is LCD_WriteCharacter, it writes characters or numbers to the LCD until the entire string or number is written.
+ *               If the LCD enable pin state is off, it increments the current column position.
+ * @param    : None
+ * @return   : Error_enumStatus_t Error status indicating the success or failure of the write process.
+ **/
 static Error_enumStatus_t LCD_Write_Proc(void)
 {
     /* Local Variable to store error status */
@@ -230,33 +300,49 @@ static Error_enumStatus_t LCD_Write_Proc(void)
 
     switch (g_WriteState)
     {
-    case LCD_WriteStart:
-        g_WriteState = LCD_WriteCharacter;
-        g_CurrentWritePostion.CurColPostion = 0;
-        break;
-    case LCD_WriteCharacter:
-        if (g_CurrentWritePostion.CurColPostion != LCD_UserRequest.Len)
-        {
-            LCD_WriteData(LCD_UserRequest.UserString[g_CurrentWritePostion.CurColPostion]);
-            if (g_LCD_EnablePinState == LCD_ENABLE_OFF)
+        /* Initializes the write process */
+        /* Sets the write state to LCD_WriteCharacter */
+        /* Resets the current column position */
+        case LCD_WriteStart:
+            g_WriteState = LCD_WriteCharacter;
+            g_CurrentWritePostion.CurColPostion = 0;
+            break;
+        
+        /* Writes characters or numbers to the LCD */
+        /* Increments the current column position */
+        case LCD_WriteCharacter:
+            if (g_CurrentWritePostion.CurColPostion != LCD_UserRequest.Len)
             {
-                g_CurrentWritePostion.CurColPostion++;
+                LCD_WriteData(LCD_UserRequest.UserString[g_CurrentWritePostion.CurColPostion]);
+                if (g_LCD_EnablePinState == LCD_ENABLE_OFF)
+                {
+                    g_CurrentWritePostion.CurColPostion++;
+                }
             }
-        }
-        else
-        {
-             LCD_UserRequest.State = LCD_ReqReady;
-            LCD_UserRequest.Type = LCD_NoReq;
-            g_WriteState = LCD_WriteStart;
-        }
-        break;
-    default:
-        break;
+            else
+            {
+                LCD_UserRequest.State = LCD_ReqReady;
+                LCD_UserRequest.Type = LCD_NoReq;
+                g_WriteState = LCD_WriteStart;
+            }
+            break;
+        
+        default:
+            break;
     }
-    /*Return the error status*/
+    /* Return the error status */
     return Loc_enumReturnStatus;
 }
 
+/**
+ * @brief    : Handles the process of setting the cursor position on the LCD.
+ * @details  : This function sets the cursor position on the LCD based on the current position state.
+ *             - If the position state is LCD_SetPosStart, it initializes the process by setting the cursor position and transitioning to LCD_SetPos.
+ *             - If the position state is LCD_SetPos, it writes the command to set the cursor position.
+ *               If the LCD enable pin state is off, it updates the LCD user request state and type, and resets the position state.
+ * @param    : None
+ * @return   : Error_enumStatus_t Error status indicating the success or failure of the position setting process.
+ **/
 static Error_enumStatus_t LCD_SetPosition_Proc(void)
 {
     /* Local Variable to store error status */
@@ -265,39 +351,70 @@ static Error_enumStatus_t LCD_SetPosition_Proc(void)
     static uint8_t Loc_Location = 0;
     switch (Loc_u8PostionState)
     {
-    case LCD_SetPosStart:
-        LCD_Helper_SetPosition(&Loc_Location);
-        Loc_u8PostionState = LCD_SetPos;
-        break;
-    case LCD_SetPos:
-        Loc_enumReturnStatus = LCD_WriteCommand((WRITE_ON_DDRAM_INDEX + Loc_Location));
-        if (g_LCD_EnablePinState == LCD_ENABLE_OFF)
-        {
-        LCD_UserRequest.State = LCD_ReqReady;
-        LCD_UserRequest.Type = LCD_NoReq;
-        Loc_u8PostionState = LCD_SetPosStart;
-        }
-        break;
-    default:
-        break;
+        /* Initializes the cursor position setting process */
+        /* Sets the cursor position */
+        /* Transitions to LCD_SetPos */
+        case LCD_SetPosStart:
+            LCD_Helper_SetPosition(&Loc_Location);
+            Loc_u8PostionState = LCD_SetPos;
+            break;
+        
+        /* Writes the command to set the cursor position */
+        /* Updates the LCD user request state and type */
+        /* Resets the position state */
+        case LCD_SetPos:
+            Loc_enumReturnStatus = LCD_WriteCommand((WRITE_ON_DDRAM_INDEX + Loc_Location));
+            if (g_LCD_EnablePinState == LCD_ENABLE_OFF)
+            {
+                LCD_UserRequest.State = LCD_ReqReady;
+                LCD_UserRequest.Type = LCD_NoReq;
+                Loc_u8PostionState = LCD_SetPosStart;
+            }
+            break;
+        
+        default:
+            break;
     }
 
-    /*Return the error status*/
+    /* Return the error status */
     return Loc_enumReturnStatus;
 }
+
+/**
+ * @brief    : Handles the LCD clear process.
+ * @details  : This function clears the content of the LCD screen.
+ * @param    : None
+ * @return   : Error_enumStatus_t Error status indicating the success or failure of the clear process.
+ **/
 static Error_enumStatus_t LCD_Clear_Proc(void)
 {
     /* Local Variable to store error status */
     Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk;
+    
+    /* Writes the command to clear the LCD display */
     LCD_WriteCommand(LCD_CLEAR_COMMAND);
+    
+    /* Updates the LCD user request state and type if the LCD enable pin state is off */
     if (g_LCD_EnablePinState == LCD_ENABLE_OFF)
     {
         LCD_UserRequest.State = LCD_ReqReady;
         LCD_UserRequest.Type = LCD_NoReq;
     }
-    /*Return the error status*/
+    
+    /* Return the error status */
     return Loc_enumReturnStatus;
 }
+
+/**
+ * @brief    : Handles the process of writing a number to the LCD.
+ * @details  : This function writes numbers to the LCD based on the current write number state.
+ *             - If the write number state is LCD_WriteNumberStart, it initializes the process by setting the state to LCD_WriteNumber
+ *               and resetting the current column position.
+ *             - If the write number state is LCD_WriteNumber, it writes numbers to the LCD until the entire number is written.
+ *               If the LCD enable pin state is off, it increments the current column position.
+ * @param    : None
+ * @return   : Error_enumStatus_t Error status indicating the success or failure of the write number process.
+ **/
 static Error_enumStatus_t LCD_WriteNumber_Proc(void)
 {
     /* Local Variable to store error status */
@@ -305,50 +422,75 @@ static Error_enumStatus_t LCD_WriteNumber_Proc(void)
 
     switch (g_WriteNumState)
     {
-    case LCD_WriteNumberStart:
-        g_WriteNumState = LCD_WriteNumber;
-        g_CurrentWritePostion.CurColPostion = 0;
-        break;
-    case LCD_WriteNumber:
-        if (g_CurrentWritePostion.CurColPostion != LCD_UserRequest.Len)
-        {
-            LCD_WriteData(LCD_UserRequest.UserString[g_CurrentWritePostion.CurColPostion]);
-            if (g_LCD_EnablePinState == LCD_ENABLE_OFF)
+        /* Initializes the write number process */
+        /* Sets the write number state to LCD_WriteNumber */
+        /* Resets the current column position */
+        case LCD_WriteNumberStart:
+            g_WriteNumState = LCD_WriteNumber;
+            g_CurrentWritePostion.CurColPostion = 0;
+            break;
+        
+        /* Writes numbers to the LCD */
+        /* Increments the current column position */
+        case LCD_WriteNumber:
+            if (g_CurrentWritePostion.CurColPostion != LCD_UserRequest.Len)
             {
-                g_CurrentWritePostion.CurColPostion++;
+                LCD_WriteData(LCD_UserRequest.UserString[g_CurrentWritePostion.CurColPostion]);
+                if (g_LCD_EnablePinState == LCD_ENABLE_OFF)
+                {
+                    g_CurrentWritePostion.CurColPostion++;
+                }
             }
-        }
-        else
-        {
-             LCD_UserRequest.State = LCD_ReqReady;
-            LCD_UserRequest.Type = LCD_NoReq;
-            g_WriteNumState = LCD_WriteNumberStart;
-        }
-        break;
-    default:
-        break;
+            else
+            {
+                LCD_UserRequest.State = LCD_ReqReady;
+                LCD_UserRequest.Type = LCD_NoReq;
+                g_WriteNumState = LCD_WriteNumberStart;
+            }
+            break;
+        
+        default:
+            break;
     }
-    /*Return the error status*/
+    /* Return the error status */
     return Loc_enumReturnStatus;
 }
 
 /****************************User Async Functions************************************/
 
+/**
+ * @brief    : Initializes the LCD asynchronously.
+ * @details  : This function sets the LCD state to LCD_Init.
+ * @param    : None
+ * @return   : Error_enumStatus_t Error status indicating the success or failure of the initialization process.
+ **/
 Error_enumStatus_t LCD_InitAsync(void)
 {
     /* Local Variable to store error status */
     Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk;
+    
+    /* Sets the LCD state to LCD_Init */
     g_LCD_State = LCD_Init;
-    /*Return the error status*/
+    
+    /* Return the error status */
     return Loc_enumReturnStatus;
 }
 
+/**
+ * @brief    : Clears the LCD screen asynchronously.
+ * @details  : This function sets the LCD user request state and type to initiate the clear process if the LCD state is LCD_Operation
+ *             and the LCD user request state is LCD_ReqReady.
+ * @param    : None
+ * @return   : Error_enumStatus_t Error status indicating the success or failure of the clear process initiation.
+ **/
 Error_enumStatus_t LCD_Clear_ScreenAsync(void)
 {
     /* Local Variable to store error status */
     Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk;
+    
     if (g_LCD_State == LCD_Operation && LCD_UserRequest.State == LCD_ReqReady)
     {
+        /* Sets the LCD user request state and type to initiate the clear process */
         LCD_UserRequest.State = LCD_ReqBusy;
         LCD_UserRequest.Type = LCD_ReqClear;
     }
@@ -357,14 +499,23 @@ Error_enumStatus_t LCD_Clear_ScreenAsync(void)
         Loc_enumReturnStatus = Status_enumNotOk;
     }
 
-    /*Return the error status*/
+    /* Return the error status */
     return Loc_enumReturnStatus;
 }
 
+/**
+ * @brief    : Writes a string to the LCD asynchronously.
+ * @details  : This function sets the LCD user request state and type to initiate the write process with the provided string
+ *             if the LCD state is LCD_Operation and the LCD user request state is LCD_ReqReady.
+ * @param[in]: Ptr_string Pointer to the string to be written to the LCD.
+ * @param[in]: size       Size of the string to be written.
+ * @return   : Error_enumStatus_t Error status indicating the success or failure of the write process initiation.
+ **/
 Error_enumStatus_t LCD_Write_StringAsync(const uint8_t *Ptr_string, uint16_t size)
 {
     /* Local Variable to store error status */
     Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk;
+    
     if (Ptr_string == NULL)
     {
         Loc_enumReturnStatus = Status_enumNULLPointer;
@@ -373,6 +524,7 @@ Error_enumStatus_t LCD_Write_StringAsync(const uint8_t *Ptr_string, uint16_t siz
     {
         if (g_LCD_State == LCD_Operation && LCD_UserRequest.State == LCD_ReqReady)
         {
+            /* Sets the LCD user request state and type to initiate the write process with the provided string */
             LCD_UserRequest.State = LCD_ReqBusy;
             LCD_UserRequest.Type = LCD_ReqWrite;
             LCD_UserRequest.UserString = Ptr_string;
@@ -383,15 +535,25 @@ Error_enumStatus_t LCD_Write_StringAsync(const uint8_t *Ptr_string, uint16_t siz
             Loc_enumReturnStatus = Status_enumNotOk;
         }
     }
-    /*Return the error status*/
+    
+    /* Return the error status */
     return Loc_enumReturnStatus;
 }
 
+/**
+ * @brief    : Sets the cursor position on the LCD asynchronously.
+ * @details  : This function sets the cursor position on the LCD based on the provided row and column numbers.
+ *             It sets the LCD user request state and type to initiate the process if the LCD state is LCD_Operation
+ *             and the LCD user request state is LCD_ReqReady.
+ * @param[in]: Copy_LCDPosX Row number for the cursor position.
+ * @param[in]: Copy_LCDPosY Column number for the cursor position.
+ * @return   : Error_enumStatus_t Error status indicating the success or failure of the position setting process initiation.
+ **/
 Error_enumStatus_t LCD_Set_CursorPosAsync(uint8_t Copy_LCDPosX, uint8_t Copy_LCDPosY)
 {
-
     /* Local Variable to store error status */
     Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk;
+    
     if (g_LCD_State == LCD_Operation && LCD_UserRequest.State == LCD_ReqReady)
     {
         if ((Copy_LCDPosX >= MAX_NUM_OF_LINES) || (Copy_LCDPosY >= MAX_NUM_OF_CHARACTERS))
@@ -400,6 +562,7 @@ Error_enumStatus_t LCD_Set_CursorPosAsync(uint8_t Copy_LCDPosX, uint8_t Copy_LCD
         }
         else
         {
+            /* Sets the LCD user request state and type to initiate the process */
             LCD_UserRequest.State = LCD_ReqBusy;
             LCD_UserRequest.Type = LCD_ReqSetPos;
             LCD_UserRequest.CurrentPos.CurColPostion = Copy_LCDPosY;
@@ -410,10 +573,19 @@ Error_enumStatus_t LCD_Set_CursorPosAsync(uint8_t Copy_LCDPosX, uint8_t Copy_LCD
     {
         Loc_enumReturnStatus = Status_enumNotOk;
     }
-    /*Return the error status*/
+    
+    /* Return the error status */
     return Loc_enumReturnStatus;
 }
 
+/**
+ * @brief    : Writes a number to the LCD asynchronously.
+ * @details  : This function writes a number to the LCD based on the provided number.
+ *             It sets the LCD user request state and type to initiate the write number process if the LCD state is LCD_Operation
+ *             and the LCD user request state is LCD_ReqReady.
+ * @param[in]: Copy_Number Number to be written to the LCD.
+ * @return   : Error_enumStatus_t Error status indicating the success or failure of the write number process initiation.
+ **/
 Error_enumStatus_t LCD_Write_NUmberAsync(uint32_t Copy_Number)
 {
     /* Local Variable to store error status */
@@ -422,6 +594,7 @@ Error_enumStatus_t LCD_Write_NUmberAsync(uint32_t Copy_Number)
     uint8_t counter = 0;
     uint8_t Loc_idx = 0 ;
     uint32_t Loc_TempNum = Copy_Number;
+    
     if (g_LCD_State == LCD_Operation && LCD_UserRequest.State == LCD_ReqReady)
     {
         LCD_UserRequest.State = LCD_ReqBusy;
@@ -451,114 +624,197 @@ Error_enumStatus_t LCD_Write_NUmberAsync(uint32_t Copy_Number)
     else
     {
         Loc_enumReturnStatus = Status_enumNotOk;
-
-        /*Return the error status*/
-      
     }
-      return Loc_enumReturnStatus;
+    
+    /* Return the error status */
+    return Loc_enumReturnStatus;
 }
+
 /****************************User Sync Functions************************************/
+
+
+/**
+ * @brief    : Retrieves the current status of the LCD.
+ * @details  : This function retrieves the current status of the LCD and stores it in the provided pointer variable.
+ * @param[out]: Ptr_LCDStatus Pointer to a variable to store the current status of the LCD.
+ * @return   : Error_enumStatus_t Error status indicating the success or failure of retrieving the LCD status.
+ **/
 Error_enumStatus_t LCD_Get_Status(uint8_t *Ptr_LCDStatus)
 {
     /* Local Variable to store error status */
     Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk;
+    
     if (Ptr_LCDStatus == NULL)
     {
         Loc_enumReturnStatus = Status_enumNULLPointer;
     }
     else
     {
+        /* Retrieves the current status of the LCD */
         *Ptr_LCDStatus = g_LCD_State;
     }
-    /*Return the error status*/
+    
+    /* Return the error status */
     return Loc_enumReturnStatus;
 }
+
 /**********************************Static Helper Functions*********************************/
+/**
+ * @brief    : Performs the power-on sequence for the LCD.
+ * @details  : This function configures the GPIO pins for the LCD according to the pin configuration array.
+ *             It sets the LCD user request state to LCD_ReqBusy.
+ *             This function is intended to be called during LCD initialization.
+ * @param    : None
+ * @return   : Error_enumStatus_t Error status indicating the success or failure of the power-on sequence.
+ **/
 static Error_enumStatus_t LCD_PowerOnProc(void)
 {
     /* Local Variable to store error status */
     Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk;
+    
+    /* Sets the LCD user request state to LCD_ReqBusy */
     LCD_UserRequest.State = LCD_ReqBusy;
+    
+    /* Initializes GPIO pins for the LCD */
     uint8_t Loc_idx;
     GPIO_Config_t LCD_PinsHandler;
     LCD_PinsHandler.Mood = GPIO_OUTPUT_PP;
     LCD_PinsHandler.Speed = GPIO_HIGH_SPEED;
+    
     for (Loc_idx = 0; (Loc_enumReturnStatus == Status_enumOk) && (Loc_idx < _LCD_Num); Loc_idx++)
     {
         LCD_PinsHandler.Port = LCDS[Loc_idx].Port;
         LCD_PinsHandler.Pin = LCDS[Loc_idx].Pin;
         Loc_enumReturnStatus = GPIO_InitPin(&LCD_PinsHandler);
     }
-    /*Return the error status*/
+    
+    /* Return the error status */
     return Loc_enumReturnStatus;
 }
 
+/**
+ * @brief    : Writes a command to the LCD.
+ * @details  : This function writes a command to the LCD.
+ *             It sets the LCD enable pin state based on the current state and configures the GPIO pins for the command.
+ *             This function is intended to be used for sending commands to the LCD.
+ * @param[in]: Copy_LCDCommand The command to be written to the LCD.
+ * @return   : Error_enumStatus_t Error status indicating the success or failure of the command write operation.
+ **/
 static Error_enumStatus_t LCD_WriteCommand(uint8_t Copy_LCDCommand)
 {
     /* Local Variable to store error status */
     Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk;
+    
+    /* Configuration for writing a command */
     uint8_t Loc_idx;
     uint32_t Loc_u32PinState;
+    
     if (g_LCD_EnablePinState == LCD_ENABLE_OFF)
     {
+        /* Configures pins for command write operation */
         Loc_enumReturnStatus = GPIO_Set_PinValue(LCDS[RS].Port, LCDS[RS].Pin, GPIO_RESET_PIN);
         Loc_enumReturnStatus |= GPIO_Set_PinValue(LCDS[RW].Port, LCDS[RW].Pin, GPIO_RESET_PIN);
+        
         for (Loc_idx = 0; (Loc_enumReturnStatus == Status_enumOk) && (Loc_idx < (_LCD_Num - CONTROL_PINS_NUM)); Loc_idx++)
         {
             Loc_u32PinState = (Copy_LCDCommand & (1 << Loc_idx)) ? GPIO_SET_PIN : GPIO_RESET_PIN;
             Loc_enumReturnStatus = GPIO_Set_PinValue(LCDS[Loc_idx].Port, LCDS[Loc_idx].Pin, Loc_u32PinState);
         }
+        
+        /* Sets the LCD enable pin state */
         g_LCD_EnablePinState = LCD_ENABLE_ON;
         LCD_CtrlEnablePin(g_LCD_EnablePinState);
     }
     else
     {
+        /* Disables LCD enable pin */
         g_LCD_EnablePinState = LCD_ENABLE_OFF;
         LCD_CtrlEnablePin(g_LCD_EnablePinState);
     }
-    /*Return the error status*/
+    
+    /* Return the error status */
     return Loc_enumReturnStatus;
 }
+
+/**
+ * @brief    : Writes data to the LCD.
+ * @details  : This function writes data to the LCD.
+ *             It sets the LCD enable pin state based on the current state and configures the GPIO pins for the data.
+ *             This function is intended to be used for sending data to be displayed on the LCD.
+ * @param[in]: Copy_LCDCommand The data to be written to the LCD.
+ * @return   : Error_enumStatus_t Error status indicating the success or failure of the data write operation.
+ **/
 static Error_enumStatus_t LCD_WriteData(uint8_t Copy_LCDCommand)
 {
     /* Local Variable to store error status */
     Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk;
+    
+    /* Configuration for writing data */
     uint8_t Loc_idx;
     uint32_t Loc_u32PinState;
+    
     if (g_LCD_EnablePinState == LCD_ENABLE_OFF)
     {
+        /* Configures pins for data write operation */
         Loc_enumReturnStatus = GPIO_Set_PinValue(LCDS[RS].Port, LCDS[RS].Pin, GPIO_SET_PIN);
         Loc_enumReturnStatus |= GPIO_Set_PinValue(LCDS[RW].Port, LCDS[RW].Pin, GPIO_RESET_PIN);
+        
         for (Loc_idx = 0; (Loc_enumReturnStatus == Status_enumOk) && (Loc_idx < (_LCD_Num - CONTROL_PINS_NUM)); Loc_idx++)
         {
             Loc_u32PinState = (Copy_LCDCommand & (1 << Loc_idx)) ? GPIO_SET_PIN : GPIO_RESET_PIN;
             Loc_enumReturnStatus = GPIO_Set_PinValue(LCDS[Loc_idx].Port, LCDS[Loc_idx].Pin, Loc_u32PinState);
         }
+        
+        /* Sets the LCD enable pin state */
         g_LCD_EnablePinState = LCD_ENABLE_ON;
         LCD_CtrlEnablePin(g_LCD_EnablePinState);
     }
     else
     {
+        /* Disables LCD enable pin */
         g_LCD_EnablePinState = LCD_ENABLE_OFF;
         LCD_CtrlEnablePin(g_LCD_EnablePinState);
     }
-    /*Return the error status*/
+    
+    /* Return the error status */
     return Loc_enumReturnStatus;
 }
+
+/**
+ * @brief    : Controls the LCD enable pin.
+ * @details  : This function sets the state of the LCD enable pin.
+ *             This function is intended to be used internally by the LCD driver.
+ * @param[in]: Copy_LCDEnablePinState The state to set for the LCD enable pin (LCD_ENABLE_ON or LCD_ENABLE_OFF).
+ * @return   : Error_enumStatus_t Error status indicating the success or failure of the operation.
+ **/
 static Error_enumStatus_t LCD_CtrlEnablePin(uint32_t Copy_LCDEnablePinState)
 {
     /* Local Variable to store error status */
     Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk;
+    
+    /* Sets the state of the LCD enable pin */
     Loc_enumReturnStatus = GPIO_Set_PinValue(LCDS[EN].Port, LCDS[EN].Pin, Copy_LCDEnablePinState);
-    /*Return the error status*/
+    
+    /* Return the error status */
     return Loc_enumReturnStatus;
 }
 
+/**
+ * @brief    : Sets the cursor position on the LCD.
+ * @details  : This function calculates the position of the cursor on the LCD based on the input parameters.
+ *             It is used to set the cursor position before writing data to the LCD.
+ *             This function is intended to be used internally by the LCD driver.
+ * @param[in,out]: PTR_PostionDDRAM Pointer to a variable to store the calculated position on the LCD DDRAM.
+ * @return   : Error_enumStatus_t Error status indicating the success or failure of the operation.
+ **/
 static Error_enumStatus_t LCD_Helper_SetPosition(uint8_t *PTR_PostionDDRAM)
 {
     /* Local Variable to store error status */
     Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk;
+    
+    /* Calculates the position of the cursor on the LCD DDRAM */
     uint8_t Loc_u8LCDLoctaionOnDDRAM = 0;
+    
     switch (LCD_UserRequest.CurrentPos.CurLinePostion)
     {
     case LCD_DISPLAY_LINE1:
@@ -576,8 +832,10 @@ static Error_enumStatus_t LCD_Helper_SetPosition(uint8_t *PTR_PostionDDRAM)
     default:
         break;
     }
+    
+    /* Stores the calculated position in the pointer variable */
     *PTR_PostionDDRAM = Loc_u8LCDLoctaionOnDDRAM;
-
-    /*Return the error status*/
+    
+    /* Return the error status */
     return Loc_enumReturnStatus;
 }

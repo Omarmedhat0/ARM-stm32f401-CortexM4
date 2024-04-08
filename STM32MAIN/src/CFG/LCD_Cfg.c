@@ -44,9 +44,7 @@
 /*******************************************************************************
  *                             Implementation   				                *
  *******************************************************************************/
-/*Global array to set LCDs configuration
- I make an extra extern here beacuse of linker issue when declare and constant global array 
- It implicitly make it static fri this file so the other files can't see it */
+/*Global array to set LCDs configurationt */
 const  LCD_Config_t LCDS[_LCD_Num] = {
    /*Ex : Set LCD1 Configuration*/
     [D0] = {.Port=LCD_PORTA , .Pin= LCD_PIN0 },
