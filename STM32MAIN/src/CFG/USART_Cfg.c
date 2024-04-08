@@ -1,6 +1,6 @@
 /*
  ============================================================================
- Name        : USART_CGF.c
+ Name        : USART_Cfg.c
  Author      : Omar Medhat Mohamed
  Description : Source Configuration file for the USART driver
  Date        : 30/3/2024
@@ -12,17 +12,11 @@
 #include "MCAL/GPIO.h"
 #include "CFG/USART_Cfg.h"
 #include "MCAL/USART.h"
-/*******************************************************************************
- *                                Definitions                                  *
- *******************************************************************************/
-
 
 /*******************************************************************************
  *                             Implementation   				                *
  *******************************************************************************/
-/*Global array to set USARTs configuration
- I make an extra extern here beacuse of linker issue when declare and constant global array 
- It implicitly make it static fri this file so the other files can't see it */
+/*Global array to set USARTs configuration*/
 const  USART_Config_t USARTS[_USART_Num] =
 {
  [UASART_1]={
