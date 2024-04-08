@@ -35,14 +35,14 @@ typedef struct
 /*******************************************************************************
  *                  	    Functions Prototypes                               *
  *******************************************************************************/
-/*
+/**
  * @brief    : Initializes a HSwitch pin based on the provided configuration.
  * @param[in]: Void.
  * @return   : Error_enumStatus_t - Error status indicating success or failure of the initialization.
  * @details  : This function initializes a HSwitch pin according to the provided configuration.
  */
 Error_enumStatus_t HSwitch_Init (void);
-/*
+/**
  * @brief    : Sets the value of a HSwitch pin to a specified state.
  * @param[in]: Copy_HSwitchName - HSwitch Name or ID.
  * @param[in]: Copy_HSwitchStatus - The state that desired to be set if it was HSwitch_PRESSED or HSwitch_RELEASED .

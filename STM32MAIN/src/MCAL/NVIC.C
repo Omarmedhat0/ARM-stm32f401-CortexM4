@@ -89,7 +89,7 @@ volatile SCB_PERI_t *const SCB = (volatile SCB_PERI_t *)SCB_BASE_ADDRESS;
 /*******************************************************************************
  *                             Implementation   				                *
  *******************************************************************************/
-/*
+/**
  * @brief    : Enable NVIC IRQ
  * @param[in]: IRQn: Interrupt number
  * @return   : Error_enumStatus_t: Status of the operation
@@ -115,7 +115,7 @@ Error_enumStatus_t Enable_NVIC_IRQ(IRQn_t IRQn)
     return Loc_enumReturnStatus;
 }
 
-/*
+/**
  * @brief    : Disable NVIC IRQ
  * @param[in]: IRQn: Interrupt number
  * @return   : Error_enumStatus_t: Status of the operation
@@ -141,7 +141,7 @@ Error_enumStatus_t Disable_NVIC_IRQ(IRQn_t IRQn)
     return Loc_enumReturnStatus;
 }
 
-/*
+/**
  * @brief    : Set NVIC Pending IRQ
  * @param[in]: IRQn: Interrupt number
  * @return   : Error_enumStatus_t: Status of the operation
@@ -166,7 +166,7 @@ Error_enumStatus_t Set_NVIC_Pending_IRQ(IRQn_t IRQn)
     return Loc_enumReturnStatus;
 }
 
-/*
+/**
  * @brief    : Clear NVIC Pending IRQ
  * @param[in]: IRQn: Interrupt number
  * @return   : Error_enumStatus_t: Status of the operation
@@ -191,7 +191,7 @@ Error_enumStatus_t Clear_NVIC_Pending_IRQ(IRQn_t IRQn)
     return Loc_enumReturnStatus;
 }
 
-/*
+/**
  * @brief    : Get NVIC Pending IRQ status
  * @param[in]: IRQn: Interrupt number
  * @param[in]: Ptr_u8Status: Pointer to store the status
@@ -223,7 +223,7 @@ Error_enumStatus_t Get_NVIC_Pending_IRQ(IRQn_t IRQn, uint8_t *Ptr_u8Status)
     return Loc_enumReturnStatus;
 }
 
-/*
+/**
  * @brief    : Get NVIC Active IRQ status
  * @param[in]: IRQn: Interrupt number
  * @param[in]: Ptr_u8Status: Pointer to store the status
@@ -256,7 +256,7 @@ Error_enumStatus_t Get_NVIC_Active_IRQ(IRQn_t IRQn, uint8_t *Ptr_u8Status)
     return Loc_enumReturnStatus;
 }
 
-/*
+/**
  * @brief    : Set Interrupt Priority
  * @param[in]: IRQn: Interrupt number
  * @param[in]: Copy_PreemptGroup: Preemption priority group
@@ -309,7 +309,7 @@ Error_enumStatus_t Set_Interrupt_Priority(IRQn_t IRQn, uint8_t Copy_PreemptGroup
     return Loc_enumReturnStatus;
 }
 
-/*
+/**
  * @brief    : Get Interrupt Priority
  * @param[in]: IRQn: Interrupt number
  * @param[in]: Ptr_u8Status: Pointer to store the priority level
@@ -343,7 +343,7 @@ Error_enumStatus_t Get_Interrupt_Priority(IRQn_t IRQn, uint8_t *Ptr_u8Status)
 }
 
 
-/*
+/**
  * @brief    : Generated a Software  Interrupt
  * @param[in]: IRQn: Interrupt number
  * @return   : Error_enumStatus_t: Status of the operation

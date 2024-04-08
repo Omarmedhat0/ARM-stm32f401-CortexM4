@@ -40,14 +40,14 @@ typedef struct
 /*******************************************************************************
  *                  	    Functions Prototypes                               *
  *******************************************************************************/
-/*
+/**
  * @brief    : Initializes a LED pin based on the provided configuration.
  * @param[in]: Void.
  * @return   : Error_enumStatus_t - Error status indicating success or failure of the initialization.
  * @details  : This function initializes a LED pin according to the provided configuration.
  */
 Error_enumStatus_t LED_Init (void);
-/*
+/**
  * @brief    : Sets the value of a LED pin to a specified state.
  * @param[in]: Copy_LEDName - LED Name or ID.
  * @param[in]: Copy_LEDStatus - The state that desired to be set if it was LED_ON or LED_OFF .

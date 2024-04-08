@@ -40,14 +40,14 @@ typedef struct
  *                  	    Functions Prototypes                               *
  *******************************************************************************/
 
-/*
+/**
  * @brief    : Initializes the scheduler.
  * @param[in]: None.
  * @return   : Error status indicating success or failure.
  * @details  : Initializes the scheduler by configuring the system timer and setting the tick time.
  */
 Error_enumStatus_t Sched_Init(void);
-/*
+/**
  * @brief    : Starts the scheduler.
  * @param[in]: None.
  * @return   : Error_enumStatus_t - Error status indicating success or failure of starting the scheduler.

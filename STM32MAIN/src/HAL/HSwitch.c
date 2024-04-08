@@ -24,7 +24,7 @@ static uint8_t HSwitch_Status[_HSwitch_Num];
 /*******************************************************************************
  *                             Implementation   				                *
  *******************************************************************************/
-/*
+/**
  * @brief    : Initializes a HSwitch pin based on the provided configuration.
  * @param[in]: Void.
  * @return   : Error_enumStatus_t - Error status indicating success or failure of the initialization.
@@ -55,7 +55,7 @@ Error_enumStatus_t HSwitch_Init(void)
     return Loc_enumReturnStatus;
 }
 
-/*
+/**
  * @brief    : Sets the value of a HSwitch pin to a specified state.
  * @param[in]: Copy_HSwitchName - HSwitch Name or ID.
  * @param[in]: Copy_HSwitchStatus - The state that desired to be set if it was HSwitch_ON or HSwitch_OFF .
@@ -84,7 +84,7 @@ Error_enumStatus_t HSwitch_Get_Status(uint32_t Copy_HSwitchName, uint8_t *Ptr_St
     return Loc_enumReturnStatus;
 }
 
-/* 
+/** 
  * @brief    : Defines a function to handle switch debouncing and update switch status.
  * @param[in]: void .
  * @return   : Error_enumStatus_t - Error status indicating success or failure of setting the pin value.

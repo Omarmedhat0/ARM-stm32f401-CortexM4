@@ -38,7 +38,7 @@ static void Tickcb(void);
 /*******************************************************************************
  *                             Implementation   				               *
  *******************************************************************************/
-/*
+/**
  * @brief    : Initializes the scheduler.
  * @param[in]: None.
  * @return   : Error status indicating success or failure.
@@ -73,7 +73,7 @@ Error_enumStatus_t Sched_Init(void)
     /* Return the error status */
     return Loc_enumReturnStatus;
 }
-/*
+/**
  * @brief    : Starts the scheduler.
  * @param[in]: None.
  * @return   : Error_enumStatus_t - Error status indicating success or failure of starting the scheduler.
@@ -102,7 +102,7 @@ Error_enumStatus_t Sched_Start(void)
     /* Return the error status */
     return Loc_enumReturnStatus;
 }
-/*
+/**
  * @brief    : Executes the scheduler.
  * @param[in]: None.
  * @return   : None.
@@ -126,7 +126,7 @@ static void Sched(void)
         Runinfo[idx].RemainingTimeMs -= TICK_TIME_MS ;
     }
 }
-/*
+/**
  * @brief    : Callback function for system timer interrupts.
  * @param[in]: None.
  * @return   : None.

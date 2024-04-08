@@ -42,7 +42,7 @@ static STK_CBF_t APP_CBF = NULL;
 /*******************************************************************************
  *                             Implementation   				                *
  *******************************************************************************/
-/*
+/**
  * @brief   : Sets the configuration of the SysTick timer.
  * @param   : Copy_Mode - The mode to configure the SysTick timer.
  * @return  : Error status indicating success or failure.
@@ -72,7 +72,7 @@ Error_enumStatus_t STK_SetConfig(uint32_t Copy_Mode)
     /* Return the status of the function */
     return Loc_enumReturnStatus;
 }
-/*
+/**
  * @brief   : Starts the SysTick timer.
  * @param   : None
  * @return  : Error status indicating success or failure.
@@ -92,7 +92,7 @@ Error_enumStatus_t STK_Start(void)
     /* Return the error status */
     return Loc_enumReturnStatus;
 }
-/*
+/**
  * @brief   : Stops the SysTick timer.
  * @param   : None
  * @return  : Error status indicating success or failure.
@@ -111,7 +111,7 @@ Error_enumStatus_t STK_Stop(void)
     /* Return the error status */
     return Loc_enumReturnStatus;
 }
-/*
+/**
  * @brief   : Sets the time interval for the SysTick timer.
  * @param   : Copy_TimeMs - The time interval in milliseconds.
  * @return  : Error status indicating success or failure.
@@ -140,7 +140,7 @@ Error_enumStatus_t STK_SetTimeMs(uint32_t Copy_TimeMs)
     /* Return the error status */
     return Loc_enumReturnStatus;
 }
-/*
+/**
  * @brief   : Sets the callback function for the SysTick timer interrupt.
  * @param   : Copy_CallBack - Pointer to the callback function.
  * @return  : Error status indicating success or failure.
@@ -166,7 +166,7 @@ Error_enumStatus_t STK_SetCallBack(STK_CBF_t Copy_CallBack)
     /* Return the error status */
     return Loc_enumReturnStatus;
 }
-/*
+/**
  * @brief   : SysTick interrupt handler.
  * @param   : None
  * @return  : None

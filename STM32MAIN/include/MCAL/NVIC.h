@@ -26,7 +26,7 @@
 /*******************************************************************************
  *                  	    Functions Prototypes                               *
  *******************************************************************************/
-/*
+/**
  * @brief    : Enable NVIC IRQ
  * @param[in]: IRQn: Interrupt number
  * @return   : Error_enumStatus_t: Status of the operation
@@ -34,7 +34,7 @@
  */
 Error_enumStatus_t Enable_NVIC_IRQ(IRQn_t IRQn);
 
-/*
+/**
  * @brief    : Disable NVIC IRQ
  * @param[in]: IRQn: Interrupt number
  * @return   : Error_enumStatus_t: Status of the operation
@@ -42,7 +42,7 @@ Error_enumStatus_t Enable_NVIC_IRQ(IRQn_t IRQn);
  */
 Error_enumStatus_t Disable_NVIC_IRQ(IRQn_t IRQn);
 
-/*
+/**
  * @brief    : Set NVIC Pending IRQ
  * @param[in]: IRQn: Interrupt number
  * @return   : Error_enumStatus_t: Status of the operation
@@ -50,7 +50,7 @@ Error_enumStatus_t Disable_NVIC_IRQ(IRQn_t IRQn);
  */
 Error_enumStatus_t Set_NVIC_Pending_IRQ(IRQn_t IRQn);
 
-/*
+/**
  * @brief    : Clear NVIC Pending IRQ
  * @param[in]: IRQn: Interrupt number
  * @return   : Error_enumStatus_t: Status of the operation
@@ -58,7 +58,7 @@ Error_enumStatus_t Set_NVIC_Pending_IRQ(IRQn_t IRQn);
  */
 Error_enumStatus_t Clear_NVIC_Pending_IRQ(IRQn_t IRQn);
 
-/*
+/**
  * @brief    : Get NVIC Pending IRQ status
  * @param[in]: IRQn: Interrupt number
  * @param[in]: Ptr_u8Status: Pointer to store the status
@@ -67,7 +67,7 @@ Error_enumStatus_t Clear_NVIC_Pending_IRQ(IRQn_t IRQn);
  */
 Error_enumStatus_t Get_NVIC_Pending_IRQ(IRQn_t IRQn, uint8_t *Ptr_u8Status);
 
-/*
+/**
  * @brief    : Get NVIC Active IRQ status
  * @param[in]: IRQn: Interrupt number
  * @param[in]: Ptr_u8Status: Pointer to store the status
@@ -76,7 +76,7 @@ Error_enumStatus_t Get_NVIC_Pending_IRQ(IRQn_t IRQn, uint8_t *Ptr_u8Status);
  */
 Error_enumStatus_t Get_NVIC_Active_IRQ(IRQn_t IRQn, uint8_t *Ptr_u8Status);
 
-/*
+/**
  * @brief    : Set Interrupt Priority
  * @param[in]: IRQn: Interrupt number
  * @param[in]: Copy_PreemptGroup: Preemption priority group
@@ -87,7 +87,7 @@ Error_enumStatus_t Get_NVIC_Active_IRQ(IRQn_t IRQn, uint8_t *Ptr_u8Status);
  */
 Error_enumStatus_t Set_Interrupt_Priority(IRQn_t IRQn, uint8_t Copy_PreemptGroup ,uint8_t Copy_SubpriorityGroup ,uint32_t GroupPriority );
 
-/*
+/**
  * @brief    : Get Interrupt Priority
  * @param[in]: IRQn: Interrupt number
  * @param[in]: Ptr_u8Status: Pointer to store the priority level
@@ -96,7 +96,7 @@ Error_enumStatus_t Set_Interrupt_Priority(IRQn_t IRQn, uint8_t Copy_PreemptGroup
  */
 Error_enumStatus_t Get_Interrupt_Priority(IRQn_t IRQn, uint8_t *Ptr_u8Status);
 
-/*
+/**
  * @brief    : Generated a Software  Interrupt
  * @param[in]: IRQn: Interrupt number
  * @return   : Error_enumStatus_t: Status of the operation

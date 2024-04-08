@@ -108,14 +108,14 @@ typedef struct
 /*******************************************************************************
  *                  	    Functions Prototypes                               *
  *******************************************************************************/
-/*
+/**
  * @brief    : Initializes a GPIO pin based on the provided configuration.
  * @param[in]: Loc_GPIOElement - Pointer to a structure containing the GPIO pin configuration.
  * @return   : Error_enumStatus_t - Error status indicating success or failure of the initialization.
  * @details  : This function initializes a GPIO pin according to the provided configuration.
  */
 Error_enumStatus_t GPIO_InitPin (GPIO_Config_t *Loc_GPIOElement);
-/*
+/**
  * @brief    : Sets the value of a GPIO pin to a specified state.
  * @param[in]: Port - Pointer to the GPIO port (From GPIO_PORTA to GPIO_PORTH).
  * @param[in]: Copy_PinNum - The number of the pin to be set (FROM GPIO_PIN0 TO GPIO_PIN16) .
@@ -124,7 +124,7 @@ Error_enumStatus_t GPIO_InitPin (GPIO_Config_t *Loc_GPIOElement);
  * @details  : This function sets the value of a GPIO pin to the specified state (high or low).
  */
 Error_enumStatus_t GPIO_Set_PinValue(void *Port , uint32_t Copy_PinNum , uint32_t Copy_PinState );
-/*
+/**
  * @brief    : Gets the current value of a GPIO pin.
  * @param[in] : Port - Pointer to the GPIO port (From GPIO_PORTA to GPIO_PORTH).
  * @param[in]: Copy_PinNum - The number of the pin to be set (FROM GPIO_PIN0 TO GPIO_PIN16) .

@@ -24,7 +24,7 @@ extern const Switch_Config_t SwitchS[_Switch_Num];
 /*******************************************************************************
  *                             Implementation   				                *
  *******************************************************************************/
-/*
+/**
  * @brief    : Initializes a Switch pin based on the provided configuration.
  * @param[in]: Void.
  * @return   : Error_enumStatus_t - Error status indicating success or failure of the initialization.
@@ -55,7 +55,7 @@ Error_enumStatus_t Switch_Init(void)
     return Loc_enumReturnStatus;
 }
 
-/*
+/**
  * @brief    : Sets the value of a Switch pin to a specified state.
  * @param[in]: Copy_SwitchName - Switch Name or ID.
  * @param[in]: Copy_SwitchStatus - The state that desired to be set if it was Switch_ON or Switch_OFF .

@@ -19,7 +19,7 @@
 /*******************************************************************************
  *                             Implementation   				                *
  *******************************************************************************/
-/*
+/**
  * @brief    : Initializes a LED pin based on the provided configuration.
  * @param[in]: Void.
  * @return   : Error_enumStatus_t - Error status indicating success or failure of the initialization.
@@ -54,7 +54,7 @@ Error_enumStatus_t LED_Init (void)
     return Loc_enumReturnStatus ;
 }
 
-/*
+/**
  * @brief    : Sets the value of a LED pin to a specified state.
  * @param[in]: Copy_LEDName - LED Name or ID.
  * @param[in]: Copy_LEDStatus - The state that desired to be set if it was LED_ON or LED_OFF .

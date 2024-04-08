@@ -35,14 +35,14 @@ typedef struct
 /*******************************************************************************
  *                  	    Functions Prototypes                               *
  *******************************************************************************/
-/*
+/**
  * @brief    : Initializes a Switch pin based on the provided configuration.
  * @param[in]: Void.
  * @return   : Error_enumStatus_t - Error status indicating success or failure of the initialization.
  * @details  : This function initializes a Switch pin according to the provided configuration.
  */
 Error_enumStatus_t Switch_Init (void);
-/*
+/**
  * @brief    : Sets the value of a Switch pin to a specified state.
  * @param[in]: Copy_SwitchName - Switch Name or ID.
  * @param[in]: Copy_SwitchStatus - The state that desired to be set if it was Switch_PRESSED or Switch_RELEASED .
