@@ -20,13 +20,15 @@ typedef enum
     //  app1 ,
     //  app2 ,
     //Traffic,
-    LCD,
-    LCDTest,
+    // LCD,
+    // LCDTest,
+    HUART,
+    HUARTTest,
     _RunNum
 }Run_t;
 /*******************************************************************************
  *                  	    Functions Prototypes                               *
  *******************************************************************************/
 
-extern void LCDTest_Runnable(void);
+
 #endif

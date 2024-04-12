@@ -20,6 +20,8 @@ extern void HSwitch_Runnable(void) ;
 extern void Runnable_APP3(void);
 extern void  Traffic_Runnable(void);
 extern void LCD_Runnable(void) ;
+extern void HUART_test_Run(void);
+extern void HUART_Runnable(void) ;
 /*******************************************************************************
  *                             Implementation   				                *
  *******************************************************************************/
@@ -31,6 +33,6 @@ const  Runnable_t RunnableList[_RunNum] = {
     // [app1] = {.Name = "ToggleLed1", .PeriodicityMs = 20,  .cb = Runnable_Toggle_Led1 , .DelayTime = 1000},
     // [app2] = {.Name = "ToggleLed2", .PeriodicityMs = 10,  .cb = Runnable_Toggle_Led2 , .DelayTime = 0},
     //[Traffic] = {.Name = "TrafficLight", .PeriodicityMs = 2000,  .cb = Traffic_Runnable , .DelayTime = 0},
-    [LCD] = {.Name = "LCD", .PeriodicityMs = 2,  .cb = LCD_Runnable , .DelayTime = 0},
-    [LCDTest]={.Name = "LCDTest", .PeriodicityMs = 1000,  .cb =LCDTest_Runnable , .DelayTime = 20}
+    [HUART] = {.Name = "HUART", .PeriodicityMs = 10,  .cb = HUART_Runnable , .DelayTime = 0},
+    [HUARTTest]={.Name = "HUARTTest", .PeriodicityMs = 1000,  .cb =HUART_test_Run , .DelayTime = 20}
 };
