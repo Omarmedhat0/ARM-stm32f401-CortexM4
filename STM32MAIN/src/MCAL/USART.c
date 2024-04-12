@@ -74,6 +74,9 @@ extern const USART_Config_t USARTS[_USART_Num];
 volatile void *const USART[UART_NUMS_IN_TARGET] = {USART1_BA, USART2_BA, USART6_BA};
 static USART_TxReq_t TxReq[_USART_Num];
 static USART_RXReq_t RxReq[_USART_Num];
+uint8_t LOC_UART1_idx;
+uint8_t LOC_UART2_idx;
+uint8_t LOC_UART6_idx;
 /*******************************************************************************
  *                             Implementation   				                *
  *******************************************************************************/
@@ -83,7 +86,7 @@ static USART_RXReq_t RxReq[_USART_Num];
  * @details  : This function initializes USART communication by configuring the USART peripheral,
  *             setting the baud rate, configuring frame format (word length, parity, stop bits),
  *             and enabling USART communication.
- */ 
+ */
 Error_enumStatus_t USART_Init(void)
 {
     /* Local Variable to store error status */
@@ -104,7 +107,7 @@ Error_enumStatus_t USART_Init(void)
     uint32_t Loc_DIV_Fraction = 0;
     /* Mantissa part of the divider */
     uint32_t Loc_DIV_Mantissa = 0;
-    
+
     /* Check if USART number is valid */
     if (_USART_Num > (USART6_ID + 1))
     {
@@ -116,10 +119,10 @@ Error_enumStatus_t USART_Init(void)
         for (Loc_idx = 0; Loc_idx < _USART_Num; Loc_idx++)
         {
             /**
-             * Calculate USARTDIV value to set the required Tx/Rx baud as the equations is 
+             * Calculate USARTDIV value to set the required Tx/Rx baud as the equations is
              * Tx/Rx baud Rate = F_CK / ( 8 × (2 – OVER8) × USARTDIV) )
              */
-            /** Calculate oversampling mode value 
+            /** Calculate oversampling mode value
              * As if i use over sample by 8 the  Loc_OVER8 value will equal 1 otherwise it will equal zero**/
             Loc_OVER8 = USARTS[Loc_idx].OverSamplingMode / USART_OVS_8;
             /** Calculate USART Divider value Multiplied by 100 to get the first to fraction digits
@@ -129,17 +132,17 @@ Error_enumStatus_t USART_Init(void)
             /** Calculate fractional part of divider from the below equation :
              * DIV_Fraction = ( 8 × (2 – OVER8) * fraction part which it is the first 2 digits from
              * USARTDIV value after multiply it by 100
-            */
+             */
             Loc_DIV_Fraction = (Loc_USARTDIVValue % 100) * (8 * (2 - Loc_OVER8));
             /* Adjust fractional part i get the nearest real number for it */
             if (Loc_DIV_Fraction % 100 != 0)
             {
                 /*Got the real value of DIV_Factor after divid it by 100 */
-                Loc_DIV_Fraction = ((Loc_DIV_Fraction / 100 ) +1 );
+                Loc_DIV_Fraction = ((Loc_DIV_Fraction / 100) + 1);
             }
             else
             {
-                 Loc_DIV_Fraction = Loc_DIV_Fraction / 100 ;
+                Loc_DIV_Fraction = Loc_DIV_Fraction / 100;
             }
             /* Calculate mantissa part of divider as it uqual the real part of  USARTDIV value so i divid it by 100 */
             Loc_DIV_Mantissa = Loc_USARTDIVValue / 100;
@@ -163,6 +166,21 @@ Error_enumStatus_t USART_Init(void)
             ((USART_PERI_t *)USART[USARTS[Loc_idx].USART_ID])->USART_CR1 = Loc_CR1Value;
             /* Set CR2 value */
             ((USART_PERI_t *)USART[USARTS[Loc_idx].USART_ID])->USART_CR2 = Loc_CR2Value;
+            switch (USARTS[Loc_idx].USART_ID)
+            {
+            case USART1_ID:
+                LOC_UART1_idx = Loc_idx;
+                break;
+            case USART2_ID:
+                LOC_UART2_idx = Loc_idx;
+                break;
+            case USART6_ID:
+                LOC_UART6_idx = Loc_idx;
+                break;
+            default:
+                Loc_enumReturnStatus = Status_enumNotOk;
+                break;
+            }
         }
     }
 
@@ -185,34 +203,48 @@ Error_enumStatus_t USART_TxBufferAsyncZeroCopy(USART_UserReq_t *Ptr_UserReq)
 {
     /* Local Variable to store error status */
     Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk;
-    
+    uint8_t Loc_Reqidx =0;
     /* Check for NULL pointer */
     if (Ptr_UserReq == NULL)
     {
         Loc_enumReturnStatus = Status_enumNULLPointer;
     }
-    else if (TxReq[Ptr_UserReq->USART_ID].state == USART_ReqReady)
-    {
-        /* Set transmit request state to busy */
-        TxReq[Ptr_UserReq->USART_ID].state = USART_ReqBusy;
-        /* Copy transmit buffer parameters from user request */
-        TxReq[Ptr_UserReq->USART_ID].buffer.data = Ptr_UserReq->Ptr_buffer;
-        TxReq[Ptr_UserReq->USART_ID].buffer.size = Ptr_UserReq->Buff_Len;
-        TxReq[Ptr_UserReq->USART_ID].buffer.Pos = 0;
-        TxReq[Ptr_UserReq->USART_ID].CB = Ptr_UserReq->Buff_cb;
-        /* Enable USART transmit */
-        ((USART_PERI_t *)USART[Ptr_UserReq->USART_ID])->USART_CR1 |= UART_TX_ENABLE_MASK;
-        /* Load first byte of data into USART data register */
-        ((USART_PERI_t *)USART[Ptr_UserReq->USART_ID])->USART_DR = TxReq[Ptr_UserReq->USART_ID].buffer.data[0];
-        TxReq[Ptr_UserReq->USART_ID].buffer.Pos++;
-        /* Enable USART transmit data register empty interrupt */
-        ((USART_PERI_t *)USART[Ptr_UserReq->USART_ID])->USART_CR1 |= UART_TXE_ENABLE_MASK;
-    }
     else
     {
-        Loc_enumReturnStatus = Status_enumBusyState;
-    }
 
+        switch (Ptr_UserReq->USART_ID)
+        {
+        case USART1_ID:
+            Loc_Reqidx = LOC_UART1_idx;
+            break;
+        case USART2_ID:
+            Loc_Reqidx = LOC_UART2_idx;
+            break;
+        case USART6_ID:
+            Loc_Reqidx = LOC_UART6_idx;
+            break;
+        default:
+            Loc_enumReturnStatus = Status_enumNotOk;
+            break;
+        }
+        if (TxReq[Loc_Reqidx].state == USART_ReqReady)
+        {
+            /* Set transmit request state to busy */
+            TxReq[Loc_Reqidx].state = USART_ReqBusy;
+            /* Copy transmit buffer parameters from user request */
+            TxReq[Loc_Reqidx].buffer.data = Ptr_UserReq->Ptr_buffer;
+            TxReq[Loc_Reqidx].buffer.size = Ptr_UserReq->Buff_Len;
+            TxReq[Loc_Reqidx].buffer.Pos = 0;
+            TxReq[Loc_Reqidx].CB = Ptr_UserReq->Buff_cb;
+            /* Enable USART transmit */
+            ((USART_PERI_t *)USART[Loc_Reqidx])->USART_CR1 |= UART_TX_ENABLE_MASK;
+            /* Load first byte of data into USART data register */
+            ((USART_PERI_t *)USART[Loc_Reqidx])->USART_DR = TxReq[Loc_Reqidx].buffer.data[0];
+            TxReq[Loc_Reqidx].buffer.Pos++;
+            /* Enable USART transmit data register empty interrupt */
+            ((USART_PERI_t *)USART[Loc_Reqidx])->USART_CR1 |= UART_TXE_ENABLE_MASK;
+        }
+    }
     /* Return the status of the transmission */
     return Loc_enumReturnStatus;
 }
@@ -231,38 +263,50 @@ Error_enumStatus_t USART_RxBufferAsyncZeroCopy(USART_UserReq_t *Ptr_UserReq)
 {
     /* Local Variable to store error status */
     Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk;
-    
+    uint8_t Loc_Reqidx =0;
     /* Check for NULL pointer */
     if (Ptr_UserReq == NULL)
     {
         Loc_enumReturnStatus = Status_enumNULLPointer;
     }
-    else if (RxReq[Ptr_UserReq->USART_ID].state == USART_ReqReady)
-    {
-        /* Clear RXNE flag */
-        ((USART_PERI_t *)USART[Ptr_UserReq->USART_ID])->USART_CR1 &= UART_RX_CLR_ENABLE_MASK;
-        /* Set receive request state to busy */
-        RxReq[Ptr_UserReq->USART_ID].state = USART_ReqBusy;
-        /* Copy receive buffer parameters from user request */
-        RxReq[Ptr_UserReq->USART_ID].buffer.data = Ptr_UserReq->Ptr_buffer;
-        RxReq[Ptr_UserReq->USART_ID].buffer.size = Ptr_UserReq->Buff_Len;
-        RxReq[Ptr_UserReq->USART_ID].buffer.Pos = 0;
-        RxReq[Ptr_UserReq->USART_ID].CB = Ptr_UserReq->Buff_cb;
-        /* Enable USART receive */
-        ((USART_PERI_t *)USART[Ptr_UserReq->USART_ID])->USART_CR1 |= UART_RX_ENABLE_MASK;
-        /* Enable USART receive data register not empty interrupt */
-        ((USART_PERI_t *)USART[Ptr_UserReq->USART_ID])->USART_CR1 |= UART_RXE_ENABLE_MASK;
-    }
     else
     {
-        Loc_enumReturnStatus = Status_enumBusyState;
+        switch (Ptr_UserReq->USART_ID)
+        {
+        case USART1_ID:
+            Loc_Reqidx = LOC_UART1_idx;
+            break;
+        case USART2_ID:
+            Loc_Reqidx = LOC_UART2_idx;
+            break;
+        case USART6_ID:
+            Loc_Reqidx = LOC_UART6_idx;
+            break;
+        default:
+            Loc_enumReturnStatus = Status_enumNotOk;
+            break;
+        }
+        if (RxReq[Loc_Reqidx].state == USART_ReqReady)
+        {
+            /* Clear RXNE flag */
+            ((USART_PERI_t *)USART[Loc_Reqidx])->USART_CR1 &= UART_RX_CLR_ENABLE_MASK;
+            /* Set receive request state to busy */
+            RxReq[Loc_Reqidx].state = USART_ReqBusy;
+            /* Copy receive buffer parameters from user request */
+            RxReq[Loc_Reqidx].buffer.data = Ptr_UserReq->Ptr_buffer;
+            RxReq[Loc_Reqidx].buffer.size = Ptr_UserReq->Buff_Len;
+            RxReq[Loc_Reqidx].buffer.Pos = 0;
+            RxReq[Loc_Reqidx].CB = Ptr_UserReq->Buff_cb;
+            /* Enable USART receive */
+            ((USART_PERI_t *)USART[Loc_Reqidx])->USART_CR1 |= UART_RX_ENABLE_MASK;
+            /* Enable USART receive data register not empty interrupt */
+            ((USART_PERI_t *)USART[Loc_Reqidx])->USART_CR1 |= UART_RXE_ENABLE_MASK;
+        }
     }
-    
+
     /* Return the status of the reception */
     return Loc_enumReturnStatus;
 }
-
-
 
 /**
  * @brief    : Transmits a single byte over USART.
@@ -277,7 +321,7 @@ Error_enumStatus_t USART_SendByte(USART_UserReq_t *Ptr_UserReq)
 {
     /* Local Variable to store error status */
     Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk;
-    
+    uint8_t Loc_Reqidx = 0;
     /* Check for NULL pointer */
     if (Ptr_UserReq == NULL)
     {
@@ -287,35 +331,48 @@ Error_enumStatus_t USART_SendByte(USART_UserReq_t *Ptr_UserReq)
     {
         Loc_enumReturnStatus = Status_enumWrongInput;
     }
-    else if (TxReq[Ptr_UserReq->USART_ID].state == USART_ReqReady)
-    {
-        volatile uint16_t Time = 2000;
-        /* Set transmit request state to busy */
-        TxReq[Ptr_UserReq->USART_ID].state = USART_ReqBusy;
-        /* Transmit the byte of data */
-        ((USART_PERI_t *)USART[Ptr_UserReq->USART_ID])->USART_DR = *(Ptr_UserReq->Ptr_buffer);
-        /* Enable USART transmit */
-        ((USART_PERI_t *)USART[Ptr_UserReq->USART_ID])->USART_CR1 |= UART_TX_ENABLE_MASK;
-        /* Wait for transmission to complete */
-        while ((((((USART_PERI_t *)USART[Ptr_UserReq->USART_ID])->USART_SR) & (UART_TX_EMPTY_FLAG)) == 0) && Time)
-        {
-            Time--;
-        }
-        if (Time == 0)
-        {
-            if (((((USART_PERI_t *)USART[Ptr_UserReq->USART_ID])->USART_SR) & UART_TX_EMPTY_FLAG) == 0)
-            {
-                Loc_enumReturnStatus = Status_enumTimOut;
-            }
-        }
-        /* Set transmit request state back to ready */
-        TxReq[Ptr_UserReq->USART_ID].state = USART_ReqReady;
-    }
     else
     {
-        Loc_enumReturnStatus = Status_enumBusyState;
+        switch (Ptr_UserReq->USART_ID)
+        {
+        case USART1_ID:
+            Loc_Reqidx = LOC_UART1_idx;
+            break;
+        case USART2_ID:
+            Loc_Reqidx = LOC_UART2_idx;
+            break;
+        case USART6_ID:
+            Loc_Reqidx = LOC_UART6_idx;
+            break;
+        default:
+            Loc_enumReturnStatus = Status_enumNotOk;
+            break;
+        }
+        if (TxReq[Loc_Reqidx].state == USART_ReqReady)
+        {
+            volatile uint16_t Time = 2000;
+            /* Set transmit request state to busy */
+            TxReq[Loc_Reqidx].state = USART_ReqBusy;
+            /* Transmit the byte of data */
+            ((USART_PERI_t *)USART[Loc_Reqidx])->USART_DR = *(Ptr_UserReq->Ptr_buffer);
+            /* Enable USART transmit */
+            ((USART_PERI_t *)USART[Loc_Reqidx])->USART_CR1 |= UART_TX_ENABLE_MASK;
+            /* Wait for transmission to complete */
+            while ((((((USART_PERI_t *)USART[Loc_Reqidx])->USART_SR) & (UART_TX_EMPTY_FLAG)) == 0) && Time)
+            {
+                Time--;
+            }
+            if (Time == 0)
+            {
+                if (((((USART_PERI_t *)USART[Loc_Reqidx])->USART_SR) & UART_TX_EMPTY_FLAG) == 0)
+                {
+                    Loc_enumReturnStatus = Status_enumTimOut;
+                }
+            }
+            /* Set transmit request state back to ready */
+            TxReq[Loc_Reqidx].state = USART_ReqReady;
+        }
     }
-    
     /* Return the status of the transmission */
     return Loc_enumReturnStatus;
 }
@@ -333,7 +390,7 @@ Error_enumStatus_t USART_GetByte(USART_UserReq_t *Ptr_UserReq)
 {
     /* Local Variable to store error status */
     Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk;
-    
+    uint8_t Loc_Reqidx =0 ;
     /* Check for NULL pointer */
     if (Ptr_UserReq == NULL)
     {
@@ -343,45 +400,58 @@ Error_enumStatus_t USART_GetByte(USART_UserReq_t *Ptr_UserReq)
     {
         Loc_enumReturnStatus = Status_enumWrongInput;
     }
-    else if (RxReq[Ptr_UserReq->USART_ID].state == USART_ReqReady)
+    else
     {
-        volatile uint16_t Time = 2000;
-        /* Set receive request state to busy */
-        RxReq[Ptr_UserReq->USART_ID].state = USART_ReqBusy;
-        /* Enable USART receive */
-        ((USART_PERI_t *)USART[Ptr_UserReq->USART_ID])->USART_CR1 |= UART_RX_ENABLE_MASK;
-        /* Wait for a byte of data to be received */
-        while ((((((USART_PERI_t *)USART[Ptr_UserReq->USART_ID])->USART_SR) & UART_RX_NOT_EMPTY_FLAG) == 0) && Time)
+        switch (Ptr_UserReq->USART_ID)
         {
-            Time--;
+        case USART1_ID:
+            Loc_Reqidx = LOC_UART1_idx;
+            break;
+        case USART2_ID:
+            Loc_Reqidx = LOC_UART2_idx;
+            break;
+        case USART6_ID:
+            Loc_Reqidx = LOC_UART6_idx;
+            break;
+        default:
+            Loc_enumReturnStatus = Status_enumNotOk;
+            break;
         }
-        if (Time == 0)
+        if (RxReq[Loc_Reqidx].state == USART_ReqReady)
         {
-            if (((((USART_PERI_t *)USART[Ptr_UserReq->USART_ID])->USART_SR) & UART_RX_NOT_EMPTY_FLAG) == 0)
+            volatile uint16_t Time = 2000;
+            /* Set receive request state to busy */
+            RxReq[Loc_Reqidx].state = USART_ReqBusy;
+            /* Enable USART receive */
+            ((USART_PERI_t *)USART[Loc_Reqidx])->USART_CR1 |= UART_RX_ENABLE_MASK;
+            /* Wait for a byte of data to be received */
+            while ((((((USART_PERI_t *)USART[Loc_Reqidx])->USART_SR) & UART_RX_NOT_EMPTY_FLAG) == 0) && Time)
             {
-                Loc_enumReturnStatus = Status_enumTimOut;
+                Time--;
+            }
+            if (Time == 0)
+            {
+                if (((((USART_PERI_t *)USART[Loc_Reqidx])->USART_SR) & UART_RX_NOT_EMPTY_FLAG) == 0)
+                {
+                    Loc_enumReturnStatus = Status_enumTimOut;
+                }
+                else
+                {
+                    /* Read the received byte */
+                    *(Ptr_UserReq->Ptr_buffer) = ((USART_PERI_t *)USART[Loc_Reqidx])->USART_DR;
+                }
             }
             else
             {
                 /* Read the received byte */
-                *(Ptr_UserReq->Ptr_buffer) = ((USART_PERI_t *)USART[Ptr_UserReq->USART_ID])->USART_DR;
+                *(Ptr_UserReq->Ptr_buffer) = ((USART_PERI_t *)USART[Loc_Reqidx])->USART_DR;
             }
+            /* Disable USART receive */
+            ((USART_PERI_t *)USART[Loc_Reqidx])->USART_CR1 &= ~UART_RX_ENABLE_MASK;
+            /* Set receive request state back to ready */
+            RxReq[Loc_Reqidx].state = USART_ReqReady;
         }
-        else
-        {
-            /* Read the received byte */
-            *(Ptr_UserReq->Ptr_buffer) = ((USART_PERI_t *)USART[Ptr_UserReq->USART_ID])->USART_DR;
-        }
-        /* Disable USART receive */
-        ((USART_PERI_t *)USART[Ptr_UserReq->USART_ID])->USART_CR1 &= ~UART_RX_ENABLE_MASK;
-        /* Set receive request state back to ready */
-        RxReq[Ptr_UserReq->USART_ID].state = USART_ReqReady;
     }
-    else
-    {
-        Loc_enumReturnStatus = Status_enumBusyState;
-    }
-    
     /* Return the status of the reception */
     return Loc_enumReturnStatus;
 }
@@ -398,7 +468,7 @@ Error_enumStatus_t USART_TxDone(uint8_t USART_ID, uint8_t *Ptr_Status)
 {
     /* Local Variable to store error status */
     Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk;
-    
+    uint8_t Loc_Reqidx = 0;
     /* Check for NULL pointer */
     if (Ptr_Status == NULL)
     {
@@ -406,8 +476,23 @@ Error_enumStatus_t USART_TxDone(uint8_t USART_ID, uint8_t *Ptr_Status)
     }
     else
     {
+        switch (USART_ID)
+        {
+        case USART1_ID:
+            Loc_Reqidx = LOC_UART1_idx;
+            break;
+        case USART2_ID:
+            Loc_Reqidx = LOC_UART2_idx;
+            break;
+        case USART6_ID:
+            Loc_Reqidx = LOC_UART6_idx;
+            break;
+        default:
+            Loc_enumReturnStatus = Status_enumNotOk;
+            break;
+        }
         /* Check if transmission is completed */
-        if ((((((USART_PERI_t *)USART[USART_ID])->USART_SR) & UART_TX_DONE_FLAG) != 0))
+        if ((((((USART_PERI_t *)USART[Loc_Reqidx])->USART_SR) & UART_TX_DONE_FLAG) != 0))
         {
             *Ptr_Status = Done;
         }
@@ -416,7 +501,7 @@ Error_enumStatus_t USART_TxDone(uint8_t USART_ID, uint8_t *Ptr_Status)
             *Ptr_Status = NOT_Done;
         }
     }
-    
+
     /* Return the status of the operation */
     return Loc_enumReturnStatus;
 }
@@ -433,7 +518,7 @@ Error_enumStatus_t USART_IsRx(uint8_t USART_ID, uint8_t *Ptr_Status)
 {
     /* Local Variable to store error status */
     Error_enumStatus_t Loc_enumReturnStatus = Status_enumOk;
-    
+    uint8_t Loc_Reqidx = 0;
     /* Check for NULL pointer */
     if (Ptr_Status == NULL)
     {
@@ -441,8 +526,23 @@ Error_enumStatus_t USART_IsRx(uint8_t USART_ID, uint8_t *Ptr_Status)
     }
     else
     {
+        switch (USART_ID)
+        {
+        case USART1_ID:
+            Loc_Reqidx = LOC_UART1_idx;
+            break;
+        case USART2_ID:
+            Loc_Reqidx = LOC_UART2_idx;
+            break;
+        case USART6_ID:
+            Loc_Reqidx = LOC_UART6_idx;
+            break;
+        default:
+            Loc_enumReturnStatus = Status_enumNotOk;
+            break;
+        }
         /* Check if USART is ready to receive data */
-        if ((((((USART_PERI_t *)USART[USART_ID])->USART_SR) & UART_RX_NOT_EMPTY_FLAG) != 0))
+        if ((((((USART_PERI_t *)USART[Loc_Reqidx])->USART_SR) & UART_RX_NOT_EMPTY_FLAG) != 0))
         {
             *Ptr_Status = Done;
         }
@@ -451,7 +551,7 @@ Error_enumStatus_t USART_IsRx(uint8_t USART_ID, uint8_t *Ptr_Status)
             *Ptr_Status = NOT_Done;
         }
     }
-    
+
     /* Return the status of the operation */
     return Loc_enumReturnStatus;
 }
@@ -464,50 +564,50 @@ Error_enumStatus_t USART_IsRx(uint8_t USART_ID, uint8_t *Ptr_Status)
 void USART1_IRQHandler(void)
 {
     /* Local Variable to store CR1 value */
-    uint32_t Lo_CR1_Value = ((USART_PERI_t *)USART[USART1_ID])->USART_CR1 ;
-    
+    uint32_t Lo_CR1_Value = ((USART_PERI_t *)USART[LOC_UART1_idx])->USART_CR1;
+
     /* Check if USART transmission is empty */
-    if ((((USART_PERI_t *)USART[USART1_ID])->USART_SR) & UART_TX_EMPTY_FLAG)
+    if ((((USART_PERI_t *)USART[LOC_UART1_idx])->USART_SR) & UART_TX_EMPTY_FLAG)
     {
         /* Check if there are more bytes to transmit */
-        if ((TxReq[USART1_ID].buffer.Pos) < (TxReq[USART1_ID].buffer.size))
+        if ((TxReq[LOC_UART1_idx].buffer.Pos) < (TxReq[LOC_UART1_idx].buffer.size))
         {
             /* Transmit the next byte */
-            ((USART_PERI_t *)USART[USART1_ID])->USART_DR = TxReq[USART1_ID].buffer.data[TxReq[USART1_ID].buffer.Pos];
-            TxReq[USART1_ID].buffer.Pos++;
+            ((USART_PERI_t *)USART[LOC_UART1_idx])->USART_DR = TxReq[LOC_UART1_idx].buffer.data[TxReq[LOC_UART1_idx].buffer.Pos];
+            TxReq[LOC_UART1_idx].buffer.Pos++;
         }
         else
         {
             /* Disable TXE interrupt */
-            Lo_CR1_Value &= ~(UART_TXE_ENABLE_MASK); 
-            TxReq[USART1_ID].state = USART_ReqReady;
-            ((USART_PERI_t *)USART[USART1_ID])->USART_CR1 = Lo_CR1_Value ;           
+            Lo_CR1_Value &= ~(UART_TXE_ENABLE_MASK);
+            TxReq[LOC_UART1_idx].state = USART_ReqReady;
+            ((USART_PERI_t *)USART[LOC_UART1_idx])->USART_CR1 = Lo_CR1_Value;
             /* Call callback function if available */
-            if (TxReq[USART1_ID].CB)
+            if (TxReq[LOC_UART1_idx].CB)
             {
-                TxReq[USART1_ID].CB();
+                TxReq[LOC_UART1_idx].CB();
             }
         }
     }
     /* Check if USART reception is not empty */
-    if ((((USART_PERI_t *)USART[USART1_ID])->USART_SR) & UART_RX_NOT_EMPTY_FLAG)
+    if ((((USART_PERI_t *)USART[LOC_UART1_idx])->USART_SR) & UART_RX_NOT_EMPTY_FLAG)
     {
         /* Check if there are more bytes to receive */
-        if (RxReq[USART1_ID].buffer.Pos < RxReq[USART1_ID].buffer.size)
+        if (RxReq[LOC_UART1_idx].buffer.Pos < RxReq[LOC_UART1_idx].buffer.size)
         {
             /* Receive the next byte */
-            RxReq[USART1_ID].buffer.data[RxReq[USART1_ID].buffer.Pos] = ((USART_PERI_t *)USART[USART1_ID])->USART_DR;
-            RxReq[USART1_ID].buffer.Pos++;
+            RxReq[LOC_UART1_idx].buffer.data[RxReq[LOC_UART1_idx].buffer.Pos] = ((USART_PERI_t *)USART[LOC_UART1_idx])->USART_DR;
+            RxReq[LOC_UART1_idx].buffer.Pos++;
             /* Check if all bytes are received */
-            if (RxReq[USART1_ID].buffer.Pos == RxReq[USART1_ID].buffer.size)
+            if (RxReq[LOC_UART1_idx].buffer.Pos == RxReq[LOC_UART1_idx].buffer.size)
             {
-                RxReq[USART1_ID].state = USART_ReqReady;
+                RxReq[LOC_UART1_idx].state = USART_ReqReady;
                 /* Disable RXE interrupt */
-                ((USART_PERI_t *)USART[USART1_ID])->USART_CR1 &= ~UART_RXE_ENABLE_MASK;
+                ((USART_PERI_t *)USART[LOC_UART1_idx])->USART_CR1 &= ~UART_RXE_ENABLE_MASK;
                 /* Call callback function if available */
-                if (RxReq[USART1_ID].CB)
+                if (RxReq[LOC_UART1_idx].CB)
                 {
-                    RxReq[USART1_ID].CB();
+                    RxReq[LOC_UART1_idx].CB();
                 }
             }
         }
@@ -522,50 +622,50 @@ void USART1_IRQHandler(void)
 void USART2_IRQHandler(void)
 {
     /* Local Variable to store CR1 value */
-    uint32_t Lo_CR1_Value = ((USART_PERI_t *)USART[USART2_ID])->USART_CR1 ;
-    
+    uint32_t Lo_CR1_Value = ((USART_PERI_t *)USART[LOC_UART2_idx])->USART_CR1;
+
     /* Check if USART transmission is empty */
-    if ((((USART_PERI_t *)USART[USART2_ID])->USART_SR) & UART_TX_EMPTY_FLAG)
+    if ((((USART_PERI_t *)USART[LOC_UART2_idx])->USART_SR) & UART_TX_EMPTY_FLAG)
     {
         /* Check if there are more bytes to transmit */
-        if ((TxReq[USART2_ID].buffer.Pos) < (TxReq[USART2_ID].buffer.size))
+        if ((TxReq[LOC_UART2_idx].buffer.Pos) < (TxReq[LOC_UART2_idx].buffer.size))
         {
             /* Transmit the next byte */
-            ((USART_PERI_t *)USART[USART2_ID])->USART_DR = TxReq[USART2_ID].buffer.data[TxReq[USART2_ID].buffer.Pos];
-            TxReq[USART2_ID].buffer.Pos++;
+            ((USART_PERI_t *)USART[LOC_UART2_idx])->USART_DR = TxReq[LOC_UART2_idx].buffer.data[TxReq[LOC_UART2_idx].buffer.Pos];
+            TxReq[LOC_UART2_idx].buffer.Pos++;
         }
         else
         {
             /* Disable TXE interrupt */
-            Lo_CR1_Value &= ~(UART_TXE_ENABLE_MASK); 
-            TxReq[USART2_ID].state = USART_ReqReady;
-            ((USART_PERI_t *)USART[USART2_ID])->USART_CR1 = Lo_CR1_Value ;           
+            Lo_CR1_Value &= ~(UART_TXE_ENABLE_MASK);
+            TxReq[LOC_UART2_idx].state = USART_ReqReady;
+            ((USART_PERI_t *)USART[LOC_UART2_idx])->USART_CR1 = Lo_CR1_Value;
             /* Call callback function if available */
-            if (TxReq[USART2_ID].CB)
+            if (TxReq[LOC_UART2_idx].CB)
             {
-                TxReq[USART2_ID].CB();
+                TxReq[LOC_UART2_idx].CB();
             }
         }
     }
     /* Check if USART reception is not empty */
-    if ((((USART_PERI_t *)USART[USART2_ID])->USART_SR) & UART_RX_NOT_EMPTY_FLAG)
+    if ((((USART_PERI_t *)USART[LOC_UART2_idx])->USART_SR) & UART_RX_NOT_EMPTY_FLAG)
     {
         /* Check if there are more bytes to receive */
-        if (RxReq[USART2_ID].buffer.Pos < RxReq[USART2_ID].buffer.size)
+        if (RxReq[LOC_UART2_idx].buffer.Pos < RxReq[LOC_UART2_idx].buffer.size)
         {
             /* Receive the next byte */
-            RxReq[USART2_ID].buffer.data[RxReq[USART2_ID].buffer.Pos] = ((USART_PERI_t *)USART[USART2_ID])->USART_DR;
-            RxReq[USART2_ID].buffer.Pos++;
+            RxReq[LOC_UART2_idx].buffer.data[RxReq[LOC_UART2_idx].buffer.Pos] = ((USART_PERI_t *)USART[LOC_UART2_idx])->USART_DR;
+            RxReq[LOC_UART2_idx].buffer.Pos++;
             /* Check if all bytes are received */
-            if (RxReq[USART2_ID].buffer.Pos == RxReq[USART2_ID].buffer.size)
+            if (RxReq[LOC_UART2_idx].buffer.Pos == RxReq[LOC_UART2_idx].buffer.size)
             {
-                RxReq[USART2_ID].state = USART_ReqReady;
+                RxReq[LOC_UART2_idx].state = USART_ReqReady;
                 /* Disable RXE interrupt */
-                ((USART_PERI_t *)USART[USART2_ID])->USART_CR1 &= ~UART_RXE_ENABLE_MASK;
+                ((USART_PERI_t *)USART[LOC_UART2_idx])->USART_CR1 &= ~UART_RXE_ENABLE_MASK;
                 /* Call callback function if available */
-                if (RxReq[USART2_ID].CB)
+                if (RxReq[LOC_UART2_idx].CB)
                 {
-                    RxReq[USART2_ID].CB();
+                    RxReq[LOC_UART2_idx].CB();
                 }
             }
         }
@@ -580,50 +680,50 @@ void USART2_IRQHandler(void)
 void USART6_IRQHandler(void)
 {
     /* Local Variable to store CR1 value */
-    uint32_t Lo_CR1_Value = ((USART_PERI_t *)USART[USART6_ID])->USART_CR1 ;
-    
+    uint32_t Lo_CR1_Value = ((USART_PERI_t *)USART[LOC_UART6_idx])->USART_CR1;
+
     /* Check if USART transmission is empty */
-    if ((((USART_PERI_t *)USART[USART6_ID])->USART_SR) & UART_TX_EMPTY_FLAG)
+    if ((((USART_PERI_t *)USART[LOC_UART6_idx])->USART_SR) & UART_TX_EMPTY_FLAG)
     {
         /* Check if there are more bytes to transmit */
-        if ((TxReq[USART6_ID].buffer.Pos) < (TxReq[USART6_ID].buffer.size))
+        if ((TxReq[LOC_UART6_idx].buffer.Pos) < (TxReq[LOC_UART6_idx].buffer.size))
         {
             /* Transmit the next byte */
-            ((USART_PERI_t *)USART[USART6_ID])->USART_DR = TxReq[USART6_ID].buffer.data[TxReq[USART6_ID].buffer.Pos];
-            TxReq[USART6_ID].buffer.Pos++;
+            ((USART_PERI_t *)USART[LOC_UART6_idx])->USART_DR = TxReq[LOC_UART6_idx].buffer.data[TxReq[LOC_UART6_idx].buffer.Pos];
+            TxReq[LOC_UART6_idx].buffer.Pos++;
         }
         else
         {
             /* Disable TXE interrupt */
-            Lo_CR1_Value &= ~(UART_TXE_ENABLE_MASK); 
-            TxReq[USART6_ID].state = USART_ReqReady;
-            ((USART_PERI_t *)USART[USART6_ID])->USART_CR1 = Lo_CR1_Value ;           
+            Lo_CR1_Value &= ~(UART_TXE_ENABLE_MASK);
+            TxReq[LOC_UART6_idx].state = USART_ReqReady;
+            ((USART_PERI_t *)USART[LOC_UART6_idx])->USART_CR1 = Lo_CR1_Value;
             /* Call callback function if available */
-            if (TxReq[USART6_ID].CB)
+            if (TxReq[LOC_UART6_idx].CB)
             {
-                TxReq[USART6_ID].CB();
+                TxReq[LOC_UART6_idx].CB();
             }
         }
     }
     /* Check if USART reception is not empty */
-    if ((((USART_PERI_t *)USART[USART6_ID])->USART_SR) & UART_RX_NOT_EMPTY_FLAG)
+    if ((((USART_PERI_t *)USART[LOC_UART6_idx])->USART_SR) & UART_RX_NOT_EMPTY_FLAG)
     {
         /* Check if there are more bytes to receive */
-        if (RxReq[USART6_ID].buffer.Pos < RxReq[USART6_ID].buffer.size)
+        if (RxReq[LOC_UART6_idx].buffer.Pos < RxReq[LOC_UART6_idx].buffer.size)
         {
             /* Receive the next byte */
-            RxReq[USART6_ID].buffer.data[RxReq[USART6_ID].buffer.Pos] = ((USART_PERI_t *)USART[USART6_ID])->USART_DR;
-            RxReq[USART6_ID].buffer.Pos++;
+            RxReq[LOC_UART6_idx].buffer.data[RxReq[LOC_UART6_idx].buffer.Pos] = ((USART_PERI_t *)USART[LOC_UART6_idx])->USART_DR;
+            RxReq[LOC_UART6_idx].buffer.Pos++;
             /* Check if all bytes are received */
-            if (RxReq[USART6_ID].buffer.Pos == RxReq[USART6_ID].buffer.size)
+            if (RxReq[LOC_UART6_idx].buffer.Pos == RxReq[LOC_UART6_idx].buffer.size)
             {
-                RxReq[USART6_ID].state = USART_ReqReady;
+                RxReq[LOC_UART6_idx].state = USART_ReqReady;
                 /* Disable RXE interrupt */
-                ((USART_PERI_t *)USART[USART6_ID])->USART_CR1 &= ~UART_RXE_ENABLE_MASK;
+                ((USART_PERI_t *)USART[LOC_UART6_idx])->USART_CR1 &= ~UART_RXE_ENABLE_MASK;
                 /* Call callback function if available */
-                if (RxReq[USART6_ID].CB)
+                if (RxReq[LOC_UART6_idx].CB)
                 {
-                    RxReq[USART6_ID].CB();
+                    RxReq[LOC_UART6_idx].CB();
                 }
             }
         }
