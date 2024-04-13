@@ -11,7 +11,7 @@
 
 #define SEND_Test  0 
 #define REC_Test  1
-#define CURRENT_TEST REC_Test
+#define CURRENT_TEST SEND_Test
 #include "HAL/CLK_Control.h"
 #include "HAL/LED.h"
 #include "HAL/HUART.h"
@@ -25,20 +25,25 @@ void SET_LED(void)
   LED_Set_Status(Green_Light , status);
 
 }
+void Resend(void)
+{
+
+}
 void HUART_test_Run(void)
 {   
     #if (CURRENT_TEST == SEND_Test)
     static uint8_t y[4] ="Omar" ;
-    HUSART_UserReq_t USART1_Req2 = {.USART_ID=USART1_ID ,.Ptr_buffer=y,.Buff_Len= 4 , .Buff_cb = SET_LED};
-    HUART_SendBuffAsync(&USART1_Req2) ; 
-    #else
-    static uint8_t y[4] ;
-    HUSART_UserReq_t USART1_Req2 = {.USART_ID=USART1_ID ,.Ptr_buffer=y,.Buff_Len= 4 , .Buff_cb = SET_LED};
+    static uint8_t x[4] ;
+    HUSART_UserReq_t USART1_Req1 = {.USART_ID=USART1_ID ,.Ptr_buffer=y,.Buff_Len= 4 , .Buff_cb = NULL}; 
+    HUSART_UserReq_t USART1_Req2 = {.USART_ID=USART1_ID ,.Ptr_buffer=x,.Buff_Len= 4 , .Buff_cb = NULL};
+    HUART_SendBuffAsync(&USART1_Req1) ;
     HUART_ReceiveBuffAsync(&USART1_Req2) ; 
-    if (y[0]=='1')
+    if (x[0]=='1')
     {
         SET_LED();
     }
+    #else
+
     #endif
 
 }

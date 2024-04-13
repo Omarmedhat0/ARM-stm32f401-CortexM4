@@ -36,6 +36,7 @@ typedef enum
     HUSART_NoReq,
     HUSART_Send,
     HUSART_Get,
+    HUSART_HandleReq 
 } HUSART_UserRequestType;
 
 typedef struct
@@ -54,7 +55,7 @@ typedef struct
  *******************************************************************************/
 HUSART_SendReq_t SendReq[_USART_Num];
 HUSART_GetReq_t GetReq[_USART_Num];
-HUSART_UserRequestType g_HUART_Type = HUSART_NoReq;
+static HUSART_UserRequestType g_HUART_Type= HUSART_NoReq;
 extern const HUSART_PINConfig_t HUARTS[_USART_Num];
 extern uint8_t g_UART1_idx;
 extern uint8_t g_UART2_idx;
@@ -85,51 +86,26 @@ static uint8_t g_Index_Of_Receiving;
  **/
 void HUART_Runnable(void)
 {
-    static uint8_t Send_Check = NOT_Done;
-    static uint8_t Get_Check = NOT_Done;
-    
     switch (g_HUART_Type)
     {
-    case HUSART_Send:
+    case HUSART_HandleReq:
         /* Checks if there's a pending send request */
         if (SendReq[g_Index_Of_Sending].state == HUSART_ReqBusy)
         {
             /* Initiates asynchronous transmission of data */
             USART_TxBufferAsyncZeroCopy(&(SendReq[g_Index_Of_Sending].BuffReqInfo));
-        }
-        
-        /* Checks if transmission is done */
-        USART_TxDone(SendReq[g_Index_Of_Sending].BuffReqInfo.USART_ID, &Send_Check);
-        
-        /* Updates status if transmission is complete */
-        if (Send_Check == Done)
-        {
-            g_HUART_Type = HUSART_NoReq;
-            Send_Check = NOT_Done;
             SendReq[g_Index_Of_Sending].state = HUSART_ReqReady;
-        }
-        break;
-        
-    case HUSART_Get:
-        /* Checks if there's a pending receive request */
+            g_HUART_Type = HUSART_NoReq ;
+       }
+            /* Checks if there's a pending receive request */
         if (GetReq[g_Index_Of_Receiving].state == HUSART_ReqBusy)
         {
             /* Initiates asynchronous reception of data */
             USART_RxBufferAsyncZeroCopy(&(GetReq[g_Index_Of_Receiving].BuffReqInfo));
+            GetReq[g_Index_Of_Receiving].state = HUSART_ReqReady; 
+            g_HUART_Type = HUSART_NoReq ;
         }
-        
-        /* Checks if data reception is complete */
-        USART_IsRx(GetReq[g_Index_Of_Receiving].BuffReqInfo.USART_ID, &Get_Check);
-        
-        /* Updates status if reception is complete */
-        if (Get_Check == Done)
-        {
-            g_HUART_Type = HUSART_NoReq;
-            Get_Check = NOT_Done;
-            GetReq[g_Index_Of_Receiving].state = HUSART_ReqReady;
-        }
-        break;
-        
+        break;       
     case HUSART_NoReq:
         /* No action is taken when the HUART is turned off */
         /* Do Nothing */
@@ -246,7 +222,7 @@ Error_enumStatus_t HUART_SendBuffAsync(HUSART_UserReq_t *Ptr_HUARTSendReq)
             SendReq[g_Index_Of_Sending].BuffReqInfo.Buff_Len = Ptr_HUARTSendReq->Buff_Len;
             SendReq[g_Index_Of_Sending].BuffReqInfo.Buff_cb = Ptr_HUARTSendReq->Buff_cb;
             SendReq[g_Index_Of_Sending].BuffReqInfo.USART_ID = Ptr_HUARTSendReq->USART_ID;
-            g_HUART_Type = HUSART_Send;
+            g_HUART_Type = HUSART_HandleReq ;
         }
         else
         {
@@ -287,7 +263,7 @@ Error_enumStatus_t HUART_ReceiveBuffAsync(HUSART_UserReq_t *Ptr_HUARTGetReq)
         GetReq[g_Index_Of_Receiving].BuffReqInfo.Buff_Len = Ptr_HUARTGetReq->Buff_Len;
         GetReq[g_Index_Of_Receiving].BuffReqInfo.Buff_cb = Ptr_HUARTGetReq->Buff_cb;
         GetReq[g_Index_Of_Receiving].BuffReqInfo.USART_ID = Ptr_HUARTGetReq->USART_ID;
-        g_HUART_Type = HUSART_Get;
+        g_HUART_Type = HUSART_HandleReq ;
     }
     else
     {
