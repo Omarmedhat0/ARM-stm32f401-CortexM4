@@ -24,6 +24,8 @@ typedef enum
     // LCDTest,
     HUART,
     HUARTTest,
+    // 
+    //clktest, 
     _RunNum
 }Run_t;
 /*******************************************************************************

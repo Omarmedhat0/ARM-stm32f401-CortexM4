@@ -293,7 +293,7 @@ Error_enumStatus_t USART_RxBufferAsyncZeroCopy(USART_UserReq_t *Ptr_UserReq)
         if (RxReq[Loc_Reqidx].state == USART_ReqReady)
         {
             /* Clear RXNE flag */
-            ((USART_PERI_t *)USART[Loc_Reqidx])->USART_CR1 &= UART_RX_CLR_ENABLE_MASK;
+           // ((USART_PERI_t *)USART[Loc_Reqidx])->USART_CR1 &= UART_RX_CLR_ENABLE_MASK;
             /* Set receive request state to busy */
             RxReq[Loc_Reqidx].state = USART_ReqBusy;
             /* Copy receive buffer parameters from user request */
@@ -619,7 +619,7 @@ void USART1_IRQHandler(void)
             {
                 RxReq[g_UART1_idx].state = USART_ReqReady;
                 /* Disable RXE interrupt */
-                ((USART_PERI_t *)USART[g_UART1_idx])->USART_CR1 &= ~UART_RXE_ENABLE_MASK;
+                //((USART_PERI_t *)USART[g_UART1_idx])->USART_CR1 &= ~UART_RXE_ENABLE_MASK;
                 /* Call callback function if available */
                 if (RxReq[g_UART1_idx].CB)
                 {
@@ -677,7 +677,7 @@ void USART2_IRQHandler(void)
             {
                 RxReq[g_UART2_idx].state = USART_ReqReady;
                 /* Disable RXE interrupt */
-                ((USART_PERI_t *)USART[g_UART2_idx])->USART_CR1 &= ~UART_RXE_ENABLE_MASK;
+                //((USART_PERI_t *)USART[g_UART2_idx])->USART_CR1 &= ~UART_RXE_ENABLE_MASK;
                 /* Call callback function if available */
                 if (RxReq[g_UART2_idx].CB)
                 {
@@ -735,7 +735,7 @@ void USART6_IRQHandler(void)
             {
                 RxReq[g_UART6_idx].state = USART_ReqReady;
                 /* Disable RXE interrupt */
-                ((USART_PERI_t *)USART[g_UART6_idx])->USART_CR1 &= ~UART_RXE_ENABLE_MASK;
+                //((USART_PERI_t *)USART[g_UART6_idx])->USART_CR1 &= ~UART_RXE_ENABLE_MASK;
                 /* Call callback function if available */
                 if (RxReq[g_UART6_idx].CB)
                 {

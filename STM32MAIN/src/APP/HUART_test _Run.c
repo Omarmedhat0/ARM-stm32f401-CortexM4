@@ -18,9 +18,9 @@
 void SET_LED(void)
 {
 
-  static uint32_t status = LED_OFF ;
+  static uint32_t status = LED_ON ;
 
-	status ^= (LED_ON | LED_OFF);
+	//
   /* Set the LED status */
   LED_Set_Status(Green_Light , status);
 
@@ -36,12 +36,13 @@ void HUART_test_Run(void)
     static uint8_t x[4] ;
     HUSART_UserReq_t USART1_Req1 = {.USART_ID=USART1_ID ,.Ptr_buffer=y,.Buff_Len= 4 , .Buff_cb = NULL}; 
     HUSART_UserReq_t USART1_Req2 = {.USART_ID=USART1_ID ,.Ptr_buffer=x,.Buff_Len= 4 , .Buff_cb = NULL};
-    HUART_SendBuffAsync(&USART1_Req1) ;
     HUART_ReceiveBuffAsync(&USART1_Req2) ; 
+    HUART_SendBuffAsync(&USART1_Req2) ;
     if (x[0]=='1')
     {
         SET_LED();
     }
+    
     #else
 
     #endif

@@ -30,6 +30,7 @@ typedef struct
 extern const Runnable_t RunnableList[_RunNum];
 static volatile uint32_t PendingTicks;
 RunnableInfo_t Runinfo[_RunNum];
+static uint64_t TickCount = 0;
 /*******************************************************************************
  *                         Static Function Prototypes		                   *
  *******************************************************************************/
@@ -136,4 +137,10 @@ static void Tickcb(void)
 {
     /* Increment pending ticks counter */
     PendingTicks++;
+    TickCount++;
+}
+
+uint64_t Sched_getTickCount(void)
+{
+	return TickCount;
 }

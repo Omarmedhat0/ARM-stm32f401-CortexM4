@@ -57,4 +57,6 @@ Error_enumStatus_t Sched_Init(void);
  */
 Error_enumStatus_t Sched_Start(void);
 
+uint64_t Sched_getTickCount(void);
+
 #endif /* Scheduler_H_ */
